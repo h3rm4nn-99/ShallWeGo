@@ -13,12 +13,17 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -127,6 +132,24 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("LMAO");
             }
         });
+        LocationRequest request = new LocationRequest();
+        request.setInterval(1000);
+        request.setFastestInterval(1000);
+        request.setPriority(PRIORITY_HIGH_ACCURACY);
+
+        locationClient.requestLocationUpdates(request, new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                if (locationResult == null) {
+                    Toast.makeText(MainActivity.this, "Errore", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                for (Location l: locationResult.getLocations()) {
+                    Toast.makeText(MainActivity.this, "" + l.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, Looper.getMainLooper());
 
     }
 
