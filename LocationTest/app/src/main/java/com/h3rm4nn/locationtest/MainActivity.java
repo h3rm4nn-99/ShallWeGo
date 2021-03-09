@@ -19,6 +19,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -41,6 +47,8 @@ import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
+
+import java.net.HttpURLConnection;
 
 import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
 
@@ -133,9 +141,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         LocationRequest request = new LocationRequest();
-        request.setInterval(1000);
-        request.setFastestInterval(1000);
+        request.setInterval(5000);
+        request.setFastestInterval(5000);
         request.setPriority(PRIORITY_HIGH_ACCURACY);
+
 
         locationClient.requestLocationUpdates(request, new LocationCallback() {
             @Override
@@ -145,9 +154,20 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                for (Location l: locationResult.getLocations()) {
-                    Toast.makeText(MainActivity.this, "" + l.toString(), Toast.LENGTH_SHORT).show();
-                }
+                Location l = locationResult.getLastLocation();
+                RequestQueue q = Volley.newRequestQueue(MainActivity.this);
+                StringRequest request = new StringRequest(Request.Method.PUT, "http://192.168.1.6:8080/api/putLocation?latitude=" + l.getLatitude() + "&longitude=" + l.getLongitude(), new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(MainActivity.this, "" + response, Toast.LENGTH_SHORT).show();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                });
+                q.add(request);
             }
         }, Looper.getMainLooper());
 
