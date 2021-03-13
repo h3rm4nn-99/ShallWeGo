@@ -4,10 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -61,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private final CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
     private IMapController mapController;
     private FloatingActionButton button;
+    private boolean isServiceStarted = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         Configuration.getInstance().load(getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
         setContentView(R.layout.activity_main);
+        locationClient = LocationServices.getFusedLocationProviderClient(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         navView = (NavigationView) findViewById(R.id.navView);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
@@ -80,10 +87,17 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.item1:
                         Toast.makeText(MainActivity.this, "Item1 tapped", Toast.LENGTH_SHORT).show();
+                        startForegroundService(new Intent(MainActivity.this, LocationService.class));
+                        break;
                     case R.id.item2:
                         Toast.makeText(MainActivity.this, "Item2 tapped", Toast.LENGTH_SHORT).show();
+                        if (isServiceStarted) {
+                            stopService(new Intent(MainActivity.this, LocationService.class));
+                        }
+                        break;
                     case R.id.item3:
                         Toast.makeText(MainActivity.this, "Item3 tapped", Toast.LENGTH_SHORT).show();
+                        break;
                 }
                 return true;
             }
@@ -109,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         mapController = map.getController();
         mapController.setZoom(17.0);
 
-        locationClient = LocationServices.getFusedLocationProviderClient(this);
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {
                     Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -137,39 +151,8 @@ public class MainActivity extends AppCompatActivity {
                 });
                 map.getOverlays().add(m);
                 map.invalidate();
-                System.out.println("LMAO");
             }
         });
-        LocationRequest request = new LocationRequest();
-        request.setInterval(5000);
-        request.setFastestInterval(5000);
-        request.setPriority(PRIORITY_HIGH_ACCURACY);
-
-
-        locationClient.requestLocationUpdates(request, new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                if (locationResult == null) {
-                    Toast.makeText(MainActivity.this, "Errore", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Location l = locationResult.getLastLocation();
-                RequestQueue q = Volley.newRequestQueue(MainActivity.this);
-                StringRequest request = new StringRequest(Request.Method.PUT, "http://192.168.1.6:8080/api/putLocation?latitude=" + l.getLatitude() + "&longitude=" + l.getLongitude(), new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(MainActivity.this, "" + response, Toast.LENGTH_SHORT).show();
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println(error.toString());
-                    }
-                });
-                q.add(request);
-            }
-        }, Looper.getMainLooper());
 
     }
 
