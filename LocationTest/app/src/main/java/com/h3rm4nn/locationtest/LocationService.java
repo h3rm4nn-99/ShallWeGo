@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -85,7 +86,7 @@ public class LocationService extends Service {
         manager.createNotificationChannel(channel);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, notificationChannelId);
         Notification notification = builder.setOngoing(true).setContentTitle("Il servizio di aggiornamento della posizione è in esecuzione").setPriority(NotificationManager.IMPORTANCE_HIGH).setCategory(Notification.CATEGORY_SERVICE).setSmallIcon(R.drawable.ic_near_me_24px).build();
-        startForeground(2, notification);
+        startForeground(2, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION);
         Toast.makeText(this, "Il servizio è partito!", Toast.LENGTH_SHORT).show();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             throw new IllegalStateException("Manca il permesso!"); //non dovrebbe comunque succedere in quanto il permesso viene concesso all'avvio dell'app in onCreate() nella MAinActivity

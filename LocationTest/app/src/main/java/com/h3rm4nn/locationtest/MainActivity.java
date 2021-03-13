@@ -172,11 +172,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void repaint(View view) {
-        mapController.setZoom(9.0);
-        map.invalidate();
-    }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (toggle.onOptionsItemSelected(item)) {

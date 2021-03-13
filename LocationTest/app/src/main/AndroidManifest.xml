@@ -19,6 +19,7 @@
         android:usesCleartextTraffic="true">
         <service
             android:name=".LocationService"
+            android:foregroundServiceType="location"
             android:enabled="true"
             android:exported="true"></service>
 
