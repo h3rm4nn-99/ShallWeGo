@@ -3,21 +3,26 @@ package com.locationtestserver.srvtest;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Individual {
     private Set<UtenteEntity> users;
 
-    public Individual(Set<UtenteEntity> users) {
-        this.users = users;
+    private Individual() {}
+
+    public static Individual createIndividual() {
+        Individual i = new Individual();
+        i.users = new HashSet<>();
+        return i;
     }
 
     public Set<UtenteEntity> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<UtenteEntity> users) {
-        this.users = users;
+    public boolean addUser(UtenteEntity e) {
+        return users.add(e);
     }
 
     public Integer getSize() {

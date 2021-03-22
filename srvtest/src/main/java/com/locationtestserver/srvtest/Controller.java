@@ -26,12 +26,13 @@ public class Controller {
     @GetMapping("/api/createPeople")
     public String createPeople() throws IOException, ParseException {
         JSONParser parser = new JSONParser();
+        Random r = new Random();
         JSONArray array = (JSONArray) parser.parse(new FileReader("comuni.json"));
         Iterator<JSONObject> iterator = array.iterator();
-        JSONArray resultArray = new JSONArray();
+        JSONObject result = new JSONObject();
+        ArrayList<UtenteEntity> users = new ArrayList<>();
 
         while (iterator.hasNext()) {
-            Random r = new Random();
             JSONObject obj = iterator.next();
             JSONObject provinciaCurrent = (JSONObject) obj.get("provincia");
             String provinciaString = (String) provinciaCurrent.get("nome");
@@ -43,15 +44,24 @@ public class Controller {
                 double karma = r.nextDouble() + r.nextInt(55);
                 int permanenza = r.nextInt(365);
                 String comune = (String) obj.get("nome");
-                UtenteEntity entity = new UtenteEntity(username, comune, karma, permanenza);
-                JSONObject target = new JSONObject();
-                target.put("username", entity.getUserName());
-                target.put("comune", entity.getComune());
-                target.put("karma", entity.getKarma());
-                target.put("permanenza", entity.getPermanenzaSullaPiattaforma());
-                resultArray.add(target);
+                users.add(new UtenteEntity(username, comune, karma, permanenza));
             }
         }
-        return resultArray.toJSONString();
+        Individual individual = Individual.createIndividual();
+        JSONArray usersJson = new JSONArray();
+        for (int i = 0; i < 5; i++) {
+            UtenteEntity user = users.get(r.nextInt(users.size()-1));
+            individual.addUser(user);
+            JSONObject obj = new JSONObject();
+
+            obj.put("usernameCandidato", user.getUserName());
+            obj.put("karma", user.getKarma());
+            obj.put("permanenza", user.getPermanenzaSullaPiattaforma());
+            obj.put("comune", user.getComune());
+            usersJson.add(obj);
+        }
+        result.put("users", usersJson);
+        result.put("fitness", Individual.getFitness(individual, new Location(40.7415603, 14.6715039)));
+        return result.toJSONString();
     }
 }

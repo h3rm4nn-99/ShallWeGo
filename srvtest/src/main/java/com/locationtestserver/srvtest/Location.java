@@ -43,14 +43,10 @@ public class Location {
     }
 
     public double distance(String comune) throws IOException, ParseException {
-        URL nominatimServer = new URL("http://192.168.1.22/nominatim/search.php?q=" + comune);
+        URL nominatimServer = new URL("http://192.168.1.22/nominatim/search.php?q=" + comune.replace(" ", "%20"));
         HttpURLConnection con = (HttpURLConnection) nominatimServer.openConnection();
         con.setRequestMethod("GET");
 
-        int status = con.getResponseCode();
-        if (status != 200) {
-            throw new IllegalStateException("Request Failed");
-        }
         String line = "";
         StringBuffer response = new StringBuffer();
 
