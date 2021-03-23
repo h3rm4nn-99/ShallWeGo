@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -47,21 +47,27 @@ public class Controller {
                 users.add(new UtenteEntity(username, comune, karma, permanenza));
             }
         }
-        Individual individual = Individual.createIndividual();
-        JSONArray usersJson = new JSONArray();
-        for (int i = 0; i < 5; i++) {
-            UtenteEntity user = users.get(r.nextInt(users.size()-1));
-            individual.addUser(user);
-            JSONObject obj = new JSONObject();
 
-            obj.put("usernameCandidato", user.getUserName());
-            obj.put("karma", user.getKarma());
-            obj.put("permanenza", user.getPermanenzaSullaPiattaforma());
-            obj.put("comune", user.getComune());
-            usersJson.add(obj);
+        JSONArray usersJson = new JSONArray();
+        Population<Individual> population = Population.createPopulation();
+        for (int j = 0; j < 3; j++) {
+            Individual individual = Individual.createIndividual();
+            for (int i = 0; i < 5; i++) {
+
+                UtenteEntity user = users.get(r.nextInt(users.size() - 1));
+                individual.addUser(user);
+                /*JSONObject obj = new JSONObject();
+
+                obj.put("usernameCandidato", user.getUserName());
+                obj.put("karma", user.getKarma());
+                obj.put("permanenza", user.getPermanenzaSullaPiattaforma());
+                obj.put("comune", user.getComune());
+                usersJson.add(obj);*/
+            }
+            population.addIndividual(individual);
         }
-        result.put("users", usersJson);
-        result.put("fitness", Individual.getFitness(individual, new Location(40.7415603, 14.6715039)));
-        return result.toJSONString();
+        HashMap<Individual, Double> normalizedFitness = Utils.getNormalizedFitness(population, new Location(40.7415603, 14.6715039));
+        System.out.println(normalizedFitness.toString());
+        return "temp";
     }
 }
