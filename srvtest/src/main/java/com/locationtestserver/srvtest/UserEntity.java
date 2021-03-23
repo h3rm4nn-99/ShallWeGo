@@ -1,12 +1,12 @@
 package com.locationtestserver.srvtest;
 
-public class UtenteEntity {
+public class UserEntity {
     private String userName;
     private String comune;
     private Double karma;
     private Integer permanenzaSullaPiattaforma;
 
-    public UtenteEntity(String userName, String comune, Double karma, Integer permanenzaSullaPiattaforma) {
+    public UserEntity(String userName, String comune, Double karma, Integer permanenzaSullaPiattaforma) {
         this.userName = userName;
         this.comune = comune;
         this.karma = karma;

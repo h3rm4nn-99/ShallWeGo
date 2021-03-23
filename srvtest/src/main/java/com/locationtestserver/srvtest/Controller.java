@@ -30,7 +30,7 @@ public class Controller {
         JSONArray array = (JSONArray) parser.parse(new FileReader("comuni.json"));
         Iterator<JSONObject> iterator = array.iterator();
         JSONObject result = new JSONObject();
-        ArrayList<UtenteEntity> users = new ArrayList<>();
+        ArrayList<UserEntity> users = new ArrayList<>();
 
         while (iterator.hasNext()) {
             JSONObject obj = iterator.next();
@@ -44,7 +44,7 @@ public class Controller {
                 double karma = r.nextDouble() + r.nextInt(55);
                 int permanenza = r.nextInt(365);
                 String comune = (String) obj.get("nome");
-                users.add(new UtenteEntity(username, comune, karma, permanenza));
+                users.add(new UserEntity(username, comune, karma, permanenza));
             }
         }
 
@@ -54,7 +54,7 @@ public class Controller {
             Individual individual = Individual.createIndividual();
             for (int i = 0; i < 5; i++) {
 
-                UtenteEntity user = users.get(r.nextInt(users.size() - 1));
+                UserEntity user = users.get(r.nextInt(users.size() - 1));
                 individual.addUser(user);
                 /*JSONObject obj = new JSONObject();
 

@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Individual {
-    private Set<UtenteEntity> users;
+    private Set<UserEntity> users;
 
     private Individual() {}
 
@@ -17,11 +17,11 @@ public class Individual {
         return i;
     }
 
-    public Set<UtenteEntity> getUsers() {
+    public Set<UserEntity> getUsers() {
         return users;
     }
 
-    public boolean addUser(UtenteEntity e) {
+    public boolean addUser(UserEntity e) {
         return users.add(e);
     }
 
@@ -31,7 +31,7 @@ public class Individual {
 
     public static double getFitness(Individual individual, Location location) throws IOException, ParseException {
         double fitness = 0.0;
-        for (UtenteEntity entity: individual.getUsers()) {
+        for (UserEntity entity: individual.getUsers()) {
             double distance = location.distance(entity.getComune());
             double distancePartialFitness = 15 / distance;
             double karmaPartialFitness;
