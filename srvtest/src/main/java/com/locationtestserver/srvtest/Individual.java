@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Individual<T extends UserEntity> {
+public class Individual {
     private final Set<UserEntity> users;
 
     public Individual() {
