@@ -6,15 +6,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Individual {
-    private Set<UserEntity> users;
+public class Individual<T extends UserEntity> {
+    private final Set<UserEntity> users;
 
-    private Individual() {}
-
-    public static Individual createIndividual() {
-        Individual i = new Individual();
-        i.users = new HashSet<>();
-        return i;
+    public Individual() {
+        users = new HashSet<>();
     }
 
     public Set<UserEntity> getUsers() {
@@ -29,9 +25,9 @@ public class Individual {
         return users.size();
     }
 
-    public static double getFitness(Individual individual, Location location) throws IOException, ParseException {
+    public double getFitness(Location location) throws IOException, ParseException {
         double fitness = 0.0;
-        for (UserEntity entity: individual.getUsers()) {
+        for (UserEntity entity: this.getUsers()) {
             double distance = location.distance(entity.getComune());
             double distancePartialFitness = 15 / distance;
             double karmaPartialFitness;
@@ -44,7 +40,7 @@ public class Individual {
             double daysInPlatformFitness = entity.getPermanenzaSullaPiattaforma() / 2.0;
             fitness += ((3 * distancePartialFitness) + (2 * karmaPartialFitness) + daysInPlatformFitness) / 3;
         }
-        return fitness / individual.getSize();
+        return fitness / this.getSize();
     }
 
 }

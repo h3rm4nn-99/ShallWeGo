@@ -49,9 +49,9 @@ public class Controller {
         }
 
         JSONArray usersJson = new JSONArray();
-        Population<Individual> population = Population.createPopulation();
+        Population<Individual<UserEntity>> population = new Population<>();
         for (int j = 0; j < 3; j++) {
-            Individual individual = Individual.createIndividual();
+            Individual<UserEntity> individual = new Individual<>();
             for (int i = 0; i < 5; i++) {
 
                 UserEntity user = users.get(r.nextInt(users.size() - 1));
@@ -66,7 +66,7 @@ public class Controller {
             }
             population.addIndividual(individual);
         }
-        HashMap<Individual, Double> normalizedFitness = Utils.getNormalizedFitness(population, new Location(40.7415603, 14.6715039));
+        HashMap<Individual<UserEntity>, Double> normalizedFitness = Utils.getNormalizedFitness(population, new Location(40.7415603, 14.6715039));
         System.out.println(normalizedFitness.toString());
         return "temp";
     }

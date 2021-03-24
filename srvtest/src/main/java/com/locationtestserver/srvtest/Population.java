@@ -9,17 +9,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Population<T extends Individual> {
-    private Set<Individual> individualSet;
+    private Set<Individual<UserEntity>> individualSet;
 
-    private Population() {}
-
-    public static Population<Individual> createPopulation() {
-        Population<Individual> population = new Population<>();
-        population.individualSet = new HashSet<>();
-        return population;
+    public Population() {
+        this.individualSet = new HashSet<>();
     }
 
-    public Set<Individual> getIndividuals() {
+    public Set<Individual<UserEntity>> getIndividuals() {
         return individualSet;
     }
 
@@ -27,18 +23,18 @@ public class Population<T extends Individual> {
         return individualSet.size();
     }
 
-    public boolean addIndividual(Individual individual) {
+    public boolean addIndividual(Individual<UserEntity> individual) {
         return individualSet.add(individual);
     }
 
-    public HashMap<Individual, Double> getPopulationFitness(Location location) throws IOException, ParseException {
-        HashMap<Individual, Double> fitness = new HashMap<>();
+    public HashMap<Individual<UserEntity>, Double> getPopulationFitness(Location location) throws IOException, ParseException {
+        HashMap<Individual<UserEntity>, Double> fitness = new HashMap<>();
         if (individualSet.isEmpty()) {
             throw new IllegalStateException("Popolazione vuota!");
         }
 
-        for (Individual i: individualSet) {
-            fitness.put(i, Individual.getFitness(i, location));
+        for (Individual<UserEntity> i: individualSet) {
+            fitness.put(i, i.getFitness(location));
         }
 
         return fitness;
