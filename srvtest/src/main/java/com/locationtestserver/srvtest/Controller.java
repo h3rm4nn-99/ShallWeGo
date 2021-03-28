@@ -66,10 +66,12 @@ public class Controller {
             }
             population.addIndividual(individual);
         }
-        HashMap<Individual, Double> normalizedFitness = Utils.getNormalizedFitness(population, new Location(40.7415603, 14.6715039));
-        System.out.println(normalizedFitness.toString());
-        Population<Individual> selectedPopulation = new RouletteWheel(population).run(new Location(40.7415603, 14.6715039));
-        System.out.println(selectedPopulation.getIndividuals().toString());
+        Location location = new Location(40.7415603, 14.6715039);
+        HashMap<Individual, Double> normalizedFitness = Utils.getNormalizedFitness(population, location);
+        Population<Individual> selectedPopulation = new RouletteWheel(population).run(location);
+        System.out.println("Selected population " + selectedPopulation.getPopulationFitness(location));
+        Population<Individual> crossoveredPopulation = SinglePointCrossover.execute(selectedPopulation);
+        System.out.println("Crossovered population " + crossoveredPopulation.getPopulationFitness(location));
         return "temp";
     }
 }

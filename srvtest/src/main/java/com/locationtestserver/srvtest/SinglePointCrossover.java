@@ -8,41 +8,29 @@ public class SinglePointCrossover {
     public static Population<Individual> execute(Population<Individual> parents) {
         Population<Individual> newPopulation = new Population<>();
         int size = parents.getPopulationSize();
-        Set<Individual> alreadyConsidered = new HashSet<>();
+        if (size == 1) {
+            return parents;
+        }
 
         Random r = new Random();
 
-        int stop = 0;
-
         for (int i = 0; i < size; i++) {
-
             Individual parent1 = null;
             Individual parent2 = null;
 
+            int stop = 0;
+            parent1 = (Individual) parents.getIndividuals().toArray()[r.nextInt(size)];
+
             do {
-                parent1 = (Individual) parents.getIndividuals().toArray()[r.nextInt(size - 1)];
-                if (alreadyConsidered.contains(parent1)) {
-                    continue;
-                } else {
-                    alreadyConsidered.add(parent1);
+                parent2 = (Individual) parents.getIndividuals().toArray()[r.nextInt(size)];
+                if (!parent1.equals(parent2)) {
                     stop = 1;
                 }
             } while (stop == 0);
-
-            stop = 0;
-
-            do {
-                parent2 = (Individual) parents.getIndividuals().toArray()[r.nextInt(size - 1)];
-                if (alreadyConsidered.contains(parent1) || parent1.equals(parent2)) {
-                    continue;
-                } else {
-                    alreadyConsidered.add(parent2);
-                    stop = 1;
-                }
-            } while (stop == 0);
-
-            UserEntity[] parent1Array = (UserEntity[]) parent1.getUsers().toArray();
-            UserEntity[] parent2Array = (UserEntity[]) parent2.getUsers().toArray();
+            Object[] tempParent1Array = parent1.getUsers().toArray();
+            Object[] tempParent2Array = parent2.getUsers().toArray();
+            UserEntity[] parent1Array = Arrays.copyOf(tempParent1Array, tempParent1Array.length, UserEntity[].class);
+            UserEntity[] parent2Array = Arrays.copyOf(tempParent2Array, tempParent2Array.length, UserEntity[].class);
             int parent1Size = parent1Array.length;
             int parent2Size = parent2Array.length;
 
@@ -83,7 +71,7 @@ public class SinglePointCrossover {
             newPopulation.addIndividual(child1Individual);
             newPopulation.addIndividual(child2Individual);
         }
-
+        
         return newPopulation;
     }
 }
