@@ -18,6 +18,7 @@ import java.util.Random;
 
 @RestController
 public class Controller {
+    public static ArrayList<UserEntity> users;
     @PutMapping("/api/putLocation")
     public String printLocation(@RequestParam("latitude") String latitude, @RequestParam("longitude") String longitude) {
         System.out.println("Latitudine " + latitude + "\nLongitudine " + longitude);
@@ -30,7 +31,7 @@ public class Controller {
         JSONArray array = (JSONArray) parser.parse(new FileReader("comuni.json"));
         Iterator<JSONObject> iterator = array.iterator();
         JSONObject result = new JSONObject();
-        ArrayList<UserEntity> users = new ArrayList<>();
+        users = new ArrayList<>();
 
         while (iterator.hasNext()) {
             JSONObject obj = iterator.next();

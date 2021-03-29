@@ -5,6 +5,7 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class Population<T extends Individual> {
@@ -37,5 +38,18 @@ public class Population<T extends Individual> {
         }
 
         return fitness;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Population)) return false;
+        Population<?> that = (Population<?>) o;
+        return individualSet.equals(that.individualSet);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(individualSet);
     }
 }

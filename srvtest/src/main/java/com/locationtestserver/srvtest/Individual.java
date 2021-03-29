@@ -4,10 +4,11 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class Individual {
-    private final Set<UserEntity> users;
+    private Set<UserEntity> users;
 
     public Individual() {
         users = new HashSet<>();
@@ -19,6 +20,10 @@ public class Individual {
 
     public boolean addUser(UserEntity e) {
         return users.add(e);
+    }
+
+    public void setUsers(Set<UserEntity> users) {
+        this.users = users;
     }
 
     public Integer getSize() {
@@ -43,4 +48,16 @@ public class Individual {
         return fitness / this.getSize();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Individual)) return false;
+        Individual that = (Individual) o;
+        return users.equals(that.users);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(users);
+    }
 }

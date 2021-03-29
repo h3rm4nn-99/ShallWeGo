@@ -1,5 +1,7 @@
 package com.locationtestserver.srvtest;
 
+import java.util.Objects;
+
 public class UserEntity {
     private String userName;
     private String comune;
@@ -53,5 +55,18 @@ public class UserEntity {
                 ", karma=" + karma +
                 ", permanenzaSullaPiattaforma=" + permanenzaSullaPiattaforma +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserEntity)) return false;
+        UserEntity that = (UserEntity) o;
+        return userName.equals(that.userName) && comune.equals(that.comune) && karma.equals(that.karma) && permanenzaSullaPiattaforma.equals(that.permanenzaSullaPiattaforma);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userName, comune, karma, permanenzaSullaPiattaforma);
     }
 }
