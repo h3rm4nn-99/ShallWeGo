@@ -7,6 +7,7 @@ import java.util.*;
 public class SinglePointCrossover {
     public static Population<Individual> execute(Population<Individual> parents) {
         Population<Individual> newPopulation = new Population<>();
+        Set<Couple> couples = new HashSet<>();
         int size = parents.getPopulationSize();
         if (size == 1) {
             return parents;
@@ -23,7 +24,9 @@ public class SinglePointCrossover {
 
             do {
                 parent2 = (Individual) parents.getIndividuals().toArray()[r.nextInt(size)];
-                if (!parent1.equals(parent2)) {
+                Couple family = new Couple(parent1, parent2);
+                if (!parent1.equals(parent2) && !couples.contains(family)) {
+                    couples.add(family);
                     stop = 1;
                 }
             } while (stop == 0);

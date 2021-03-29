@@ -60,4 +60,5 @@ public class Individual {
     public int hashCode() {
         return Objects.hash(users);
     }
+
 }

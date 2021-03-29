@@ -23,6 +23,10 @@ public class Population<T extends Individual> {
         return individualSet.size();
     }
 
+    public boolean isEmpty() {
+        return individualSet.isEmpty();
+    }
+
     public boolean addIndividual(Individual individual) {
         return individualSet.add(individual);
     }

@@ -70,9 +70,21 @@ public class Controller {
         Location location = new Location(40.7415603, 14.6715039);
         HashMap<Individual, Double> normalizedFitness = Utils.getNormalizedFitness(population, location);
         Population<Individual> selectedPopulation = new RouletteWheel(population).run(location);
+        if (selectedPopulation.isEmpty()) {
+            return "popolazione vuota";
+        }
         System.out.println("Selected population " + selectedPopulation.getPopulationFitness(location));
         Population<Individual> crossoveredPopulation = SinglePointCrossover.execute(selectedPopulation);
+        if (crossoveredPopulation.isEmpty()) {
+            return "popolazione vuota";
+        }
         System.out.println("Crossovered population " + crossoveredPopulation.getPopulationFitness(location));
+        Population<Individual> mutatedPopulation = MutationSubstitution.mutate(crossoveredPopulation);
+
+        if (mutatedPopulation.isEmpty()) {
+            return "popolazione vuota";
+        }
+        System.out.println("Mutated population " + mutatedPopulation.getPopulationFitness(location));
         return "temp";
     }
 }
