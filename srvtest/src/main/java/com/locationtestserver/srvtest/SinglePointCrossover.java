@@ -32,7 +32,7 @@ public class SinglePointCrossover {
                 child1.add(parent1Array[j]);
             }
 
-            for (k = (parent2Size / 2) + (parent2Size % 2 == 0 ? 0 : 1); k < parent2Size; k++) {
+            for (k = parent2Size / 2; k < parent2Size; k++) {
                 child1.add(parent2Array[k]);
             }
 
@@ -42,7 +42,7 @@ public class SinglePointCrossover {
                 child2.add(parent2Array[j]);
             }
 
-            for (k = (parent1Size / 2) + (parent1Size % 2 == 0 ? 0 : 1); k < parent1Size; k++) {
+            for (k = parent1Size / 2; k < parent1Size; k++) {
                 child2.add(parent1Array[k]);
             }
 
@@ -104,7 +104,7 @@ public class SinglePointCrossover {
                 child1.add(parent1Array[j]);
             }
 
-            for (k = (parent2Size / 2) + (parent2Size % 2 == 0 ? 0 : 1); k < parent2Size; k++) {
+            for (k = parent2Size / 2; k < parent2Size; k++) {
                 child1.add(parent2Array[k]);
             }
 
@@ -114,7 +114,7 @@ public class SinglePointCrossover {
                 child2.add(parent2Array[j]);
             }
 
-            for (k = (parent1Size / 2) + (parent1Size % 2 == 0 ? 0 : 1); k < parent1Size; k++) {
+            for (k = parent1Size / 2; k < parent1Size; k++) {
                 child2.add(parent1Array[k]);
             }
 
