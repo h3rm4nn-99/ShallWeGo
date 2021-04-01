@@ -18,8 +18,7 @@ public class MutationSubstitution {
                 UserEntity candidate = Controller.users.get(randomCandidateIndex);
                 Set<UserEntity> sentinel = new HashSet<>(individual.getUsers());
                 while (sentinel.contains(candidate)) {
-                    randomIndex = r.nextInt(usersArray.length);
-                    candidate = Controller.users.get(randomCandidateIndex);
+                    candidate = Controller.users.get(r.nextInt(Controller.users.size() - 1));
                 }
                 usersArray[randomIndex] = candidate;
                 individual.setUsers(new HashSet<>(Arrays.asList(usersArray)));

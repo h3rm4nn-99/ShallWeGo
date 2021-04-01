@@ -51,7 +51,7 @@ public class Controller {
 
         JSONArray usersJson = new JSONArray();
         Population<Individual> population = new Population<>();
-        for (int j = 0; j < 3; j++) {
+        for (int j = 0; j < 10; j++) {
             Individual individual = new Individual();
             for (int i = 0; i < 5; i++) {
 
@@ -69,22 +69,27 @@ public class Controller {
         }
         Location location = new Location(40.7415603, 14.6715039);
         HashMap<Individual, Double> normalizedFitness = Utils.getNormalizedFitness(population, location);
-        Population<Individual> selectedPopulation = new RouletteWheel(population).run(location);
-        if (selectedPopulation.isEmpty()) {
-            return "popolazione vuota";
-        }
-        System.out.println("Selected population " + selectedPopulation.getPopulationFitness(location));
-        Population<Individual> crossoveredPopulation = SinglePointCrossover.execute(selectedPopulation);
-        if (crossoveredPopulation.isEmpty()) {
-            return "popolazione vuota";
-        }
-        System.out.println("Crossovered population " + crossoveredPopulation.getPopulationFitness(location));
-        Population<Individual> mutatedPopulation = MutationSubstitution.mutate(crossoveredPopulation);
+        Population<Individual> tempPopulation = population;
+        for (int i = 0; i < 25; i++) {
+            Population<Individual> selectedPopulation = new RouletteWheel(tempPopulation).run(location);
+            if (selectedPopulation.isEmpty()) {
+                return "popolazione vuota";
+            }
+            System.out.println("Selected population " + selectedPopulation.getAverageFitness(location) + " Size " + selectedPopulation.getPopulationSize());
 
-        if (mutatedPopulation.isEmpty()) {
-            return "popolazione vuota";
+            Population<Individual> crossoveredPopulation = SinglePointCrossover.execute(selectedPopulation);
+            if (crossoveredPopulation.isEmpty()) {
+                return "popolazione vuota";
+            }
+            System.out.println("Crossovered population " + crossoveredPopulation.getAverageFitness(location) + " Size " + crossoveredPopulation.getPopulationSize());
+            Population<Individual> mutatedPopulation = MutationSubstitution.mutate(crossoveredPopulation);
+
+            if (mutatedPopulation.isEmpty()) {
+                return "popolazione vuota";
+            }
+            System.out.println("Mutated population " + mutatedPopulation.getAverageFitness(location) + " Size " + mutatedPopulation.getPopulationSize());
+            tempPopulation = mutatedPopulation;
         }
-        System.out.println("Mutated population " + mutatedPopulation.getPopulationFitness(location));
         return "temp";
     }
 }

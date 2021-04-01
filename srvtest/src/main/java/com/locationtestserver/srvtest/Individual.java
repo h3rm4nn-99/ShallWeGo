@@ -34,7 +34,13 @@ public class Individual {
         double fitness = 0.0;
         for (UserEntity entity: this.getUsers()) {
             double distance = location.distance(entity.getComune());
-            double distancePartialFitness = 15 / distance;
+            double distancePartialFitness;
+            if (distance == 0) {
+                distancePartialFitness = 15 / (distance + 0.3); //avoid division by 0
+            } else {
+                distancePartialFitness = 15 / distance;
+            }
+
             double karmaPartialFitness;
 
             if (entity.getKarma() < 42) {

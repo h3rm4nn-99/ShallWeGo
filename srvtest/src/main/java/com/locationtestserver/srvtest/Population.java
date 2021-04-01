@@ -44,6 +44,19 @@ public class Population<T extends Individual> {
         return fitness;
     }
 
+    public double getAverageFitness(Location location) throws IOException, ParseException {
+        if (individualSet.isEmpty()) {
+            throw new IllegalStateException("Popolazione vuota!");
+        }
+
+        double sum = 0.0;
+        for (Individual i: individualSet) {
+            sum += i.getFitness(location);
+        }
+
+        return sum / individualSet.size();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
