@@ -69,7 +69,7 @@ public class SinglePointCrossover {
 
             int killer = r.nextInt(42);
 
-            if (killer < 15) {
+            if (killer < 4) {
                 continue;
             }
 
