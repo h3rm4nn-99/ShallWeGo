@@ -3,27 +3,27 @@ package com.locationtestserver.srvtest;
 import java.util.Objects;
 
 public class Couple {
-    private Individual parent1, parent2;
+    private Individual individual1, individual2;
 
-    public Couple(Individual parent1, Individual parent2) {
-        this.parent1 = parent1;
-        this.parent2 = parent2;
+    public Couple(Individual individual1, Individual individual2) {
+        this.individual1 = individual1;
+        this.individual2 = individual2;
     }
 
-    public Individual getParent1() {
-        return parent1;
+    public Individual getindividual1() {
+        return individual1;
     }
 
-    public void setParent1(Individual parent1) {
-        this.parent1 = parent1;
+    public void setindividual1(Individual individual1) {
+        this.individual1 = individual1;
     }
 
-    public Individual getParent2() {
-        return parent2;
+    public Individual getindividual2() {
+        return individual2;
     }
 
-    public void setParent2(Individual parent2) {
-        this.parent2 = parent2;
+    public void setindividual2(Individual individual2) {
+        this.individual2 = individual2;
     }
 
     @Override
@@ -31,11 +31,11 @@ public class Couple {
         if (this == o) return true;
         if (!(o instanceof Couple)) return false;
         Couple couple = (Couple) o;
-        return (parent1.equals(couple.parent1) && parent2.equals(couple.parent2)) || (parent1.equals(couple.parent2) && parent2.equals(couple.parent1));
+        return (individual1.equals(couple.individual1) && individual2.equals(couple.individual2)) || (individual1.equals(couple.individual2) && individual2.equals(couple.individual1));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(parent1, parent2);
+        return Objects.hash(individual1, individual2);
     }
 }

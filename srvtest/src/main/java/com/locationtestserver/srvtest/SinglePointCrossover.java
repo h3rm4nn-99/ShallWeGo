@@ -17,49 +17,10 @@ public class SinglePointCrossover {
             Individual parent1 = (Individual) parents.getIndividuals().toArray()[0];
             Individual parent2 = (Individual) parents.getIndividuals().toArray()[1];
 
-            Object[] tempParent1Array = parent1.getUsers().toArray();
-            Object[] tempParent2Array = parent2.getUsers().toArray();
-            UserEntity[] parent1Array = Arrays.copyOf(tempParent1Array, tempParent1Array.length, UserEntity[].class);
-            UserEntity[] parent2Array = Arrays.copyOf(tempParent2Array, tempParent2Array.length, UserEntity[].class);
-            int parent1Size = parent1Array.length;
-            int parent2Size = parent2Array.length;
+            Couple children = cross(parent1, parent2);
 
-            int j, k;
-
-            List<UserEntity> child1 = new ArrayList<>();
-
-            for (j = 0; j < parent1Size / 2; j++) {
-                child1.add(parent1Array[j]);
-            }
-
-            for (k = parent2Size / 2; k < parent2Size; k++) {
-                child1.add(parent2Array[k]);
-            }
-
-            List<UserEntity> child2 = new ArrayList<>();
-
-            for (j = 0; j < parent2Size / 2; j++) {
-                child2.add(parent2Array[j]);
-            }
-
-            for (k = parent1Size / 2; k < parent1Size; k++) {
-                child2.add(parent1Array[k]);
-            }
-
-            Individual child1Individual = new Individual();
-
-            for (UserEntity user: child1) {
-                child1Individual.addUser(user);
-            }
-
-            Individual child2Individual = new Individual();
-
-            for (UserEntity user: child2) {
-                child2Individual.addUser(user);
-            }
-
-            newPopulation.addIndividual(child1Individual);
-            newPopulation.addIndividual(child2Individual);
+            newPopulation.addIndividual(children.getindividual1());
+            newPopulation.addIndividual(children.getindividual2());
             return newPopulation;
         }
 
@@ -89,51 +50,57 @@ public class SinglePointCrossover {
                     stop = 1;
                 }
             } while (stop == 0);
-            Object[] tempParent1Array = parent1.getUsers().toArray();
-            Object[] tempParent2Array = parent2.getUsers().toArray();
-            UserEntity[] parent1Array = Arrays.copyOf(tempParent1Array, tempParent1Array.length, UserEntity[].class);
-            UserEntity[] parent2Array = Arrays.copyOf(tempParent2Array, tempParent2Array.length, UserEntity[].class);
-            int parent1Size = parent1Array.length;
-            int parent2Size = parent2Array.length;
 
-            int j, k;
-
-            List<UserEntity> child1 = new ArrayList<>();
-
-            for (j = 0; j < parent1Size / 2; j++) {
-                child1.add(parent1Array[j]);
-            }
-
-            for (k = parent2Size / 2; k < parent2Size; k++) {
-                child1.add(parent2Array[k]);
-            }
-
-            List<UserEntity> child2 = new ArrayList<>();
-
-            for (j = 0; j < parent2Size / 2; j++) {
-                child2.add(parent2Array[j]);
-            }
-
-            for (k = parent1Size / 2; k < parent1Size; k++) {
-                child2.add(parent1Array[k]);
-            }
-
-            Individual child1Individual = new Individual();
-
-            for (UserEntity user: child1) {
-                child1Individual.addUser(user);
-            }
-
-            Individual child2Individual = new Individual();
-
-            for (UserEntity user: child2) {
-                child2Individual.addUser(user);
-            }
-
-            newPopulation.addIndividual(child1Individual);
-            newPopulation.addIndividual(child2Individual);
+            Couple children = cross(parent1, parent2);
+            newPopulation.addIndividual(children.getindividual1());
+            newPopulation.addIndividual(children.getindividual2());
         }
-        
+
         return newPopulation;
+    }
+
+    private static Couple cross(Individual parent1, Individual parent2) {
+        Object[] tempParent1Array = parent1.getUsers().toArray();
+        Object[] tempParent2Array = parent2.getUsers().toArray();
+        UserEntity[] parent1Array = Arrays.copyOf(tempParent1Array, tempParent1Array.length, UserEntity[].class);
+        UserEntity[] parent2Array = Arrays.copyOf(tempParent2Array, tempParent2Array.length, UserEntity[].class);
+        int parent1Size = parent1Array.length;
+        int parent2Size = parent2Array.length;
+
+        int j, k;
+
+        List<UserEntity> child1 = new ArrayList<>();
+
+        for (j = 0; j < parent1Size / 2; j++) {
+            child1.add(parent1Array[j]);
+        }
+
+        for (k = parent2Size / 2; k < parent2Size; k++) {
+            child1.add(parent2Array[k]);
+        }
+
+        List<UserEntity> child2 = new ArrayList<>();
+
+        for (j = 0; j < parent2Size / 2; j++) {
+            child2.add(parent2Array[j]);
+        }
+
+        for (k = parent1Size / 2; k < parent1Size; k++) {
+            child2.add(parent1Array[k]);
+        }
+
+        Individual child1Individual = new Individual();
+
+        for (UserEntity user: child1) {
+            child1Individual.addUser(user);
+        }
+
+        Individual child2Individual = new Individual();
+
+        for (UserEntity user: child2) {
+            child2Individual.addUser(user);
+        }
+
+        return new Couple(child1Individual, child2Individual);
     }
 }
