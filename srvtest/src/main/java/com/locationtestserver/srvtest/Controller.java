@@ -69,15 +69,25 @@ public class Controller {
         }
         Location location = new Location(40.7415603, 14.6715039);
         HashMap<Individual, Double> normalizedFitness = Utils.getNormalizedFitness(population, location);
-        Population<Individual> tempPopulation = population;
-        for (int i = 0; i < 25; i++) {
-            Population<Individual> selectedPopulation = new RouletteWheel(tempPopulation).run(location);
+        Population<Individual> startPopulation = population;
+        Population<Individual> bestPopulation = population;
+        int generationsWithoutImprovement = 0;
+        int i;
+        int probability = 70;
+        for (i = 0; i < 25; i++) {
+
+            Population<Individual> selectedPopulation = new RouletteWheel(startPopulation).run(location);
             if (selectedPopulation.isEmpty()) {
                 return "popolazione vuota";
             }
             System.out.println("Selected population " + selectedPopulation.getAverageFitness(location) + " Size " + selectedPopulation.getPopulationSize());
 
-            Population<Individual> crossoveredPopulation = SinglePointCrossover.execute(selectedPopulation);
+            if (selectedPopulation.getPopulationSize() >= 5) {
+                probability /= 2;
+            } else {
+                probability *= 2;
+            }
+            Population<Individual> crossoveredPopulation = SinglePointCrossover.execute(selectedPopulation, probability);
             if (crossoveredPopulation.isEmpty()) {
                 return "popolazione vuota";
             }
@@ -88,8 +98,17 @@ public class Controller {
                 return "popolazione vuota";
             }
             System.out.println("Mutated population " + mutatedPopulation.getAverageFitness(location) + " Size " + mutatedPopulation.getPopulationSize());
-            tempPopulation = mutatedPopulation;
+            if (mutatedPopulation.getAverageFitness(location) >= bestPopulation.getAverageFitness(location)) {
+                generationsWithoutImprovement = 0;
+                bestPopulation = mutatedPopulation;
+            } else {
+                generationsWithoutImprovement++;
+                if (generationsWithoutImprovement == 3) {
+                    break;
+                }
+            }
+            startPopulation = mutatedPopulation;
         }
-        return "temp";
+        return "Iterazione " + i + " " + bestPopulation.toString();
     }
 }

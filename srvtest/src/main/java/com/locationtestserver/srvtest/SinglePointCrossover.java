@@ -5,7 +5,7 @@ import org.apache.catalina.User;
 import java.util.*;
 
 public class SinglePointCrossover {
-    public static Population<Individual> execute(Population<Individual> parents) {
+    public static Population<Individual> execute(Population<Individual> parents, int probability) {
         Population<Individual> newPopulation = new Population<>();
         Set<Couple> couples = new HashSet<>();
         int size = parents.getPopulationSize();
@@ -28,9 +28,9 @@ public class SinglePointCrossover {
 
         for (int i = 0; i < size; i++) {
 
-            int killer = r.nextInt(42);
+            int killer = r.nextInt(100);
 
-            if (killer < 4) {
+            if (killer < probability) {
                 continue;
             }
 
