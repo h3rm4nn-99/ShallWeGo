@@ -40,7 +40,6 @@ public class SinglePointCrossover {
             int stop = 0;
             int random1 = r.nextInt(size);
             parent1 = (Individual) parents.getIndividuals().toArray()[random1];
-
             do {
                 int random2 = r.nextInt(size);
                 parent2 = (Individual) parents.getIndividuals().toArray()[random2];

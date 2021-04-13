@@ -98,7 +98,7 @@ public class Controller {
                 return "popolazione vuota";
             }
             System.out.println("Mutated population " + mutatedPopulation.getAverageFitness(location) + " Size " + mutatedPopulation.getPopulationSize());
-            if (mutatedPopulation.getAverageFitness(location) >= bestPopulation.getAverageFitness(location)) {
+            if (mutatedPopulation.getAverageFitness(location) > bestPopulation.getAverageFitness(location)) {
                 generationsWithoutImprovement = 0;
                 bestPopulation = mutatedPopulation;
             } else {
@@ -109,6 +109,7 @@ public class Controller {
             }
             startPopulation = mutatedPopulation;
         }
+        System.out.println("Fine del processo. Fitness popolazione: " + bestPopulation.getAverageFitness(location));
         return "Iterazione " + i + " " + bestPopulation.toString();
     }
 }
