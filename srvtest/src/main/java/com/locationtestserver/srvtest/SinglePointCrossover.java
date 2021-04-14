@@ -38,17 +38,31 @@ public class SinglePointCrossover {
             Individual parent2 = null;
 
             int stop = 0;
+            int sentinel = 0;
             int random1 = r.nextInt(size);
             parent1 = (Individual) parents.getIndividuals().toArray()[random1];
+            Set<Individual> alreadyCoupled = new HashSet<>();
             do {
+                if (alreadyCoupled.size() == size - 1) {
+                    sentinel = 1;
+                    break;
+                }
                 int random2 = r.nextInt(size);
                 parent2 = (Individual) parents.getIndividuals().toArray()[random2];
                 Couple family = new Couple(parent1, parent2);
                 if (!parent1.equals(parent2) && !couples.contains(family)) {
                     couples.add(family);
                     stop = 1;
+                } else {
+                    if (!parent1.equals(parent2)) {
+                        alreadyCoupled.add(parent2);
+                    }
                 }
             } while (stop == 0);
+
+            if (sentinel == 1) {
+                continue;
+            }
 
             Couple children = cross(parent1, parent2);
             newPopulation.addIndividual(children.getindividual1());
