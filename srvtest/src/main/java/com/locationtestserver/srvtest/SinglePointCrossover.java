@@ -30,7 +30,7 @@ public class SinglePointCrossover {
 
             int killer = r.nextInt(100);
 
-            if (killer < probability) {
+            if (killer > probability) {
                 continue;
             }
 

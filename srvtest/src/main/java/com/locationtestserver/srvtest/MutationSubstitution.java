@@ -10,7 +10,7 @@ public class MutationSubstitution {
         Random r = new Random();
         for (Individual individual: population.getIndividuals()) {
             int number = r.nextInt(11);
-            if (number < 6) {
+            if (number < 10) {
                 Object[] usersTempArray = individual.getUsers().toArray();
                 UserEntity[] usersArray = Arrays.copyOf(usersTempArray, usersTempArray.length, UserEntity[].class);
                 int randomIndex = r.nextInt(usersArray.length);

@@ -57,6 +57,24 @@ public class Population<T extends Individual> {
         return sum / individualSet.size();
     }
 
+    public Individual getBestIndividual(Location location) throws IOException, ParseException {
+        Individual bestIndividual = null;
+        double bestIndividualFitness = 0.0;
+
+        for (Individual individual: individualSet) {
+            double currentIndividualFitness = individual.getFitness(location);
+            if (bestIndividual == null || currentIndividualFitness > bestIndividualFitness) {
+                bestIndividual = individual;
+                bestIndividualFitness = currentIndividualFitness;
+            }
+        }
+
+        if (bestIndividual == null) {
+            throw new IllegalStateException("Popolazione vuota");
+        }
+        return bestIndividual;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

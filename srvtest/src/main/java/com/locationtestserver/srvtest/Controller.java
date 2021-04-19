@@ -71,6 +71,7 @@ public class Controller {
         HashMap<Individual, Double> normalizedFitness = Utils.getNormalizedFitness(population, location);
         Population<Individual> startPopulation = population;
         Population<Individual> bestPopulation = population;
+        Population<Individual> archive = new Population<>();
         int generationsWithoutImprovement = 0;
         int i;
         int probability = 70;
@@ -82,10 +83,13 @@ public class Controller {
             }
             System.out.println("Selected population " + selectedPopulation.getAverageFitness(location) + " Size " + selectedPopulation.getPopulationSize());
 
-            if (selectedPopulation.getPopulationSize() >= 5) {
+            if (selectedPopulation.getPopulationSize() >= 15) {
                 probability /= 2;
             } else {
                 probability *= 2;
+                if (probability >= 100) {
+                    probability = 100;
+                }
             }
             Population<Individual> crossoveredPopulation = SinglePointCrossover.execute(selectedPopulation, probability);
             if (crossoveredPopulation.isEmpty()) {
@@ -97,7 +101,10 @@ public class Controller {
             if (mutatedPopulation.isEmpty()) {
                 return "popolazione vuota";
             }
+
             System.out.println("Mutated population " + mutatedPopulation.getAverageFitness(location) + " Size " + mutatedPopulation.getPopulationSize());
+            archive.addIndividual(mutatedPopulation.getBestIndividual(location));
+
             if (mutatedPopulation.getAverageFitness(location) > bestPopulation.getAverageFitness(location)) {
                 generationsWithoutImprovement = 0;
                 bestPopulation = mutatedPopulation;
@@ -109,6 +116,11 @@ public class Controller {
             }
             startPopulation = mutatedPopulation;
         }
+
+        if (bestPopulation.getAverageFitness(location) <= archive.getAverageFitness(location)) {
+            bestPopulation = archive;
+        }
+
         System.out.println("Fine del processo. Fitness popolazione: " + bestPopulation.getAverageFitness(location));
         return "Iterazione " + i + " " + bestPopulation.toString();
     }
