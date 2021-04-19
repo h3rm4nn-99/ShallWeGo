@@ -81,6 +81,9 @@ public class Controller {
             if (selectedPopulation.isEmpty()) {
                 return "popolazione vuota";
             }
+
+            Individual candidate = selectedPopulation.getBestIndividual(location);
+            double candidateFitness = candidate.getFitness(location);
             System.out.println("Selected population " + selectedPopulation.getAverageFitness(location) + " Size " + selectedPopulation.getPopulationSize());
 
             if (selectedPopulation.getPopulationSize() >= 15) {
@@ -95,15 +98,30 @@ public class Controller {
             if (crossoveredPopulation.isEmpty()) {
                 return "popolazione vuota";
             }
+
+            Individual bestIndividualAfterCrossover = crossoveredPopulation.getBestIndividual(location);
+            double bestIndividualAfterCrossoverFitness = bestIndividualAfterCrossover.getFitness(location);
+
+            if (bestIndividualAfterCrossoverFitness > candidateFitness) {
+                candidate = bestIndividualAfterCrossover;
+                candidateFitness = bestIndividualAfterCrossoverFitness;
+            }
+
             System.out.println("Crossovered population " + crossoveredPopulation.getAverageFitness(location) + " Size " + crossoveredPopulation.getPopulationSize());
+
             Population<Individual> mutatedPopulation = MutationSubstitution.mutate(crossoveredPopulation);
 
             if (mutatedPopulation.isEmpty()) {
                 return "popolazione vuota";
             }
+            Individual bestIndividualAfterMutation = mutatedPopulation.getBestIndividual(location);
+            double bestIndividualAfterMutationFitness = bestIndividualAfterMutation.getFitness(location);
 
+            if (bestIndividualAfterMutationFitness > candidateFitness) {
+                candidate = bestIndividualAfterMutation;
+            }
             System.out.println("Mutated population " + mutatedPopulation.getAverageFitness(location) + " Size " + mutatedPopulation.getPopulationSize());
-            archive.addIndividual(mutatedPopulation.getBestIndividual(location));
+            archive.addIndividual(candidate);
 
             if (mutatedPopulation.getAverageFitness(location) > bestPopulation.getAverageFitness(location)) {
                 generationsWithoutImprovement = 0;
@@ -122,6 +140,6 @@ public class Controller {
         }
 
         System.out.println("Fine del processo. Fitness popolazione: " + bestPopulation.getAverageFitness(location));
-        return "Iterazione " + i + " " + bestPopulation.toString();
+        return "Iterazione " + i + " " + bestPopulation.toString() + " Individuo migliore: " + bestPopulation.getBestIndividual(location).getFitness(location);
     }
 }
