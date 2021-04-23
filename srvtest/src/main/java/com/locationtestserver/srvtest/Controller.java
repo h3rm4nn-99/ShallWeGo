@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 @RestController
 public class Controller {
@@ -75,6 +72,8 @@ public class Controller {
         int generationsWithoutImprovement = 0;
         int i;
         int probability = 70;
+        Calendar timer = Calendar.getInstance();
+        long startTime = timer.getTimeInMillis();
         for (i = 0; i < 25; i++) {
 
             Population<Individual> selectedPopulation = new RouletteWheel(startPopulation).run(location);
@@ -133,6 +132,11 @@ public class Controller {
                 }
             }
             startPopulation = mutatedPopulation;
+
+            long currentTime = timer.getTimeInMillis();
+            if (currentTime - startTime >= 150000) {
+                break;
+            }
         }
 
         if (bestPopulation.getAverageFitness(location) <= archive.getAverageFitness(location)) {
