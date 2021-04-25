@@ -4,10 +4,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -16,6 +14,7 @@ import java.util.*;
 @RestController
 public class Controller {
     public static ArrayList<UserEntity> users;
+    private UserEntity userTest = new UserEntity("prova", "prova", "Salerno", 43.2, 37);
     @PutMapping("/api/putLocation")
     public String printLocation(@RequestParam("latitude") String latitude, @RequestParam("longitude") String longitude) {
         System.out.println("Latitudine " + latitude + "\nLongitudine " + longitude);
@@ -42,7 +41,7 @@ public class Controller {
                 double karma = r.nextDouble() + r.nextInt(55);
                 int permanenza = r.nextInt(365);
                 String comune = (String) obj.get("nome");
-                users.add(new UserEntity(username, comune, karma, permanenza));
+                users.add(new UserEntity(username, null, comune, karma, permanenza));
             }
         }
 
@@ -145,5 +144,17 @@ public class Controller {
 
         System.out.println("Fine del processo. Fitness popolazione: " + bestPopulation.getAverageFitness(location));
         return "Iterazione " + i + " " + bestPopulation.toString() + " Individuo migliore: " + bestPopulation.getBestIndividual(location).getFitness(location);
+    }
+
+    @PostMapping("/api/login")
+    public String doLogin(@RequestBody MultiValueMap<String, String> body) {
+        String username = body.get("username").get(0);
+        String password = body.get("password").get(0);
+
+        if (username.equals(userTest.getUserName()) && password.equals(userTest.getPassword())) {
+            return "OK";
+        } else {
+            return "NO";
+        }
     }
 }

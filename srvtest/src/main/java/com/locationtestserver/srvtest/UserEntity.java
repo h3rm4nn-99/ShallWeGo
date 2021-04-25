@@ -4,12 +4,14 @@ import java.util.Objects;
 
 public class UserEntity {
     private String userName;
+    private String password;
     private String comune;
     private Double karma;
     private Integer permanenzaSullaPiattaforma;
 
-    public UserEntity(String userName, String comune, Double karma, Integer permanenzaSullaPiattaforma) {
+    public UserEntity(String userName, String password, String comune, Double karma, Integer permanenzaSullaPiattaforma) {
         this.userName = userName;
+        this.password = password;
         this.comune = comune;
         this.karma = karma;
         this.permanenzaSullaPiattaforma = permanenzaSullaPiattaforma;
@@ -21,6 +23,14 @@ public class UserEntity {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getComune() {

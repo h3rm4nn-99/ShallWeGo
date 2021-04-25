@@ -1,7 +1,11 @@
 package com.h3rm4nn.locationtest;
 
+import android.content.DialogInterface;
+import android.widget.Button;
+import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -18,10 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
+import com.android.volley.*;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -43,6 +44,8 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
+
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
@@ -133,6 +136,59 @@ public class MainActivity extends AppCompatActivity {
                         });
                         queue.add(request);
                         break;
+                    case R.id.item4:
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        View view = MainActivity.this.getLayoutInflater().inflate(R.layout.login_layout, null);
+                        builder.setView(view);
+                        builder.setPositiveButton("Login", null);
+                        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        EditText user = view.findViewById(R.id.userName);
+                        EditText pwd = view.findViewById(R.id.password);
+                        AlertDialog dialog = builder.show();
+
+                        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                        positiveButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (user.getText().toString().isEmpty() || pwd.getText().toString().isEmpty()) {
+                                    Toast.makeText(MainActivity.this, "Username o password non presenti", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    RequestQueue q = Volley.newRequestQueue(getApplicationContext());
+                                    String requestBody = "username=" + user.getText().toString() + "&password=" + pwd.getText().toString();
+                                    StringRequest request = new StringRequest(Request.Method.POST, "http://192.168.1.19:8080/api/login", new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            if (response.equals("OK")) {
+                                                Toast.makeText(MainActivity.this, "Sei loggato", Toast.LENGTH_SHORT).show();
+                                                dialog.dismiss();
+                                            } else {
+                                                System.out.println(response);
+                                                Toast.makeText(MainActivity.this, "C'è qualcosa che non va, riprova", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            error.printStackTrace();
+                                        }
+                                    }) {
+                                        @Override
+                                        public byte[] getBody() throws AuthFailureError {
+                                            return requestBody == null ? null : requestBody.getBytes(StandardCharsets.UTF_8);
+                                        }
+                                    };
+
+                                    q.add(request);
+
+                                }
+                            }
+                        });
+
                 }
                 return true;
             }

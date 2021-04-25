@@ -11,4 +11,8 @@
     <item
         android:id="@+id/item3"
         android:title="Disegna un percorso"/>
+
+    <item
+        android:id="@+id/item4"
+        android:title="Login"/>
 </menu>
