@@ -11,6 +11,6 @@ public class Company implements Serializable {
     @Id
     private String nome;
 
-    @OneToMany(mappedBy = "azienda")
+    @OneToMany(mappedBy = "company")
     private List<Line> linee;
 }
