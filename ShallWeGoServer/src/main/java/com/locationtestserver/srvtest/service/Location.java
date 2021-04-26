@@ -1,4 +1,4 @@
-package com.locationtestserver.srvtest;
+package com.locationtestserver.srvtest.service;
 
 import org.apache.lucene.util.SloppyMath;
 import org.json.simple.JSONArray;

@@ -1,5 +1,7 @@
-package com.locationtestserver.srvtest;
+package com.locationtestserver.srvtest.ga.entities;
 
+import com.locationtestserver.srvtest.service.Location;
+import com.locationtestserver.srvtest.logic.entities.UserEntity;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;

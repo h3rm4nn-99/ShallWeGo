@@ -1,6 +1,9 @@
-package com.locationtestserver.srvtest;
+package com.locationtestserver.srvtest.ga;
 
-import org.apache.catalina.User;
+import com.locationtestserver.srvtest.ga.entities.Couple;
+import com.locationtestserver.srvtest.ga.entities.Individual;
+import com.locationtestserver.srvtest.ga.entities.Population;
+import com.locationtestserver.srvtest.logic.entities.UserEntity;
 
 import java.util.*;
 

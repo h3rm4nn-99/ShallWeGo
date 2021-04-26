@@ -1,5 +1,13 @@
-package com.locationtestserver.srvtest;
+package com.locationtestserver.srvtest.controller;
 
+import com.locationtestserver.srvtest.ga.MutationSubstitution;
+import com.locationtestserver.srvtest.ga.RouletteWheel;
+import com.locationtestserver.srvtest.ga.SinglePointCrossover;
+import com.locationtestserver.srvtest.ga.entities.Individual;
+import com.locationtestserver.srvtest.ga.entities.Population;
+import com.locationtestserver.srvtest.logic.entities.UserEntity;
+import com.locationtestserver.srvtest.service.Location;
+import com.locationtestserver.srvtest.service.Utils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

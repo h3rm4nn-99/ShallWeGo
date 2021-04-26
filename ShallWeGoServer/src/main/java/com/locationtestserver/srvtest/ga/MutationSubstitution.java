@@ -1,4 +1,9 @@
-package com.locationtestserver.srvtest;
+package com.locationtestserver.srvtest.ga;
+
+import com.locationtestserver.srvtest.ga.entities.Individual;
+import com.locationtestserver.srvtest.ga.entities.Population;
+import com.locationtestserver.srvtest.logic.entities.UserEntity;
+import com.locationtestserver.srvtest.controller.Controller;
 
 import java.util.Arrays;
 import java.util.HashSet;

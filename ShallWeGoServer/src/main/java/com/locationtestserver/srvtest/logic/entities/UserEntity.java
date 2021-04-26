@@ -1,8 +1,13 @@
-package com.locationtestserver.srvtest;
+package com.locationtestserver.srvtest.logic.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class UserEntity {
+@Entity
+public class UserEntity implements Serializable {
+    @Id
     private String userName;
     private String password;
     private String comune;
