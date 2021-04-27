@@ -2,11 +2,13 @@ package com.locationtestserver.srvtest.logic.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class UserEntity implements Serializable {
+public class User implements Serializable {
     @Id
     private String userName;
     private String password;
@@ -14,7 +16,10 @@ public class UserEntity implements Serializable {
     private Double karma;
     private Integer permanenzaSullaPiattaforma;
 
-    public UserEntity(String userName, String password, String comune, Double karma, Integer permanenzaSullaPiattaforma) {
+    @OneToMany(mappedBy = "user")
+    private List<Report> reports;
+
+    public User(String userName, String password, String comune, Double karma, Integer permanenzaSullaPiattaforma) {
         this.userName = userName;
         this.password = password;
         this.comune = comune;
@@ -75,8 +80,8 @@ public class UserEntity implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserEntity)) return false;
-        UserEntity that = (UserEntity) o;
+        if (!(o instanceof User)) return false;
+        User that = (User) o;
         return userName.equals(that.userName) && comune.equals(that.comune) && karma.equals(that.karma) && permanenzaSullaPiattaforma.equals(that.permanenzaSullaPiattaforma);
     }
 

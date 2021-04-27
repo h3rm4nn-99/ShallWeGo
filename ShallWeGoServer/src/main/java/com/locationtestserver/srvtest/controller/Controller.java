@@ -5,7 +5,7 @@ import com.locationtestserver.srvtest.ga.RouletteWheel;
 import com.locationtestserver.srvtest.ga.SinglePointCrossover;
 import com.locationtestserver.srvtest.ga.entities.Individual;
 import com.locationtestserver.srvtest.ga.entities.Population;
-import com.locationtestserver.srvtest.logic.entities.UserEntity;
+import com.locationtestserver.srvtest.logic.entities.User;
 import com.locationtestserver.srvtest.service.Location;
 import com.locationtestserver.srvtest.service.Utils;
 import org.json.simple.JSONArray;
@@ -21,8 +21,8 @@ import java.util.*;
 
 @RestController
 public class Controller {
-    public static ArrayList<UserEntity> users;
-    private UserEntity userTest = new UserEntity("prova", "prova", "Salerno", 43.2, 37);
+    public static ArrayList<User> users;
+    private User userTest = new User("prova", "prova", "Salerno", 43.2, 37);
     @PutMapping("/api/putLocation")
     public String printLocation(@RequestParam("latitude") String latitude, @RequestParam("longitude") String longitude) {
         System.out.println("Latitudine " + latitude + "\nLongitudine " + longitude);
@@ -49,7 +49,7 @@ public class Controller {
                 double karma = r.nextDouble() + r.nextInt(55);
                 int permanenza = r.nextInt(365);
                 String comune = (String) obj.get("nome");
-                users.add(new UserEntity(username, null, comune, karma, permanenza));
+                users.add(new User(username, null, comune, karma, permanenza));
             }
         }
 
@@ -59,7 +59,7 @@ public class Controller {
             Individual individual = new Individual();
             for (int i = 0; i < 5; i++) {
 
-                UserEntity user = users.get(r.nextInt(users.size() - 1));
+                User user = users.get(r.nextInt(users.size() - 1));
                 individual.addUser(user);
                 /*JSONObject obj = new JSONObject();
 

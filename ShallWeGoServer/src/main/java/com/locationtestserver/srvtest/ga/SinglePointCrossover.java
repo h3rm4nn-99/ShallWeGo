@@ -3,7 +3,7 @@ package com.locationtestserver.srvtest.ga;
 import com.locationtestserver.srvtest.ga.entities.Couple;
 import com.locationtestserver.srvtest.ga.entities.Individual;
 import com.locationtestserver.srvtest.ga.entities.Population;
-import com.locationtestserver.srvtest.logic.entities.UserEntity;
+import com.locationtestserver.srvtest.logic.entities.User;
 
 import java.util.*;
 
@@ -78,14 +78,14 @@ public class SinglePointCrossover {
     private static Couple cross(Individual parent1, Individual parent2) {
         Object[] tempParent1Array = parent1.getUsers().toArray();
         Object[] tempParent2Array = parent2.getUsers().toArray();
-        UserEntity[] parent1Array = Arrays.copyOf(tempParent1Array, tempParent1Array.length, UserEntity[].class);
-        UserEntity[] parent2Array = Arrays.copyOf(tempParent2Array, tempParent2Array.length, UserEntity[].class);
+        User[] parent1Array = Arrays.copyOf(tempParent1Array, tempParent1Array.length, User[].class);
+        User[] parent2Array = Arrays.copyOf(tempParent2Array, tempParent2Array.length, User[].class);
         int parent1Size = parent1Array.length;
         int parent2Size = parent2Array.length;
 
         int j, k;
 
-        List<UserEntity> child1 = new ArrayList<>();
+        List<User> child1 = new ArrayList<>();
 
         for (j = 0; j < parent1Size / 2; j++) {
             child1.add(parent1Array[j]);
@@ -95,7 +95,7 @@ public class SinglePointCrossover {
             child1.add(parent2Array[k]);
         }
 
-        List<UserEntity> child2 = new ArrayList<>();
+        List<User> child2 = new ArrayList<>();
 
         for (j = 0; j < parent2Size / 2; j++) {
             child2.add(parent2Array[j]);
@@ -107,13 +107,13 @@ public class SinglePointCrossover {
 
         Individual child1Individual = new Individual();
 
-        for (UserEntity user: child1) {
+        for (User user: child1) {
             child1Individual.addUser(user);
         }
 
         Individual child2Individual = new Individual();
 
-        for (UserEntity user: child2) {
+        for (User user: child2) {
             child2Individual.addUser(user);
         }
 

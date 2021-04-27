@@ -2,7 +2,7 @@ package com.locationtestserver.srvtest.ga;
 
 import com.locationtestserver.srvtest.ga.entities.Individual;
 import com.locationtestserver.srvtest.ga.entities.Population;
-import com.locationtestserver.srvtest.logic.entities.UserEntity;
+import com.locationtestserver.srvtest.logic.entities.User;
 import com.locationtestserver.srvtest.controller.Controller;
 
 import java.util.Arrays;
@@ -17,11 +17,11 @@ public class MutationSubstitution {
             int number = r.nextInt(11);
             if (number < 10) {
                 Object[] usersTempArray = individual.getUsers().toArray();
-                UserEntity[] usersArray = Arrays.copyOf(usersTempArray, usersTempArray.length, UserEntity[].class);
+                User[] usersArray = Arrays.copyOf(usersTempArray, usersTempArray.length, User[].class);
                 int randomIndex = r.nextInt(usersArray.length);
                 int randomCandidateIndex = r.nextInt(Controller.users.size() - 1);
-                UserEntity candidate = Controller.users.get(randomCandidateIndex);
-                Set<UserEntity> sentinel = new HashSet<>(individual.getUsers());
+                User candidate = Controller.users.get(randomCandidateIndex);
+                Set<User> sentinel = new HashSet<>(individual.getUsers());
                 while (sentinel.contains(candidate)) {
                     candidate = Controller.users.get(r.nextInt(Controller.users.size() - 1));
                 }

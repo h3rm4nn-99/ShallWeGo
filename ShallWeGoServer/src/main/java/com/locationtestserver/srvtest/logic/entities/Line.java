@@ -2,10 +2,7 @@ package com.locationtestserver.srvtest.logic.entities;
 
 import com.locationtestserver.srvtest.logic.service.LineCompositeKey;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -21,5 +18,8 @@ public class Line implements Serializable {
 
     private String firstTerminus;
     private String secondTerminus;
+
+    @OneToOne
+    private Report lineReport;
 
 }

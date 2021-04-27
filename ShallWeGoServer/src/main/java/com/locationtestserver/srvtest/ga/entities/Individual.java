@@ -1,7 +1,7 @@
 package com.locationtestserver.srvtest.ga.entities;
 
 import com.locationtestserver.srvtest.service.Location;
-import com.locationtestserver.srvtest.logic.entities.UserEntity;
+import com.locationtestserver.srvtest.logic.entities.User;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -10,21 +10,21 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Individual {
-    private Set<UserEntity> users;
+    private Set<User> users;
 
     public Individual() {
         users = new HashSet<>();
     }
 
-    public Set<UserEntity> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public boolean addUser(UserEntity e) {
+    public boolean addUser(User e) {
         return users.add(e);
     }
 
-    public void setUsers(Set<UserEntity> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 
@@ -34,7 +34,7 @@ public class Individual {
 
     public double getFitness(Location location) throws IOException, ParseException {
         double fitness = 0.0;
-        for (UserEntity entity: this.getUsers()) {
+        for (User entity: this.getUsers()) {
             double distance = location.distance(entity.getComune());
             double distancePartialFitness;
             if (distance == 0) {
