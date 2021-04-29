@@ -9,6 +9,10 @@ import java.io.Serializable;
 @Entity
 public class LineReport extends Report implements Serializable {
 
+    public LineReport() {
+        super();
+    }
+
     @OneToOne
     private Line lineAffected;
 }

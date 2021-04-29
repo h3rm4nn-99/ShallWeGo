@@ -6,6 +6,9 @@ import java.util.Date;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Report {
+
+    public Report() {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

@@ -19,6 +19,8 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user")
     private List<Report> reports;
 
+    public User() {}
+
     public User(String userName, String password, String comune, Double karma, Integer permanenzaSullaPiattaforma) {
         this.userName = userName;
         this.password = password;

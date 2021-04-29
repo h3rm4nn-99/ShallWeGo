@@ -9,6 +9,8 @@ import java.io.Serializable;
 @IdClass(LineCompositeKey.class)
 public class Line implements Serializable {
 
+    public Line() {}
+
     @Id
     private String identifier;
 

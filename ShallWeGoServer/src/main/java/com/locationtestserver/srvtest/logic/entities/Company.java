@@ -9,6 +9,9 @@ import java.util.List;
 
 @Entity
 public class Company implements Serializable {
+
+    public Company() {}
+
     @Id
     private String name;
     private String website;

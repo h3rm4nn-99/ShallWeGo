@@ -11,6 +11,10 @@ import java.util.List;
 @Entity
 public class TemporaryEventReport extends Report implements Serializable {
 
+    public TemporaryEventReport() {
+        super();
+    }
+
     @ManyToMany
     private List<Line> linesAffected;
 
