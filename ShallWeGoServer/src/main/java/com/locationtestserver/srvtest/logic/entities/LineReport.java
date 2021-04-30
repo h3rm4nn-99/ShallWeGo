@@ -1,12 +1,10 @@
 package com.locationtestserver.srvtest.logic.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@DiscriminatorValue("LineReport")
 public class LineReport extends Report implements Serializable {
 
     public LineReport() {

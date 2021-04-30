@@ -35,25 +35,23 @@ public class Individual {
     public double getFitness(Location location) throws IOException, ParseException {
         double fitness = 0.0;
         for (User entity: this.getUsers()) {
-            double distance = location.distance(entity.getComune());
-            double distancePartialFitness;
-            if (distance == 0) {
-                distancePartialFitness = 15 / (distance + 0.3); //avoid division by 0
-            } else {
-                distancePartialFitness = 15 / distance;
-            }
 
-            double karmaPartialFitness;
-
-            if (entity.getKarma() < 42) {
-                karmaPartialFitness = Math.pow(entity.getKarma(), 0.6);
-            } else {
-                karmaPartialFitness = Math.pow(1.1, entity.getKarma());
-            }
-            double daysInPlatformFitness = entity.getPermanenzaSullaPiattaforma() / 2.0;
-            fitness += ((3 * distancePartialFitness) + (2 * karmaPartialFitness) + daysInPlatformFitness) / 3;
+            fitness += entity.getFitness(location);
         }
         return fitness / this.getSize();
+    }
+
+    public User getBestUser(Location location) throws IOException, ParseException {
+        double bestFitness = 0.0;
+        User best = null;
+        for (User user: this.getUsers()) {
+            double currentFitness = user.getFitness(location);
+            if (currentFitness > bestFitness) {
+                best = user;
+                bestFitness = currentFitness;
+            }
+        }
+        return best;
     }
 
     @Override
@@ -69,4 +67,10 @@ public class Individual {
         return Objects.hash(users);
     }
 
+    @Override
+    public String toString() {
+        return "Individual{" +
+                "users=" + users.toString() +
+                '}';
+    }
 }

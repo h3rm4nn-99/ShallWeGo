@@ -5,6 +5,7 @@ import java.util.Date;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "ReportType")
 public class Report {
 
     public Report() {}

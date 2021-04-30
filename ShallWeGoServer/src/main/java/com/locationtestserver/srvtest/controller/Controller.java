@@ -5,13 +5,18 @@ import com.locationtestserver.srvtest.ga.RouletteWheel;
 import com.locationtestserver.srvtest.ga.SinglePointCrossover;
 import com.locationtestserver.srvtest.ga.entities.Individual;
 import com.locationtestserver.srvtest.ga.entities.Population;
+import com.locationtestserver.srvtest.logic.entities.Company;
+import com.locationtestserver.srvtest.logic.entities.Line;
+import com.locationtestserver.srvtest.logic.entities.LineReport;
 import com.locationtestserver.srvtest.logic.entities.User;
+import com.locationtestserver.srvtest.logic.entities.repositories.ReportRepository;
 import com.locationtestserver.srvtest.service.Location;
 import com.locationtestserver.srvtest.service.Utils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,18 +26,22 @@ import java.util.*;
 
 @RestController
 public class Controller {
+    @Autowired
+    private ReportRepository repository;
+
+    Location location = new Location(40.7415603, 14.6715039);
     public static ArrayList<User> users;
-    private User userTest = new User("prova", "prova", "Salerno", 43.2, 37);
-    @PutMapping("/api/putLocation")
-    public String printLocation(@RequestParam("latitude") String latitude, @RequestParam("longitude") String longitude) {
-        System.out.println("Latitudine " + latitude + "\nLongitudine " + longitude);
-        return "OKAY\nLatitudine " + latitude + "\nLongitudine " + longitude;
-    }
-    @GetMapping("/api/createPeople")
-    public String createPeople() throws IOException, ParseException {
+    static {
         JSONParser parser = new JSONParser();
         Random r = new Random();
-        JSONArray array = (JSONArray) parser.parse(new FileReader("comuni.json"));
+        JSONArray array = null;
+        try {
+            array = (JSONArray) parser.parse(new FileReader("comuni.json"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         Iterator<JSONObject> iterator = array.iterator();
         JSONObject result = new JSONObject();
         users = new ArrayList<>();
@@ -52,15 +61,26 @@ public class Controller {
                 users.add(new User(username, null, comune, karma, permanenza));
             }
         }
+    }
+    private User userTest = new User("prova", "prova", "Salerno", 43.2, 37);
 
+    @PutMapping("/api/putLocation")
+    public String printLocation(@RequestParam("latitude") String latitude, @RequestParam("longitude") String longitude) {
+        System.out.println("Latitudine " + latitude + "\nLongitudine " + longitude);
+        return "OKAY\nLatitudine " + latitude + "\nLongitudine " + longitude;
+    }
+
+    @GetMapping("/api/createPeople")
+    public String createPeople() throws IOException, ParseException {
+
+        Random r = new Random();
         JSONArray usersJson = new JSONArray();
         Population<Individual> population = new Population<>();
         for (int j = 0; j < 10; j++) {
             Individual individual = new Individual();
             for (int i = 0; i < 5; i++) {
 
-                User user = users.get(r.nextInt(users.size() - 1));
-                individual.addUser(user);
+                individual = Utils.createRandomIndividual();
                 /*JSONObject obj = new JSONObject();
 
                 obj.put("usernameCandidato", user.getUserName());
@@ -71,7 +91,7 @@ public class Controller {
             }
             population.addIndividual(individual);
         }
-        Location location = new Location(40.7415603, 14.6715039);
+
         HashMap<Individual, Double> normalizedFitness = Utils.getNormalizedFitness(population, location);
         Population<Individual> startPopulation = population;
         Population<Individual> bestPopulation = population;
@@ -151,7 +171,9 @@ public class Controller {
         }
 
         System.out.println("Fine del processo. Fitness popolazione: " + bestPopulation.getAverageFitness(location));
-        return "Iterazione " + i + " " + bestPopulation.toString() + " Individuo migliore: " + bestPopulation.getBestIndividual(location).getFitness(location);
+        System.out.println("Size popolazione " + bestPopulation.getPopulationSize());
+
+        return "Iterazione " + i + " " + "Utenti migliori: " + bestPopulation.getBestIndividual(location).toString();
     }
 
     @PostMapping("/api/login")
@@ -164,5 +186,20 @@ public class Controller {
         } else {
             return "NO";
         }
+    }
+
+    @GetMapping("/api/linearSearch")
+    public String linearSearch() throws IOException, ParseException {
+        User best = users.get(0);
+        double bestFitness = best.getFitness(location);
+        for (User user: users) {
+            double newFitness = user.getFitness(location);
+            System.out.println("User corrente: " + newFitness);
+            if (newFitness > bestFitness) {
+                bestFitness = newFitness;
+                best = user;
+            }
+        }
+        return best.toString() + " fitness =" + bestFitness;
     }
 }
