@@ -1,13 +1,8 @@
 package com.locationtestserver.srvtest.logic.entities;
 
-import com.locationtestserver.srvtest.service.Location;
-import com.locationtestserver.srvtest.service.Utils;
-import org.json.simple.parser.ParseException;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -74,26 +69,6 @@ public class User implements Serializable {
         this.permanenzaSullaPiattaforma = permanenzaSullaPiattaforma;
     }
 
-    public double getFitness(Location location) throws IOException, ParseException {
-        double distance = location.distance(this.getComune());
-        double distancePartialFitness;
-        if (distance == 0) {
-            distancePartialFitness = 15 / (distance + 0.1); //avoid division by 0
-        } else {
-            distancePartialFitness = Utils.computeDistancePartialFitness(distance);
-        }
-
-        double karmaPartialFitness;
-
-        if (this.getKarma() < 27.5) {
-            karmaPartialFitness = this.getKarma();
-        } else {
-            karmaPartialFitness = this.getKarma() * 2;
-        }
-
-        return ((8 * distancePartialFitness) + (3 * karmaPartialFitness)) / 11;
-    }
-
     @Override
     public String toString() {
         return "UtenteEntity{" +
@@ -116,6 +91,4 @@ public class User implements Serializable {
     public int hashCode() {
         return Objects.hash(userName, comune, karma, permanenzaSullaPiattaforma);
     }
-
-
 }

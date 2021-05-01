@@ -1,15 +1,12 @@
 package com.locationtestserver.srvtest.service;
 
-import com.locationtestserver.srvtest.controller.Controller;
 import com.locationtestserver.srvtest.ga.entities.Individual;
 import com.locationtestserver.srvtest.ga.entities.Population;
-import com.locationtestserver.srvtest.logic.entities.User;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 public class Utils {
 
@@ -28,27 +25,5 @@ public class Utils {
             normalizedFitness.put(user, (usersWithFitness.get(user) / sumOfFitnessValues));
         }
         return normalizedFitness;
-    }
-
-    public static Individual createRandomIndividual() {
-        ArrayList<User> users = Controller.users;
-        Individual individual = new Individual();
-        for (int i = 0; i < 5; i++) {
-            individual.addUser(users.get(new Random().nextInt(users.size())));
-        }
-        return individual;
-    }
-
-    public static double computeDistancePartialFitness(double distance) {
-        double distancePartialFitness = 0.0;
-        if (distance <= 10.0) {
-            distancePartialFitness = Math.pow(distance, 2);
-        } else if (distance > 10 && distance <= 20) {
-            distancePartialFitness = distance * 5;
-        } else {
-            distancePartialFitness = distance / 1.5;
-        }
-
-        return distancePartialFitness;
     }
 }

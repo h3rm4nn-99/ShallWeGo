@@ -4,38 +4,41 @@ import com.locationtestserver.srvtest.service.Location;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class Population<T extends Individual> {
-    private List<Individual> individualList;
+    private Set<Individual> individualSet;
 
     public Population() {
-        this.individualList = new ArrayList<>();
+        this.individualSet = new HashSet<>();
     }
 
-    public List<Individual> getIndividuals() {
-        return individualList;
+    public Set<Individual> getIndividuals() {
+        return individualSet;
     }
 
     public Integer getPopulationSize() {
-        return individualList.size();
+        return individualSet.size();
     }
 
     public boolean isEmpty() {
-        return individualList.isEmpty();
+        return individualSet.isEmpty();
     }
 
     public boolean addIndividual(Individual individual) {
-        return individualList.add(individual);
+        return individualSet.add(individual);
     }
 
     public HashMap<Individual, Double> getPopulationFitness(Location location) throws IOException, ParseException {
         HashMap<Individual, Double> fitness = new HashMap<>();
-        if (individualList.isEmpty()) {
+        if (individualSet.isEmpty()) {
             throw new IllegalStateException("Popolazione vuota!");
         }
 
-        for (Individual i: individualList) {
+        for (Individual i: individualSet) {
             fitness.put(i, i.getFitness(location));
         }
 
@@ -43,23 +46,23 @@ public class Population<T extends Individual> {
     }
 
     public double getAverageFitness(Location location) throws IOException, ParseException {
-        if (individualList.isEmpty()) {
+        if (individualSet.isEmpty()) {
             throw new IllegalStateException("Popolazione vuota!");
         }
 
         double sum = 0.0;
-        for (Individual i: individualList) {
+        for (Individual i: individualSet) {
             sum += i.getFitness(location);
         }
 
-        return sum / individualList.size();
+        return sum / individualSet.size();
     }
 
     public Individual getBestIndividual(Location location) throws IOException, ParseException {
         Individual bestIndividual = null;
         double bestIndividualFitness = 0.0;
 
-        for (Individual individual: individualList) {
+        for (Individual individual: individualSet) {
             double currentIndividualFitness = individual.getFitness(location);
             if (bestIndividual == null || currentIndividualFitness > bestIndividualFitness) {
                 bestIndividual = individual;
@@ -73,24 +76,16 @@ public class Population<T extends Individual> {
         return bestIndividual;
     }
 
-    public void removeIndividualAt(int index) {
-        if (index < 0 || index > individualList.size() - 1) {
-            throw new IllegalArgumentException();
-        }
-
-        individualList.remove(index);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Population)) return false;
         Population<?> that = (Population<?>) o;
-        return individualList.equals(that.individualList);
+        return individualSet.equals(that.individualSet);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(individualList);
+        return Objects.hash(individualSet);
     }
 }
