@@ -39,5 +39,16 @@ public class Utils {
         return individual;
     }
 
+    public static double computeDistancePartialFitness(double distance) {
+        double distancePartialFitness = 0.0;
+        if (distance <= 10.0) {
+            distancePartialFitness = Math.pow(distance, 2);
+        } else if (distance > 10 && distance <= 20) {
+            distancePartialFitness = distance * 5;
+        } else {
+            distancePartialFitness = distance / 1.5;
+        }
 
+        return distancePartialFitness;
+    }
 }
