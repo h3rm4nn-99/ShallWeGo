@@ -151,7 +151,7 @@ public class Controller {
         }
 
         System.out.println("Fine del processo. Fitness popolazione: " + bestPopulation.getAverageFitness(location));
-        return "Iterazione " + i + " " + bestPopulation.toString() + " Individuo migliore: " + bestPopulation.getBestIndividual(location).getFitness(location);
+        return "Iterazione " + i + " Individuo migliore: " + bestPopulation.getBestIndividual(location).toString();
     }
 
     @PostMapping("/api/login")

@@ -38,22 +38,28 @@ public class Individual {
             double distance = location.distance(entity.getComune());
             double distancePartialFitness;
             if (distance == 0) {
-                distancePartialFitness = 15 / (distance + 0.3); //avoid division by 0
+                distancePartialFitness = 100 / (distance + 0.3); //avoid division by 0
             } else {
-                distancePartialFitness = 15 / distance;
+                distancePartialFitness = Math.pow(30 / distance, 2);
             }
 
             double karmaPartialFitness;
 
             if (entity.getKarma() < 42) {
-                karmaPartialFitness = Math.pow(entity.getKarma(), 0.6);
+                karmaPartialFitness = entity.getKarma();
             } else {
-                karmaPartialFitness = Math.pow(1.1, entity.getKarma());
+                karmaPartialFitness = entity.getKarma() * 2;
             }
-            double daysInPlatformFitness = entity.getPermanenzaSullaPiattaforma() / 2.0;
-            fitness += ((3 * distancePartialFitness) + (2 * karmaPartialFitness) + daysInPlatformFitness) / 3;
+            fitness += (4 * distancePartialFitness) + (2 * karmaPartialFitness) / 2;
         }
         return fitness / this.getSize();
+    }
+
+    @Override
+    public String toString() {
+        return "Individual{" +
+                "users=" + users +
+                '}';
     }
 
     @Override
