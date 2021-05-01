@@ -90,18 +90,18 @@ public class User implements Serializable {
         if (distance == 0) {
             distancePartialFitness = 15 / (distance + 0.1); //avoid division by 0
         } else {
-            distancePartialFitness = Utils.computeDistancePartialFitness(distance);
+            distancePartialFitness = 15 / distance;
         }
 
         double karmaPartialFitness;
 
-        if (this.getKarma() < 27.5) {
-            karmaPartialFitness = this.getKarma();
+        if (this.getKarma() < 42) {
+            karmaPartialFitness = Math.pow(this.getKarma(), 0.6);
         } else {
-            karmaPartialFitness = this.getKarma() * 2;
+            karmaPartialFitness = Math.pow(1.1, this.getKarma());
         }
 
-        return ((8 * distancePartialFitness) + (3 * karmaPartialFitness)) / 11;
+        return ((3 * distancePartialFitness) + (2 * karmaPartialFitness)) / 2;
     }
 
     @Override

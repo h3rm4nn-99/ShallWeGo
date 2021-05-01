@@ -25,14 +25,16 @@ public class RouletteWheel {
        HashMap<Individual, Double> normalizedFitness = Utils.getNormalizedFitness(this.population, location);
        List<WheelElement> wheel = new ArrayList<>();
        double tracker = 0D;
+       int j = 0;
        for (Individual individual: normalizedFitness.keySet()) {
+            System.out.println("Individual " + j++ + " " + individual.getFitness(location));
             wheel.add(new WheelElement(individual, tracker, normalizedFitness.get(individual)));
             tracker += normalizedFitness.get(individual);
        }
 
-       Random random = new Random();
        for (int i = 0; i < wheel.size(); i++) {
-           double chooser = random.nextDouble();
+           double chooser = Math.random();
+           System.out.println("Chooser: " + chooser);
            for (WheelElement element: wheel) {
                if (element.startPosition <= chooser && chooser <= element.startPosition + element.length) {
                    target.addIndividual(element.individual);
