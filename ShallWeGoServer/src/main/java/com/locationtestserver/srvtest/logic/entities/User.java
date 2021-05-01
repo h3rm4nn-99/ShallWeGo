@@ -18,7 +18,6 @@ public class User implements Serializable {
     private String userName;
     private String password;
     private String comune;
-    private String provincia;
     private Double karma;
     private Integer permanenzaSullaPiattaforma;
 
@@ -27,11 +26,10 @@ public class User implements Serializable {
 
     public User() {}
 
-    public User(String userName, String password, String comune, String provincia, Double karma, Integer permanenzaSullaPiattaforma) {
+    public User(String userName, String password, String comune, Double karma, Integer permanenzaSullaPiattaforma) {
         this.userName = userName;
         this.password = password;
         this.comune = comune;
-        this.provincia = provincia;
         this.karma = karma;
         this.permanenzaSullaPiattaforma = permanenzaSullaPiattaforma;
     }
@@ -76,16 +74,8 @@ public class User implements Serializable {
         this.permanenzaSullaPiattaforma = permanenzaSullaPiattaforma;
     }
 
-    public String getProvincia() {
-        return provincia;
-    }
-
-    public void setProvincia(String provincia) {
-        this.provincia = provincia;
-    }
-
     public double getFitness(Location location) throws IOException, ParseException {
-        double distance = location.distance(this.getComune(), this.getProvincia());
+        double distance = location.distance(this.getComune());
         double distancePartialFitness;
         if (distance == 0) {
             distancePartialFitness = 15 / (distance + 0.1); //avoid division by 0
