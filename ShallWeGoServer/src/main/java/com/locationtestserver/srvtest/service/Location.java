@@ -42,8 +42,8 @@ public class Location {
         return SloppyMath.haversinMeters(this.latitude, this.longitude, l.getLatitude(), l.getLongitude()) / 1000;
     }
 
-    public double distance(String comune) throws IOException, ParseException {
-        URL nominatimServer = new URL("http://192.168.1.22/nominatim/search.php?q=" + comune.replace(" ", "%20"));
+    public double distance(String comune, String provincia) throws IOException, ParseException {
+        URL nominatimServer = new URL("http://192.168.1.22/nominatim/search.php?q=" + comune.replace(" ", "%20") + "%20" + provincia.replace(" ", "%20"));
         HttpURLConnection con = (HttpURLConnection) nominatimServer.openConnection();
         con.setRequestMethod("GET");
 

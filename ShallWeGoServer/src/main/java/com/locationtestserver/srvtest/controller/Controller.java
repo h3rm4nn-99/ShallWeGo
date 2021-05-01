@@ -5,9 +5,6 @@ import com.locationtestserver.srvtest.ga.RouletteWheel;
 import com.locationtestserver.srvtest.ga.SinglePointCrossover;
 import com.locationtestserver.srvtest.ga.entities.Individual;
 import com.locationtestserver.srvtest.ga.entities.Population;
-import com.locationtestserver.srvtest.logic.entities.Company;
-import com.locationtestserver.srvtest.logic.entities.Line;
-import com.locationtestserver.srvtest.logic.entities.LineReport;
 import com.locationtestserver.srvtest.logic.entities.User;
 import com.locationtestserver.srvtest.logic.entities.repositories.ReportRepository;
 import com.locationtestserver.srvtest.service.Location;
@@ -58,11 +55,12 @@ public class Controller {
                 double karma = r.nextDouble() + r.nextInt(55);
                 int permanenza = r.nextInt(365);
                 String comune = (String) obj.get("nome");
-                users.add(new User(username, null, comune, karma, permanenza));
+                String provincia = (String) ((JSONObject) obj.get("provincia")).get("nome");
+                users.add(new User(username, null, comune, provincia, karma, permanenza));
             }
         }
     }
-    private User userTest = new User("prova", "prova", "Salerno", 43.2, 37);
+    private User userTest = new User("prova", "prova", "Salerno", "Salerno", 43.2, 37);
 
     @PutMapping("/api/putLocation")
     public String printLocation(@RequestParam("latitude") String latitude, @RequestParam("longitude") String longitude) {
