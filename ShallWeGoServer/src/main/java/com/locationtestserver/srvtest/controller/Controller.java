@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @RestController
@@ -79,8 +80,7 @@ public class Controller {
         int generationsWithoutImprovement = 0;
         int i;
         int probability = 70;
-        Calendar timer = Calendar.getInstance();
-        long startTime = timer.getTimeInMillis();
+        long startTime = ZonedDateTime.now().toInstant().toEpochMilli();
         for (i = 0; i < 25; i++) {
 
             Population<Individual> selectedPopulation = new RouletteWheel(startPopulation).run(location);
@@ -140,7 +140,8 @@ public class Controller {
             }
             startPopulation = mutatedPopulation;
 
-            long currentTime = timer.getTimeInMillis();
+            long currentTime = ZonedDateTime.now().toInstant().toEpochMilli();
+            System.out.println(currentTime - startTime);
             if (currentTime - startTime >= 150000) {
                 break;
             }
