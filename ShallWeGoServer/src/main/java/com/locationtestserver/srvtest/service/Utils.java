@@ -10,6 +10,8 @@ import java.util.HashMap;
 
 public class Utils {
 
+    public static HashMap<String, Location> alreadyKnownLocations = new HashMap<>();
+
     public static HashMap<Individual, Double> getNormalizedFitness(Population population, Location location) throws IOException, ParseException {
         HashMap<Individual, Double> normalizedFitness = new HashMap<>();
         HashMap<Individual, Double> usersWithFitness = population.getPopulationFitness(location);

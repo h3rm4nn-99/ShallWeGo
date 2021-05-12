@@ -43,29 +43,38 @@ public class Location {
     }
 
     public double distance(String comune) throws IOException, ParseException {
-        URL nominatimServer = new URL("http://192.168.1.22/nominatim/search.php?q=" + comune.replace(" ", "%20"));
-        HttpURLConnection con = (HttpURLConnection) nominatimServer.openConnection();
-        con.setRequestMethod("GET");
+        double latitude = 0.0;
+        double longitude = 0.0;
+        Location result = Utils.alreadyKnownLocations.get(comune);
+        if (result != null) {
+            latitude = result.getLatitude();
+            longitude = result.getLongitude();
+        } else {
+            URL nominatimServer = new URL("http://192.168.1.22/nominatim/search.php?q=" + comune.replace(" ", "%20"));
+            HttpURLConnection con = (HttpURLConnection) nominatimServer.openConnection();
+            con.setRequestMethod("GET");
 
-        String line = "";
-        StringBuffer response = new StringBuffer();
+            String line = "";
+            StringBuffer response = new StringBuffer();
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        while ((line = in.readLine()) != null) {
-            response.append(line);
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            while ((line = in.readLine()) != null) {
+                response.append(line);
+            }
+            in.close();
+            con.disconnect();
+            String responseString = response.toString();
+            JSONParser parser = new JSONParser();
+            JSONArray array = (JSONArray) parser.parse(responseString);
+            if (array.isEmpty()) {
+                throw new IllegalStateException("Comune non trovato!");
+            }
+
+            JSONObject obj = (JSONObject) array.get(0);
+            latitude = Double.parseDouble(obj.get("lat").toString());
+            longitude = Double.parseDouble(obj.get("lon").toString());
+            Utils.alreadyKnownLocations.put(comune, new Location(latitude, longitude));
         }
-        in.close();
-        con.disconnect();
-        String responseString = response.toString();
-        JSONParser parser = new JSONParser();
-        JSONArray array = (JSONArray) parser.parse(responseString);
-        if (array.isEmpty()) {
-            throw new IllegalStateException("Comune non trovato!");
-        }
-
-        JSONObject obj = (JSONObject) array.get(0);
-        double latitude = Double.parseDouble(obj.get("lat").toString());
-        double longitude = Double.parseDouble(obj.get("lon").toString());
 
         return SloppyMath.haversinMeters(this.latitude, this.longitude, latitude, longitude) / 1000;
     }
