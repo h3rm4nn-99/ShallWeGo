@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     RequestQueue q = Volley.newRequestQueue(getApplicationContext());
                                     String requestBody = "username=" + user.getText().toString() + "&password=" + pwd.getText().toString();
-                                    StringRequest request = new StringRequest(Request.Method.POST, "http://192.168.1.19:8080/api/login", new Response.Listener<String>() {
+                                    StringRequest request = new StringRequest(Request.Method.POST, "http://192.168.1.3:8080/api/loginTest", new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String response) {
                                             if (response.equals("OK")) {

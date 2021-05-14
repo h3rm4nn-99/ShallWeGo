@@ -1,5 +1,8 @@
 package com.shallwego.server.logic.entities;
 
+
+import org.apache.commons.codec.digest.DigestUtils;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -13,6 +16,7 @@ public class User implements Serializable {
     private String userName;
     private String password;
     private String comune;
+    private String provincia;
     private Double karma;
     private Integer permanenzaSullaPiattaforma;
 
@@ -21,10 +25,11 @@ public class User implements Serializable {
 
     public User() {}
 
-    public User(String userName, String password, String comune, Double karma, Integer permanenzaSullaPiattaforma) {
+    public User(String userName, String password, String comune, String provincia, Double karma, Integer permanenzaSullaPiattaforma) {
         this.userName = userName;
-        this.password = password;
+        this.password = DigestUtils.sha512Hex(password);
         this.comune = comune;
+        this.provincia = provincia;
         this.karma = karma;
         this.permanenzaSullaPiattaforma = permanenzaSullaPiattaforma;
     }
@@ -42,7 +47,7 @@ public class User implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = DigestUtils.sha512Hex(password);
     }
 
     public String getComune() {
@@ -71,9 +76,10 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "UtenteEntity{" +
+        return "User{" +
                 "userName='" + userName + '\'' +
                 ", comune='" + comune + '\'' +
+                ", provincia='" + provincia + '\'' +
                 ", karma=" + karma +
                 ", permanenzaSullaPiattaforma=" + permanenzaSullaPiattaforma +
                 '}';
