@@ -1,7 +1,7 @@
-package com.locationtestserver.srvtest.ga.entities;
+package com.shallwego.server.ga.entities;
 
-import com.locationtestserver.srvtest.service.Location;
-import com.locationtestserver.srvtest.logic.entities.User;
+import com.shallwego.server.service.Location;
+import com.shallwego.server.logic.entities.User;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;

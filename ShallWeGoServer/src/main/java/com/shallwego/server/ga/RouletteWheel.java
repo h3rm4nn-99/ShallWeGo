@@ -1,9 +1,9 @@
-package com.locationtestserver.srvtest.ga;
+package com.shallwego.server.ga;
 
-import com.locationtestserver.srvtest.ga.entities.Individual;
-import com.locationtestserver.srvtest.service.Location;
-import com.locationtestserver.srvtest.ga.entities.Population;
-import com.locationtestserver.srvtest.service.Utils;
+import com.shallwego.server.ga.entities.Individual;
+import com.shallwego.server.service.Location;
+import com.shallwego.server.ga.entities.Population;
+import com.shallwego.server.service.Utils;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;

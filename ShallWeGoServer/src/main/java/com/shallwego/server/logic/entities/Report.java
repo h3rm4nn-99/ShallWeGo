@@ -1,7 +1,6 @@
-package com.locationtestserver.srvtest.logic.entities;
+package com.shallwego.server.logic.entities;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

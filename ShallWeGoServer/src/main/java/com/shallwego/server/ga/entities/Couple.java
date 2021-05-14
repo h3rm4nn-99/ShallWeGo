@@ -1,4 +1,4 @@
-package com.locationtestserver.srvtest.ga.entities;
+package com.shallwego.server.ga.entities;
 
 import java.util.Objects;
 

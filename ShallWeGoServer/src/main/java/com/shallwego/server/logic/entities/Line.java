@@ -1,6 +1,6 @@
-package com.locationtestserver.srvtest.logic.entities;
+package com.shallwego.server.logic.entities;
 
-import com.locationtestserver.srvtest.logic.service.LineCompositeKey;
+import com.shallwego.server.logic.service.LineCompositeKey;
 
 import javax.persistence.*;
 import java.io.Serializable;

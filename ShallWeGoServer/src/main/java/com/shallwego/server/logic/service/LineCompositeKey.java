@@ -1,8 +1,7 @@
-package com.locationtestserver.srvtest.logic.service;
+package com.shallwego.server.logic.service;
 
-import com.locationtestserver.srvtest.logic.entities.Company;
+import com.shallwego.server.logic.entities.Company;
 
-import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 

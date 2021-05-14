@@ -1,4 +1,4 @@
-package com.locationtestserver.srvtest.logic.entities;
+package com.shallwego.server.logic.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

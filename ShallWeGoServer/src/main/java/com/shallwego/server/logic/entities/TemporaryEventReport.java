@@ -1,6 +1,4 @@
-package com.locationtestserver.srvtest.logic.entities;
-
-import com.locationtestserver.srvtest.service.Location;
+package com.shallwego.server.logic.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;

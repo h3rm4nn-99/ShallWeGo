@@ -1,9 +1,9 @@
-package com.locationtestserver.srvtest.ga;
+package com.shallwego.server.ga;
 
-import com.locationtestserver.srvtest.ga.entities.Individual;
-import com.locationtestserver.srvtest.ga.entities.Population;
-import com.locationtestserver.srvtest.logic.entities.User;
-import com.locationtestserver.srvtest.controller.Controller;
+import com.shallwego.server.ga.entities.Individual;
+import com.shallwego.server.ga.entities.Population;
+import com.shallwego.server.logic.entities.User;
+import com.shallwego.server.controller.Controller;
 
 import java.util.Arrays;
 import java.util.HashSet;
