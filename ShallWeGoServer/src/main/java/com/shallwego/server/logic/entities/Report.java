@@ -1,10 +1,11 @@
 package com.shallwego.server.logic.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class Report {
+public abstract class Report {
 
     public Report() {}
 
@@ -17,4 +18,16 @@ public class Report {
     private User user;
 
     private boolean verified;
+
+    @ManyToMany(mappedBy = "assignedTo")
+    private List<User> verifiers;
+
+    public List<User> getVerifiers() {
+        return verifiers;
+    }
+
+    public void addVerifier(User verifier) {
+        verifiers.add(verifier);
+    }
+
 }

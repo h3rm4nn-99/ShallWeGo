@@ -38,10 +38,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
+import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
@@ -214,6 +216,21 @@ public class MainActivity extends AppCompatActivity {
         mapController = map.getController();
         mapController.setZoom(17.0);
 
+        MapEventsOverlay events = new MapEventsOverlay(new MapEventsReceiver() {
+            @Override
+            public boolean singleTapConfirmedHelper(GeoPoint p) {
+                return true;
+            }
+
+            @Override
+            public boolean longPressHelper(GeoPoint p) {
+                Toast.makeText(MainActivity.this, "Latitudine Selezionata: " + p.getLatitude() + "\nLongitudine Selezionata " + p.getLongitude() + "\n", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+        });
+
+        map.getOverlays().add(events);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {
