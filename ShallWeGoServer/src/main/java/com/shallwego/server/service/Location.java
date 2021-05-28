@@ -50,7 +50,7 @@ public class Location {
             latitude = result.getLatitude();
             longitude = result.getLongitude();
         } else {
-            URL nominatimServer = new URL("http://192.168.1.22/nominatim/search.php?q=" + comune.replace(" ", "%20"));
+            URL nominatimServer = new URL("http://192.168.1.19/nominatim/search.php?q=" + comune.replace(" ", "%20"));
             HttpURLConnection con = (HttpURLConnection) nominatimServer.openConnection();
             con.setRequestMethod("GET");
 

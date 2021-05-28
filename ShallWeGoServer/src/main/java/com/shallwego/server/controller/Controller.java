@@ -56,26 +56,25 @@ public class Controller {
         return "Individuo migliore: " + bestPopulation.getBestIndividual(location).toString();
     }
 
-    @PostMapping("/api/loginTest")
+    @PostMapping("/api/login")
     public String doLogin(@RequestBody MultiValueMap<String, String> body) {
-        User userTest;
-        Optional<User> optionalUserTest = repository.findById("prova");
-        if (optionalUserTest.isPresent()) {
-            userTest = optionalUserTest.get();
-        } else {
-            userTest = new User("prova", "prova", "Salerno", "Salerno", 43.2, 37);
-            repository.save(userTest);
-        }
-
         String username = body.get("username").get(0);
         String password = body.get("password").get(0);
+        Optional<User> optionalUser = repository.findById(username);
+        User user = null;
 
-        if (username.equals(userTest.getUserName()) && DigestUtils.sha512Hex(password).equals(userTest.getPassword())) {
-            System.out.println("yea");
-            return "OK";
+        if (optionalUser.isPresent()) {
+            user = optionalUser.get();
         } else {
-            System.out.println("nay");
-            return "NO";
+            return "ERR_USER_NOT_FOUND";
+        }
+
+        password = DigestUtils.sha512Hex(password);
+
+        if (password.equals(user.getPassword())) {
+            return user.toString();
+        } else {
+            return "ERR_PWD_INCORRECT";
         }
     }
 }

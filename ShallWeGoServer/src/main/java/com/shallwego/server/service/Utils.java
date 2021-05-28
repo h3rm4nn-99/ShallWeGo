@@ -45,17 +45,17 @@ public class Utils {
         JSONArray array = (JSONArray) parser.parse(new FileReader("comuni.json"));
         Iterator<JSONObject> iterator = array.iterator();
 
+        int i = 0;
         while (iterator.hasNext()) {
             JSONObject obj = iterator.next();
             JSONObject provinciaCurrent = (JSONObject) obj.get("provincia");
             String provinciaString = (String) provinciaCurrent.get("nome");
-            byte[] byteArray = new byte[11];
-            new Random().nextBytes(byteArray);
-            String username = new String(byteArray, StandardCharsets.UTF_8);
+            String username = "suspicioususer" + i;
             double karma = r.nextDouble() + r.nextInt(55);
             int permanenza = r.nextInt(365);
             String comune = (String) obj.get("nome");
             System.out.println(comune);
+            i++;
             repository.save(new User(username, "test", comune, provinciaString, karma, permanenza));
         }
     }
