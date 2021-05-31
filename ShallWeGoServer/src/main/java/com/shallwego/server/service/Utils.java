@@ -13,14 +13,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 public class Utils {
 
     public static HashMap<String, Location> alreadyKnownLocations = new HashMap<>();
+    public static HashMap<String, List<String>> province = null;
 
     public static HashMap<Individual, Double> getNormalizedFitness(Population population, Location location) throws IOException, ParseException {
         HashMap<Individual, Double> normalizedFitness = new HashMap<>();
@@ -52,11 +50,14 @@ public class Utils {
             String provinciaString = (String) provinciaCurrent.get("nome");
             String username = "suspicioususer" + i;
             double karma = r.nextDouble() + r.nextInt(55);
-            int permanenza = r.nextInt(365);
             String comune = (String) obj.get("nome");
             System.out.println(comune);
             i++;
-            repository.save(new User(username, "test", comune, provinciaString, karma, permanenza));
+            repository.save(new User(username, "test", comune, provinciaString, karma));
         }
+    }
+
+    public static void setProvince(HashMap<String, List<String>> incoming) {
+        Utils.province = incoming;
     }
 }

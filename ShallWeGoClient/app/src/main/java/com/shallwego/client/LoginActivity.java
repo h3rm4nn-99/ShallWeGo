@@ -1,5 +1,6 @@
 package com.shallwego.client;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,17 +16,28 @@ import java.nio.charset.StandardCharsets;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private TextInputLayout username, password;
+    private EditText usernameEditText, passwordEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        username = findViewById(R.id.username);
+        password = findViewById(R.id.password);
+        usernameEditText = username.getEditText();
+        passwordEditText = password.getEditText();
+
+        Intent i = getIntent();
+        String incomingUsername = i.getStringExtra("username");
+        String incomingPassword = i.getStringExtra("password");
+        if (incomingUsername != null && incomingPassword != null) {
+            usernameEditText.setText(incomingUsername);
+            passwordEditText.setText(incomingPassword);
+        }
     }
 
     public void login(View view) {
-        TextInputLayout username = findViewById(R.id.username);
-        TextInputLayout password = findViewById(R.id.password);
-        EditText usernameEditText = username.getEditText();
-        EditText passwordEditText = password.getEditText();
         username.setError(null);
         password.setError(null);
         boolean check = false;
@@ -42,30 +54,27 @@ public class LoginActivity extends AppCompatActivity {
 
         RequestQueue q = Volley.newRequestQueue(getApplicationContext());
         String requestBody = "username=" + usernameEditText.getText().toString() + "&password=" + passwordEditText.getText().toString();
-        StringRequest request = new StringRequest(Request.Method.POST, "http://192.168.1.3:8080/api/login", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                if (response.equals("ERR_USER_NOT_FOUND")) {
-                    username.setError("Lo username digitato non è stato trovato!");
-                } else if (response.equals("ERR_PWD_INCORRECT")) {
-                    password.setError("La password digitata non corrisponde a questo nome utente!");
-                } else {
-                    Toast.makeText(LoginActivity.this, response, Toast.LENGTH_SHORT).show();
-                }
+        StringRequest request = new StringRequest(Request.Method.POST, "http://192.168.1.3:8080/api/login", response -> {
+            if (response.equals("ERR_USER_NOT_FOUND")) {
+                username.setError("Lo username digitato non è stato trovato!");
+            } else if (response.equals("ERR_PWD_INCORRECT")) {
+                password.setError("La password digitata non corrisponde a questo nome utente!");
+            } else {
+                Toast.makeText(LoginActivity.this, response, Toast.LENGTH_SHORT).show();
             }
-        }, new Response.ErrorListener() {
+        }, error -> Toast.makeText(LoginActivity.this, "Errore!", Toast.LENGTH_SHORT).show()) {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(LoginActivity.this, "Errore!", Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            public byte[] getBody() throws AuthFailureError {
+            public byte[] getBody() {
                 return requestBody == null ? null : requestBody.getBytes(StandardCharsets.UTF_8);
             }
         };
 
         q.add(request);
+    }
 
+
+    public void register(View view) {
+        Intent i = new Intent(this, RegisterActivity.class);
+        startActivity(i);
     }
 }

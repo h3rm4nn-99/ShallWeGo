@@ -8,6 +8,8 @@ import com.shallwego.server.logic.service.UserRepository;
 import com.shallwego.server.service.Location;
 import com.shallwego.server.service.Utils;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
@@ -76,5 +78,29 @@ public class Controller {
         } else {
             return "ERR_PWD_INCORRECT";
         }
+    }
+
+    @PostMapping("/api/register")
+    public String register(@RequestBody MultiValueMap<String, String> body) {
+        String username = body.get("username").get(0);
+        String password = body.get("password").get(0);
+        String comune = body.get("comune").get(0);
+        String provincia = body.get("provincia").get(0);
+        if (repository.existsById(username)) {
+            return "ERR_USER_ALREADY_PRESENT";
+        }
+
+        repository.save(new User(username, password, comune, provincia, 0.0));
+        return "OK";
+    }
+
+    @GetMapping("/api/province")
+    public String province() {
+        return JSONArray.toJSONString(new ArrayList(Utils.province.keySet()));
+    }
+
+    @GetMapping("/api/provincia/{provincia}/comuni")
+    public String comuniByProvincia(@PathVariable String provincia) {
+        return JSONArray.toJSONString(Utils.province.get(provincia));
     }
 }

@@ -29,13 +29,12 @@ public class User implements Serializable {
 
     public User() {}
 
-    public User(String userName, String password, String comune, String provincia, Double karma, Integer permanenzaSullaPiattaforma) {
+    public User(String userName, String password, String comune, String provincia, Double karma) {
         this.userName = userName;
         this.password = DigestUtils.sha512Hex(password);
         this.comune = comune;
         this.provincia = provincia;
         this.karma = karma;
-        this.permanenzaSullaPiattaforma = permanenzaSullaPiattaforma;
     }
 
     public String getUserName() {
@@ -70,13 +69,6 @@ public class User implements Serializable {
         this.karma = karma;
     }
 
-    public Integer getPermanenzaSullaPiattaforma() {
-        return permanenzaSullaPiattaforma;
-    }
-
-    public void setPermanenzaSullaPiattaforma(Integer permanenzaSullaPiattaforma) {
-        this.permanenzaSullaPiattaforma = permanenzaSullaPiattaforma;
-    }
 
     @Override
     public String toString() {
@@ -85,7 +77,6 @@ public class User implements Serializable {
                 ", comune='" + comune + '\'' +
                 ", provincia='" + provincia + '\'' +
                 ", karma=" + karma +
-                ", permanenzaSullaPiattaforma=" + permanenzaSullaPiattaforma +
                 '}';
     }
 
@@ -94,11 +85,11 @@ public class User implements Serializable {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User that = (User) o;
-        return userName.equals(that.userName) && comune.equals(that.comune) && karma.equals(that.karma) && permanenzaSullaPiattaforma.equals(that.permanenzaSullaPiattaforma);
+        return userName.equals(that.userName) && comune.equals(that.comune) && karma.equals(that.karma);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, comune, karma, permanenzaSullaPiattaforma);
+        return Objects.hash(userName, comune, karma);
     }
 }
