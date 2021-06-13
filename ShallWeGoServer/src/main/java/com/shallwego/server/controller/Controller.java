@@ -1,5 +1,6 @@
 package com.shallwego.server.controller;
 
+import com.google.gson.Gson;
 import com.shallwego.server.ga.AlgorithmRunner;
 import com.shallwego.server.ga.entities.Individual;
 import com.shallwego.server.ga.entities.Population;
@@ -12,6 +13,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,7 +76,7 @@ public class Controller {
         password = DigestUtils.sha512Hex(password);
 
         if (password.equals(user.getPassword())) {
-            return user.toString();
+            return new Gson().toJson(user);
         } else {
             return "ERR_PWD_INCORRECT";
         }

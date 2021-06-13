@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/item1"
+            android:title="Le mie segnalazioni"/>
+
+    <item
+            android:id="@+id/item2"
+            android:title="Valuta Segnalazioni"/>
+
+    <item
+            android:id="@+id/item3"
+            android:title="Fermate Preferite"/>
+
+    <item
+            android:id="@+id/logout"
+            android:icon="@drawable/ic_logout_white_48dp"
+            android:title="Logout"/>
+</menu>

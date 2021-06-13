@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ShallWeGo</string>
+    <string name="open">Apri</string>
+    <string name="close">Chiudi</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.shallwego.client;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,6 +13,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.nio.charset.StandardCharsets;
 
@@ -60,7 +64,18 @@ public class LoginActivity extends AppCompatActivity {
             } else if (response.equals("ERR_PWD_INCORRECT")) {
                 password.setError("La password digitata non corrisponde a questo nome utente!");
             } else {
-                Toast.makeText(LoginActivity.this, response, Toast.LENGTH_SHORT).show();
+                JsonObject user = (JsonObject) JsonParser.parseString(response);
+                SharedPreferences preferences = getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("isLoggedIn", true);
+                editor.putString("user", usernameEditText.getText().toString());
+                editor.putString("karma", user.get("karma").toString());
+                editor.commit();
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                startActivity(i);
+                LoginActivity.this.finish();
             }
         }, error -> Toast.makeText(LoginActivity.this, "Errore!", Toast.LENGTH_SHORT).show()) {
             @Override
