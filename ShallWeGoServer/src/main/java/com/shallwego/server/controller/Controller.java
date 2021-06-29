@@ -1,19 +1,21 @@
 package com.shallwego.server.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.shallwego.server.ga.AlgorithmRunner;
 import com.shallwego.server.ga.entities.Individual;
 import com.shallwego.server.ga.entities.Population;
-import com.shallwego.server.logic.entities.User;
+import com.shallwego.server.logic.entities.*;
+import com.shallwego.server.logic.service.ReportRepository;
+import com.shallwego.server.logic.service.StopRepository;
 import com.shallwego.server.logic.service.UserRepository;
 import com.shallwego.server.service.Location;
 import com.shallwego.server.service.Utils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +23,17 @@ import java.io.*;
 import java.util.*;
 
 @RestController
+@CrossOrigin
 public class Controller {
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private ReportRepository reportRepository;
+
+    @Autowired
+    private StopRepository stopRepository;
 
     public static List<User> users;
 
@@ -104,5 +113,53 @@ public class Controller {
     @GetMapping("/api/provincia/{provincia}/comuni")
     public String comuniByProvincia(@PathVariable String provincia) {
         return JSONArray.toJSONString(Utils.province.get(provincia));
+    }
+
+    @PostMapping("/api/reports/{userId}")
+    public String reportsByUser(@PathVariable String userId) {
+        List<Report> reports = reportRepository.findByUser(repository.findById(userId).get());
+        JsonArray array = new JsonArray();
+        for (Report report: reports) {
+            JsonObject obj = null;
+            if (report instanceof CompanyReport) {
+                CompanyReport companyReport = (CompanyReport) report;
+                obj = Utils.setUpReportJson(companyReport);
+                Company company = companyReport.getCompany();
+                obj.addProperty("companyName", company.getName());
+                obj.addProperty("type", "CompanyReport");
+            } else if (report instanceof LineReport) {
+                LineReport lineReport = (LineReport) report;
+                obj = Utils.setUpReportJson(lineReport);
+                obj.addProperty("companyName", lineReport.getLineAffected().getCompany().getName());
+                obj.addProperty("lineIdentifier", lineReport.getLineAffected().getIdentifier());
+                obj.addProperty("type", "LineReport");
+            } else if (report instanceof TemporaryEventReport) {
+                TemporaryEventReport temporaryEventReport = (TemporaryEventReport) report;
+                obj = Utils.setUpReportJson(temporaryEventReport);
+                obj.addProperty("validityStart", temporaryEventReport.getValidityStart().toString());
+                obj.addProperty("validityEnd", temporaryEventReport.getValidityEnd().toString());
+                List<Line> linesAffected = temporaryEventReport.getLinesAffected();
+                JsonArray linesAffectedJson = new JsonArray();
+                for (Line line: linesAffected) {
+                    JsonObject object = new JsonObject();
+                    object.addProperty("lineIdentifier", line.getIdentifier());
+                    object.addProperty("companyName", line.getCompany().getName());
+                    linesAffectedJson.add(object);
+                }
+                obj.add("linesAffected", linesAffectedJson);
+                obj.addProperty("latitude", temporaryEventReport.getLatitude());
+                obj.addProperty("longitude", temporaryEventReport.getLongitude());
+                obj.addProperty("description", temporaryEventReport.getDescription());
+
+                obj.addProperty("type", "TemporaryEventReport");
+            } else if (report instanceof StopReport) {
+                StopReport stopReport = (StopReport) report;
+                obj = Utils.setUpReportJson(stopReport);
+                obj.addProperty("stopId", stopReport.getStopReported().getId());
+                obj.addProperty("type", "StopReport");
+            }
+            array.add(obj);
+        }
+        return array.toString();
     }
 }

@@ -1,9 +1,6 @@
 package com.shallwego.server.logic.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,9 +13,41 @@ public class Company implements Serializable {
     private String name;
     private String website;
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
     private List<Line> linee;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Report companyReport;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public List<Line> getLinee() {
+        return linee;
+    }
+
+    public void setLinee(List<Line> linee) {
+        this.linee = linee;
+    }
+
+    public Report getCompanyReport() {
+        return companyReport;
+    }
+
+    public void setCompanyReport(Report companyReport) {
+        this.companyReport = companyReport;
+    }
 }

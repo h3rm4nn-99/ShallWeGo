@@ -85,6 +85,12 @@ public class MainActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.logout: {
                             logout();
+                            break;
+                        }
+                        case R.id.myReports: {
+                            Intent i = new Intent(MainActivity.this, MyReportsActivity.class);
+                            startActivity(i);
+                            break;
                         }
                     }
                     return true;

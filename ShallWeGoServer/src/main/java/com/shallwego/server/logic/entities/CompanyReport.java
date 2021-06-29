@@ -13,4 +13,12 @@ public class CompanyReport extends Report implements Serializable {
 
     @OneToOne
     private Company company;
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
 }

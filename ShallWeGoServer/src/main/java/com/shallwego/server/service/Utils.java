@@ -1,7 +1,10 @@
 package com.shallwego.server.service;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.shallwego.server.ga.entities.Individual;
 import com.shallwego.server.ga.entities.Population;
+import com.shallwego.server.logic.entities.Report;
 import com.shallwego.server.logic.entities.User;
 import com.shallwego.server.logic.service.UserRepository;
 import org.json.simple.JSONArray;
@@ -60,4 +63,20 @@ public class Utils {
     public static void setProvince(HashMap<String, List<String>> incoming) {
         Utils.province = incoming;
     }
+
+    public static JsonObject setUpReportJson(Report report) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("id", report.getId());
+        obj.addProperty("user", report.getUser().getUserName());
+        JsonArray verifiers = new JsonArray();
+        for (User verifier: report.getVerifiers()) {
+            verifiers.add(verifier.getUserName());
+        }
+        obj.add("verifiers", verifiers);
+        obj.addProperty("date", report.getDate());
+        obj.addProperty("isVerified", report.isVerified());
+
+        return obj;
+    }
+
 }

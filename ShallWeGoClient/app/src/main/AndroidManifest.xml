@@ -17,6 +17,8 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.ShallWeGo"
             android:usesCleartextTraffic="true">
+        <activity android:name=".MyReportsActivity">
+        </activity>
         <activity android:name=".RegisterActivity">
         </activity>
         <activity

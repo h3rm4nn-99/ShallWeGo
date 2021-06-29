@@ -69,6 +69,37 @@ public class User implements Serializable {
         this.karma = karma;
     }
 
+    public String getProvincia() {
+        return provincia;
+    }
+
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
+    }
+
+    public Integer getPermanenzaSullaPiattaforma() {
+        return permanenzaSullaPiattaforma;
+    }
+
+    public void setPermanenzaSullaPiattaforma(Integer permanenzaSullaPiattaforma) {
+        this.permanenzaSullaPiattaforma = permanenzaSullaPiattaforma;
+    }
+
+    public List<Report> getReports() {
+        return reports;
+    }
+
+    public void setReports(List<Report> reports) {
+        this.reports = reports;
+    }
+
+    public List<Report> getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(List<Report> assignedTo) {
+        this.assignedTo = assignedTo;
+    }
 
     @Override
     public String toString() {

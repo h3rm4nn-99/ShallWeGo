@@ -24,4 +24,43 @@ public class Line implements Serializable {
     @OneToOne
     private Report lineReport;
 
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public String getFirstTerminus() {
+        return firstTerminus;
+    }
+
+    public void setFirstTerminus(String firstTerminus) {
+        this.firstTerminus = firstTerminus;
+    }
+
+    public String getSecondTerminus() {
+        return secondTerminus;
+    }
+
+    public void setSecondTerminus(String secondTerminus) {
+        this.secondTerminus = secondTerminus;
+    }
+
+    public Report getLineReport() {
+        return lineReport;
+    }
+
+    public void setLineReport(Report lineReport) {
+        this.lineReport = lineReport;
+    }
 }

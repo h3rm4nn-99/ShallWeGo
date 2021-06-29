@@ -21,4 +21,52 @@ public class TemporaryEventReport extends Report implements Serializable {
     private String description;
     private String latitude;
     private String longitude;
+
+    public List<Line> getLinesAffected() {
+        return linesAffected;
+    }
+
+    public void setLinesAffected(List<Line> linesAffected) {
+        this.linesAffected = linesAffected;
+    }
+
+    public Date getValidityStart() {
+        return validityStart;
+    }
+
+    public void setValidityStart(Date validityStart) {
+        this.validityStart = validityStart;
+    }
+
+    public Date getValidityEnd() {
+        return validityEnd;
+    }
+
+    public void setValidityEnd(Date validityEnd) {
+        this.validityEnd = validityEnd;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
 }
