@@ -21,8 +21,8 @@ public class Line implements Serializable {
     private String firstTerminus;
     private String secondTerminus;
 
-    @OneToOne
-    private Report lineReport;
+    @OneToOne(mappedBy = "lineAffected")
+    private LineReport lineReport;
 
     public String getIdentifier() {
         return identifier;
@@ -60,7 +60,7 @@ public class Line implements Serializable {
         return lineReport;
     }
 
-    public void setLineReport(Report lineReport) {
+    public void setLineReport(LineReport lineReport) {
         this.lineReport = lineReport;
     }
 }

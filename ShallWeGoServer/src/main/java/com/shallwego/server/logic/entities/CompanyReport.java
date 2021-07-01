@@ -1,5 +1,6 @@
 package com.shallwego.server.logic.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import java.io.Serializable;
@@ -11,7 +12,7 @@ public class CompanyReport extends Report implements Serializable {
         super();
     }
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Company company;
 
     public Company getCompany() {

@@ -7,9 +7,7 @@ import com.shallwego.server.ga.AlgorithmRunner;
 import com.shallwego.server.ga.entities.Individual;
 import com.shallwego.server.ga.entities.Population;
 import com.shallwego.server.logic.entities.*;
-import com.shallwego.server.logic.service.ReportRepository;
-import com.shallwego.server.logic.service.StopRepository;
-import com.shallwego.server.logic.service.UserRepository;
+import com.shallwego.server.logic.service.*;
 import com.shallwego.server.service.Location;
 import com.shallwego.server.service.Utils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -27,13 +25,19 @@ import java.util.*;
 public class Controller {
 
     @Autowired
-    private UserRepository repository;
+    private UserRepository userRepository;
 
     @Autowired
     private ReportRepository reportRepository;
 
     @Autowired
     private StopRepository stopRepository;
+
+    @Autowired
+    private CompanyRepository companyRepository;
+
+    @Autowired
+    private LineRepository lineRepository;
 
     public static List<User> users;
 
@@ -46,11 +50,11 @@ public class Controller {
     @GetMapping("/api/createPeople")
     public String createPeople() throws IOException, ParseException {
 
-        users = repository.findByProvincia("Salerno");
+        users = userRepository.findByProvincia("Salerno");
 
         if (users.isEmpty()) {
-            Utils.populateDbWithRandomUsers(repository);
-            users = repository.findByProvincia("Salerno");
+            Utils.populateDbWithRandomUsers(userRepository);
+            users = userRepository.findByProvincia("Salerno");
         }
 
         Random r = new Random();
@@ -73,7 +77,7 @@ public class Controller {
     public String doLogin(@RequestBody MultiValueMap<String, String> body) {
         String username = body.get("username").get(0);
         String password = body.get("password").get(0);
-        Optional<User> optionalUser = repository.findById(username);
+        Optional<User> optionalUser = userRepository.findById(username);
         User user = null;
 
         if (optionalUser.isPresent()) {
@@ -97,11 +101,11 @@ public class Controller {
         String password = body.get("password").get(0);
         String comune = body.get("comune").get(0);
         String provincia = body.get("provincia").get(0);
-        if (repository.existsById(username)) {
+        if (userRepository.existsById(username)) {
             return "ERR_USER_ALREADY_PRESENT";
         }
 
-        repository.save(new User(username, password, comune, provincia, 0.0));
+        userRepository.save(new User(username, password, comune, provincia, 0.0));
         return "OK";
     }
 
@@ -117,7 +121,7 @@ public class Controller {
 
     @PostMapping("/api/reports/{userId}")
     public String reportsByUser(@PathVariable String userId) {
-        List<Report> reports = reportRepository.findByUser(repository.findById(userId).get());
+        List<Report> reports = reportRepository.findByUser(userRepository.findById(userId).get());
         JsonArray array = new JsonArray();
         for (Report report: reports) {
             JsonObject obj = null;
@@ -162,4 +166,24 @@ public class Controller {
         }
         return array.toString();
     }
+
+    @GetMapping("/api/test")
+    public String test() {
+        Stop s = new Stop();
+        List<Line> lines = new ArrayList<>();
+        Company c = new Company();
+        c.setWebsite("www.test.it");
+        c.setName("Busitalia Campania");
+        LineCompositeKey key = new LineCompositeKey();
+        key.setIdentifier("5");
+        key.setCompany(c);
+        lines.add(lineRepository.findById(key).get());
+        s.setLines(lines);
+        StopReport report = new StopReport();
+        report.setUser(userRepository.findById("suspicioususer0").get());
+        report.setStopReported(s);
+        reportRepository.save(report);
+        return "done";
+    }
+
 }

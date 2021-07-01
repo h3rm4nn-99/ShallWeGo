@@ -14,8 +14,8 @@ public class Stop {
     @OneToMany
     private List<Line> lines;
 
-    @OneToOne
-    private Report stopReport;
+    @OneToOne(mappedBy = "stopReported")
+    private StopReport stopReport;
 
     private Boolean hasShelter;
     private Boolean hasTimeTables;
@@ -92,7 +92,7 @@ public class Stop {
         return stopReport;
     }
 
-    public void setStopReport(Report stopReport) {
+    public void setStopReport(StopReport stopReport) {
         this.stopReport = stopReport;
     }
 }

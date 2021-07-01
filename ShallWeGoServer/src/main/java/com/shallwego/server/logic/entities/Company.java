@@ -16,8 +16,8 @@ public class Company implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
     private List<Line> linee;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Report companyReport;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "company")
+    private CompanyReport companyReport;
 
     public String getName() {
         return name;
@@ -47,7 +47,7 @@ public class Company implements Serializable {
         return companyReport;
     }
 
-    public void setCompanyReport(Report companyReport) {
+    public void setCompanyReport(CompanyReport companyReport) {
         this.companyReport = companyReport;
     }
 }
