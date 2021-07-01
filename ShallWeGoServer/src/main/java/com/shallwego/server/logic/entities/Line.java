@@ -4,6 +4,7 @@ import com.shallwego.server.logic.service.LineCompositeKey;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @IdClass(LineCompositeKey.class)
@@ -20,6 +21,9 @@ public class Line implements Serializable {
 
     private String firstTerminus;
     private String secondTerminus;
+
+    @ManyToMany(mappedBy = "lines")
+    private List<Stop> stops;
 
     @OneToOne(mappedBy = "lineAffected")
     private LineReport lineReport;

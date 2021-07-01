@@ -11,7 +11,7 @@ public class Stop {
 
     private String name;
 
-    @OneToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Line> lines;
 
     @OneToOne(mappedBy = "stopReported")
@@ -94,5 +94,9 @@ public class Stop {
 
     public void setStopReport(StopReport stopReport) {
         this.stopReport = stopReport;
+    }
+
+    public void addLine(Line l) {
+        lines.add(l);
     }
 }

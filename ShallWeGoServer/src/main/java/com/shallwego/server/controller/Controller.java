@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.io.*;
 import java.util.*;
 
@@ -166,24 +167,4 @@ public class Controller {
         }
         return array.toString();
     }
-
-    @GetMapping("/api/test")
-    public String test() {
-        Stop s = new Stop();
-        List<Line> lines = new ArrayList<>();
-        Company c = new Company();
-        c.setWebsite("www.test.it");
-        c.setName("Busitalia Campania");
-        LineCompositeKey key = new LineCompositeKey();
-        key.setIdentifier("5");
-        key.setCompany(c);
-        lines.add(lineRepository.findById(key).get());
-        s.setLines(lines);
-        StopReport report = new StopReport();
-        report.setUser(userRepository.findById("suspicioususer0").get());
-        report.setStopReported(s);
-        reportRepository.save(report);
-        return "done";
-    }
-
 }
