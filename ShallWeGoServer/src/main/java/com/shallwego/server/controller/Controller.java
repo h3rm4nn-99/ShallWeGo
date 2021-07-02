@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.io.*;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @RestController
@@ -90,7 +91,10 @@ public class Controller {
         password = DigestUtils.sha512Hex(password);
 
         if (password.equals(user.getPassword())) {
-            return new Gson().toJson(user);
+            JsonObject response = new JsonObject();
+            response.addProperty("karma", user.getKarma());
+
+            return response.toString();
         } else {
             return "ERR_PWD_INCORRECT";
         }
@@ -155,12 +159,14 @@ public class Controller {
                 obj.addProperty("latitude", temporaryEventReport.getLatitude());
                 obj.addProperty("longitude", temporaryEventReport.getLongitude());
                 obj.addProperty("description", temporaryEventReport.getDescription());
-
                 obj.addProperty("type", "TemporaryEventReport");
             } else if (report instanceof StopReport) {
                 StopReport stopReport = (StopReport) report;
                 obj = Utils.setUpReportJson(stopReport);
                 obj.addProperty("stopId", stopReport.getStopReported().getId());
+                obj.addProperty("stopName", stopReport.getStopReported().getName());
+                obj.addProperty("latitude", stopReport.getStopReported().getLatitude());
+                obj.addProperty("longitude", stopReport.getStopReported().getLongitude());
                 obj.addProperty("type", "StopReport");
             }
             array.add(obj);

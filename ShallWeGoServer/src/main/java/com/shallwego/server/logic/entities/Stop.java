@@ -1,6 +1,7 @@
 package com.shallwego.server.logic.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,14 @@ public class Stop {
 
     private Double latitude;
     private Double longitude;
+
+    public Stop() {}
+
+    public static Stop newInstance() {
+        Stop s = new Stop();
+        s.lines = new ArrayList<>();
+        return s;
+    }
 
     public Integer getId() {
         return id;
