@@ -76,7 +76,7 @@ public class MyReportsActivity extends AppCompatActivity {
             dialog.dismiss();
         }, error -> {
             Toast.makeText(MyReportsActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-            AlertDialog alertDialogProvince = new AlertDialog.Builder(this)
+            AlertDialog alertDialog = new AlertDialog.Builder(this)
                     .setMessage("Controlla la tua connessione ad Internet e riprova!")
                     .setPositiveButton("Ho capito!", new DialogInterface.OnClickListener() {
                         @Override
@@ -84,8 +84,8 @@ public class MyReportsActivity extends AppCompatActivity {
                             MyReportsActivity.this.finish();
                         }
                     }).show();
-            alertDialogProvince.setCancelable(false);
-            alertDialogProvince.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
+            alertDialog.setCanceledOnTouchOutside(false);
             dialog.dismiss();
         });
 
