@@ -14,7 +14,7 @@ public class TemporaryEventReport extends Report implements Serializable {
     }
 
     @ManyToMany
-    private List<Line> linesAffected;
+    private List<Line> linesAffectedEvent;
 
     private Date validityStart;
     private Date validityEnd;
@@ -22,12 +22,12 @@ public class TemporaryEventReport extends Report implements Serializable {
     private String latitude;
     private String longitude;
 
-    public List<Line> getLinesAffected() {
-        return linesAffected;
+    public List<Line> getLinesAffectedEvent() {
+        return linesAffectedEvent;
     }
 
-    public void setLinesAffected(List<Line> linesAffected) {
-        this.linesAffected = linesAffected;
+    public void setLinesAffectedEvent(List<Line> linesAffectedEvent) {
+        this.linesAffectedEvent = linesAffectedEvent;
     }
 
     public Date getValidityStart() {

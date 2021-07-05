@@ -1,6 +1,5 @@
 package com.shallwego.server.controller;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.shallwego.server.ga.AlgorithmRunner;
@@ -135,6 +134,7 @@ public class Controller {
                 obj = Utils.setUpReportJson(companyReport);
                 Company company = companyReport.getCompany();
                 obj.addProperty("companyName", company.getName());
+                obj.addProperty("companyWebsite", company.getWebsite());
                 obj.addProperty("type", "CompanyReport");
             } else if (report instanceof LineReport) {
                 LineReport lineReport = (LineReport) report;
@@ -147,7 +147,7 @@ public class Controller {
                 obj = Utils.setUpReportJson(temporaryEventReport);
                 obj.addProperty("validityStart", temporaryEventReport.getValidityStart().toString());
                 obj.addProperty("validityEnd", temporaryEventReport.getValidityEnd().toString());
-                List<Line> linesAffected = temporaryEventReport.getLinesAffected();
+                List<Line> linesAffected = temporaryEventReport.getLinesAffectedEvent();
                 JsonArray linesAffectedJson = new JsonArray();
                 for (Line line: linesAffected) {
                     JsonObject object = new JsonObject();
@@ -172,5 +172,43 @@ public class Controller {
             array.add(obj);
         }
         return array.toString();
+    }
+
+    @Transactional
+    @GetMapping("/api/addToFavorites/{username}/{stopId}")
+    public String addFavoriteStop(@PathVariable String username, @PathVariable String stopId) {
+        Stop stop = stopRepository.findById(Integer.parseInt(stopId)).get();
+        User user = userRepository.findById(username).get();
+        user.addPreferredStop(stop);
+        return "OK";
+    }
+
+    @Transactional
+    @GetMapping("/api/removeFromFavorites/{username}/{stopId}")
+    public String removeFavoriteStop(@PathVariable String username, @PathVariable String stopId) {
+        Stop stop = stopRepository.findById(Integer.parseInt(stopId)).get();
+        User user = userRepository.findById(username).get();
+        if (user.getPreferredStops().contains(stop)) {
+            user.removePreferredStop(stop);
+        }
+        return "OK";
+    }
+
+    @GetMapping("/api/getFavorites/{username}")
+    public String getFavoriteStopsByUser(@PathVariable String username) {
+        User user = userRepository.findById(username).get();
+        List<Stop> favoriteStops = user.getPreferredStops();
+        JsonArray stopArray = new JsonArray();
+
+        for (Stop stop: favoriteStops) {
+            JsonObject stopJsonObject = new JsonObject();
+            stopJsonObject.addProperty("stopId", stop.getId());
+            stopJsonObject.addProperty("stopName", stop.getName());
+            stopJsonObject.addProperty("latitude", stop.getLatitude());
+            stopJsonObject.addProperty("longitude", stop.getLongitude());
+            stopArray.add(stopJsonObject);
+        }
+
+        return stopArray.toString();
     }
 }

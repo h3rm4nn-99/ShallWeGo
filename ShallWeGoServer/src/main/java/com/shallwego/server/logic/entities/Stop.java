@@ -12,11 +12,17 @@ public class Stop {
 
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private List<Line> lines;
 
     @OneToOne(mappedBy = "stopReported")
     private StopReport stopReport;
+
+    @OneToMany(mappedBy = "targetStop")
+    private List<DateAndTimesOfRides> dateAndTimesOfRidesByStop;
+
+    @ManyToMany(mappedBy = "preferredStops")
+    private List<User> userFavorites;
 
     private Boolean hasShelter;
     private Boolean hasTimeTables;
@@ -107,5 +113,13 @@ public class Stop {
 
     public void addLine(Line l) {
         lines.add(l);
+    }
+
+    public List<DateAndTimesOfRides> getDateAndTimesOfRidesByStop() {
+        return dateAndTimesOfRidesByStop;
+    }
+
+    public void setDateAndTimesOfRidesByStop(List<DateAndTimesOfRides> dateAndTimesOfRidesByStop) {
+        this.dateAndTimesOfRidesByStop = dateAndTimesOfRidesByStop;
     }
 }

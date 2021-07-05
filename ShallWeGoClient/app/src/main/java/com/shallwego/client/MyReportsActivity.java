@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,14 +19,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.card.MaterialCardView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
 public class MyReportsActivity extends AppCompatActivity {
@@ -56,7 +52,7 @@ public class MyReportsActivity extends AppCompatActivity {
             Iterator<JsonElement> iterator = reportsJson.iterator();
             while (iterator.hasNext()) {
                 JsonObject currentReport = iterator.next().getAsJsonObject();
-                Toast.makeText(this, currentReport.get("type").toString(), Toast.LENGTH_SHORT).show();
+                int index = 0;
                 switch (currentReport.get("type").toString().replace("\"", "")) {
                     case "StopReport": {
                         View stopReportView = getLayoutInflater().inflate(R.layout.fermata_report_cardview, null);
@@ -68,8 +64,41 @@ public class MyReportsActivity extends AppCompatActivity {
                         String longitudine = currentReport.get("longitude").toString();
                         TextView posizione = stopReportView.findViewById(R.id.fermata_posizione);
                         posizione.setText(latitudine + ", " + longitudine);
-                        container.addView(stopReportView, 0);
+                        container.addView(stopReportView, index++);
+                        break;
+                    }
+                    case "TemporaryEventReport": {
+                        View eventReportView = getLayoutInflater().inflate(R.layout.evento_report_cardview, null);
+                        TextView inizioValidita = eventReportView.findViewById(R.id.evento_inizio_validita);
+                        inizioValidita.setText(currentReport.get("validityStart").toString().replace("", "\""));
+                        TextView fineValidita = eventReportView.findViewById(R.id.evento_fine_validita);
+                        fineValidita.setText(currentReport.get("validityEnd").toString().replace("", "\""));
+                        String latitudine = currentReport.get("latitude").toString();
+                        String longitudine = currentReport.get("longitude").toString();
+                        TextView posizione = eventReportView.findViewById(R.id.evento_posizione);
+                        posizione.setText(latitudine + ", " + longitudine);
+                        container.addView(eventReportView, index++);
+                        break;
+                    }
+                    case "LineReport": {
+                        View lineReportView = getLayoutInflater().inflate(R.layout.linea_report_cardview, null);
+                        TextView nomeLinea = lineReportView.findViewById(R.id.linea_identifier);
+                        nomeLinea.setText(currentReport.get("lineIdentifier").toString().replace("\"", ""));
+                        TextView dataReport = lineReportView.findViewById(R.id.linea_date_reported);
+                        dataReport.setText(currentReport.get("date").toString().replace("\"", ""));
+                        TextView nomeCompagnia = lineReportView.findViewById(R.id.linea_compagnia);
+                        nomeCompagnia.setText(currentReport.get("companyName").toString().replace("\"", ""));
+                        container.addView(lineReportView, index++);
+                        break;
 
+                    }
+                    case "CompanyReport": {
+                        View companyReportView = getLayoutInflater().inflate(R.layout.azienda_report_cardview, null);
+                        TextView nomeAzienda = companyReportView.findViewById(R.id.nome_azienda);
+                        nomeAzienda.setText(currentReport.get("companyName").toString().replace("", "\""));
+                        TextView webAzienda = companyReportView.findViewById(R.id.web_azienda);
+                        webAzienda.setText(currentReport.get("companyWebsite").toString().replace("", "\""));
+                        container.addView(companyReportView, index++);
                     }
                 }
             }

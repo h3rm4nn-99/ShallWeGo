@@ -9,7 +9,7 @@
             android:title="Valuta Segnalazioni"/>
 
     <item
-            android:id="@+id/item3"
+            android:id="@+id/favorite_stops"
             android:title="Fermate Preferite"/>
 
     <item

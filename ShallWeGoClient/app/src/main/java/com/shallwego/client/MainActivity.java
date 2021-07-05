@@ -92,6 +92,11 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(i);
                             break;
                         }
+                        case R.id.favorite_stops: {
+                            Intent i = new Intent(MainActivity.this, FavoriteStops.class);
+                            startActivity(i);
+                            break;
+                        }
                     }
                     return true;
                 }

@@ -25,8 +25,14 @@ public class Line implements Serializable {
     @ManyToMany(mappedBy = "lines")
     private List<Stop> stops;
 
+    @ManyToMany(mappedBy = "linesAffectedEvent")
+    private List<TemporaryEventReport> eventReports;
+
     @OneToOne(mappedBy = "lineAffected")
     private LineReport lineReport;
+
+    @OneToMany(mappedBy = "targetLine")
+    private List<DateAndTimesOfRides> dateAndTimesOfRidesByLine;
 
     public String getIdentifier() {
         return identifier;
@@ -66,5 +72,29 @@ public class Line implements Serializable {
 
     public void setLineReport(LineReport lineReport) {
         this.lineReport = lineReport;
+    }
+
+    public List<Stop> getStops() {
+        return stops;
+    }
+
+    public void setStops(List<Stop> stops) {
+        this.stops = stops;
+    }
+
+    public List<TemporaryEventReport> getEventReports() {
+        return eventReports;
+    }
+
+    public void setEventReports(List<TemporaryEventReport> eventReports) {
+        this.eventReports = eventReports;
+    }
+
+    public List<DateAndTimesOfRides> getDateAndTimesOfRidesByLine() {
+        return dateAndTimesOfRidesByLine;
+    }
+
+    public void setDateAndTimesOfRidesByLine(List<DateAndTimesOfRides> dateAndTimesOfRidesByLine) {
+        this.dateAndTimesOfRidesByLine = dateAndTimesOfRidesByLine;
     }
 }

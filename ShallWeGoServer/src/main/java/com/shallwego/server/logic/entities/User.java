@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +26,10 @@ public class User implements Serializable {
     private List<Report> reports;
 
     @ManyToMany
-    private List<Report> assignedTo;
+    private List<Report> assignedTo = new ArrayList<>();
+
+    @ManyToMany
+    private List<Stop> preferredStops = new ArrayList<>();
 
     public User() {}
 
@@ -99,6 +103,22 @@ public class User implements Serializable {
 
     public void setAssignedTo(List<Report> assignedTo) {
         this.assignedTo = assignedTo;
+    }
+
+    public List<Stop> getPreferredStops() {
+        return preferredStops;
+    }
+
+    public void setPreferredStops(List<Stop> preferredStops) {
+        this.preferredStops = preferredStops;
+    }
+
+    public void addPreferredStop(Stop s) {
+        this.preferredStops.add(s);
+    }
+
+    public void removePreferredStop(Stop s) {
+        this.preferredStops.remove(s);
     }
 
     @Override
