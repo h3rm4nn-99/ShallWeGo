@@ -4,6 +4,7 @@ import com.shallwego.server.logic.service.LineCompositeKey;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,14 +14,18 @@ public class Line implements Serializable {
     public Line() {}
 
     @Id
+    @Column(length = 100)
     private String identifier;
 
     @ManyToOne
     @Id
     private Company company;
 
-    private String firstTerminus;
-    private String secondTerminus;
+    private String origin;
+
+    @Id
+    @Column(length = 100)
+    private String destination;
 
     @ManyToMany(mappedBy = "lines")
     private List<Stop> stops;
@@ -33,6 +38,17 @@ public class Line implements Serializable {
 
     @OneToMany(mappedBy = "targetLine")
     private List<DateAndTimesOfRides> dateAndTimesOfRidesByLine;
+
+    @ElementCollection
+    private List<Integer> stopOrder = new ArrayList<>();
+
+    public List<Integer> getStopOrder() {
+        return stopOrder;
+    }
+
+    public void setStopOrder(List<Integer> stopOrder) {
+        this.stopOrder = stopOrder;
+    }
 
     public String getIdentifier() {
         return identifier;
@@ -50,20 +66,20 @@ public class Line implements Serializable {
         this.company = company;
     }
 
-    public String getFirstTerminus() {
-        return firstTerminus;
+    public String getOrigin() {
+        return origin;
     }
 
-    public void setFirstTerminus(String firstTerminus) {
-        this.firstTerminus = firstTerminus;
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
-    public String getSecondTerminus() {
-        return secondTerminus;
+    public String getDestination() {
+        return destination;
     }
 
-    public void setSecondTerminus(String secondTerminus) {
-        this.secondTerminus = secondTerminus;
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     public Report getLineReport() {

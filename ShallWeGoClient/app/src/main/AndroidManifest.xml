@@ -17,6 +17,14 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.ShallWeGo"
             android:usesCleartextTraffic="true">
+        <activity android:name=".AlertsNearby">
+        </activity>
+        <activity android:name=".LineDetails">
+        </activity>
+        <activity android:name=".EventDetails">
+        </activity>
+        <activity android:name=".StopDetails">
+        </activity>
         <activity android:name=".FavoriteStops">
         </activity>
         <activity android:name=".MyReportsActivity">

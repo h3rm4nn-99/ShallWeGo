@@ -3,11 +3,13 @@ package com.shallwego.client;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,12 +49,12 @@ public class MyReportsActivity extends AppCompatActivity {
                 "Attendere prego...", true);
 
         RequestQueue q = Volley.newRequestQueue(getApplicationContext());
-        StringRequest request = new StringRequest(Request.Method.POST, "http://192.168.1.3:8080/api/reports/" + user, response -> {
+        StringRequest request = new StringRequest(Request.Method.POST, IpAddress.SERVER_IP_ADDRESS + "/api/reports/" + user, response -> {
             JsonArray reportsJson = (JsonArray) JsonParser.parseString(response);
             Iterator<JsonElement> iterator = reportsJson.iterator();
+            int index = 0;
             while (iterator.hasNext()) {
                 JsonObject currentReport = iterator.next().getAsJsonObject();
-                int index = 0;
                 switch (currentReport.get("type").toString().replace("\"", "")) {
                     case "StopReport": {
                         View stopReportView = getLayoutInflater().inflate(R.layout.fermata_report_cardview, null);
@@ -64,19 +66,31 @@ public class MyReportsActivity extends AppCompatActivity {
                         String longitudine = currentReport.get("longitude").toString();
                         TextView posizione = stopReportView.findViewById(R.id.fermata_posizione);
                         posizione.setText(latitudine + ", " + longitudine);
+                        ImageView dettagliFermata = stopReportView.findViewById(R.id.dettagliFermata);
+                        dettagliFermata.setOnClickListener((view) -> {
+                            Intent i = new Intent(MyReportsActivity.this, StopDetails.class);
+                            i.putExtra("stopId", currentReport.get("stopId").toString().replace("\"", ""));
+                            startActivity(i);
+                        });
                         container.addView(stopReportView, index++);
                         break;
                     }
                     case "TemporaryEventReport": {
                         View eventReportView = getLayoutInflater().inflate(R.layout.evento_report_cardview, null);
                         TextView inizioValidita = eventReportView.findViewById(R.id.evento_inizio_validita);
-                        inizioValidita.setText(currentReport.get("validityStart").toString().replace("", "\""));
+                        inizioValidita.setText(currentReport.get("validityStart").toString().replace("\"", ""));
                         TextView fineValidita = eventReportView.findViewById(R.id.evento_fine_validita);
-                        fineValidita.setText(currentReport.get("validityEnd").toString().replace("", "\""));
+                        fineValidita.setText(currentReport.get("validityEnd").toString().replace("\"", ""));
                         String latitudine = currentReport.get("latitude").toString();
                         String longitudine = currentReport.get("longitude").toString();
                         TextView posizione = eventReportView.findViewById(R.id.evento_posizione);
-                        posizione.setText(latitudine + ", " + longitudine);
+                        posizione.setText((latitudine + ", " + longitudine).replace("\"", ""));
+                        ImageView dettagliEvento = eventReportView.findViewById(R.id.dettagliEvento);
+                        dettagliEvento.setOnClickListener((view) -> {
+                            Intent i = new Intent(MyReportsActivity.this, EventDetails.class);
+                            i.putExtra("id", currentReport.get("id").toString().replace("\"", ""));
+                            startActivity(i);
+                        });
                         container.addView(eventReportView, index++);
                         break;
                     }
@@ -88,6 +102,13 @@ public class MyReportsActivity extends AppCompatActivity {
                         dataReport.setText(currentReport.get("date").toString().replace("\"", ""));
                         TextView nomeCompagnia = lineReportView.findViewById(R.id.linea_compagnia);
                         nomeCompagnia.setText(currentReport.get("companyName").toString().replace("\"", ""));
+                        ImageView dettagliLinea = lineReportView.findViewById(R.id.dettagliLinea);
+                        dettagliLinea.setOnClickListener((view) -> {
+                            Intent i = new Intent(MyReportsActivity.this, LineDetails.class);
+                            i.putExtra("lineIdentifier", currentReport.get("lineIdentifier").toString().replace("\"", ""));
+                            i.putExtra("companyName", currentReport.get("companyName").toString().replace("\"", ""));
+                            startActivity(i);
+                        });
                         container.addView(lineReportView, index++);
                         break;
 
@@ -107,12 +128,7 @@ public class MyReportsActivity extends AppCompatActivity {
             Toast.makeText(MyReportsActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
             AlertDialog alertDialog = new AlertDialog.Builder(this)
                     .setMessage("Controlla la tua connessione ad Internet e riprova!")
-                    .setPositiveButton("Ho capito!", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            MyReportsActivity.this.finish();
-                        }
-                    }).show();
+                    .setPositiveButton("Ho capito!", (dialog1, which) -> MyReportsActivity.this.finish()).show();
             alertDialog.setCancelable(false);
             alertDialog.setCanceledOnTouchOutside(false);
             dialog.dismiss();

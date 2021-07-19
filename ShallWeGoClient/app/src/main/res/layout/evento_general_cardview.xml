@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/eventCardview"
+            app:cardCornerRadius="5pt"
+            android:layout_marginTop="10pt"
+            android:layout_marginLeft="10pt"
+            android:layout_marginRight="10pt"
+            android:clickable="true" android:focusable="true">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                      android:orientation="vertical"
+                      android:baselineAligned="false">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <org.osmdroid.views.MapView android:layout_width="match_parent"
+                                            android:layout_height="175dp"
+                                            android:id="@+id/alertMap"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:paddingVertical="10pt"
+                          android:orientation="vertical">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:orientation="horizontal">
+                    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                               android:layout_gravity="center"
+                               android:paddingHorizontal="10pt"
+                               android:src="@drawable/ic_format_list_bulleted_white_24dp"/>
+                    <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                           android:layout_height="wrap_content"
+                                                                           android:paddingVertical="5pt"
+                                                                           android:id="@+id/eventType"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:orientation="horizontal">
+                    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                               android:layout_gravity="center"
+                               android:paddingHorizontal="10pt"
+                               android:src="@drawable/ic_schedule_white_24dp"/>
+                    <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                           android:layout_height="wrap_content"
+                                                                           android:layout_gravity="center"
+                                                                           android:paddingVertical="5pt"
+                                                                           android:id="@+id/timeValid"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:orientation="horizontal">
+                    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                               android:layout_gravity="center"
+                               android:paddingHorizontal="10pt"
+                               android:src="@drawable/ic_directions_bus_white_24dp"/>
+                    <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                           android:layout_height="wrap_content"
+                                                                           android:layout_gravity="center"
+                                                                           android:paddingVertical="5pt"
+                                                                           android:id="@+id/linesAffected"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:orientation="horizontal">
+                    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                               android:layout_gravity="center"
+                               android:paddingHorizontal="10pt"
+                               android:src="@drawable/ic_place_white_24dp"/>
+                    <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                           android:layout_height="wrap_content"
+                                                                           android:layout_gravity="center"
+                                                                           android:singleLine="true"
+                                                                           android:ellipsize="marquee"
+                                                                           android:marqueeRepeatLimit ="marquee_forever"
+                                                                           android:focusable="true"
+                                                                           android:focusableInTouchMode="true"
+                                                                           android:scrollHorizontally="true"
+                                                                           android:paddingVertical="5pt"
+                                                                           android:id="@+id/eventPlace"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</RelativeLayout>

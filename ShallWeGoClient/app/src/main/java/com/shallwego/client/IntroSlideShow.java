@@ -114,11 +114,6 @@ public class IntroSlideShow extends AppIntro {
     protected void onUserDisabledPermission(@NotNull String permissionName) {
         new AlertDialog.Builder(this)
                 .setMessage("Quest'app non può funzionare senza questi permessi. Se vuoi utilizzarla riattiva i permessi dalle impostazioni.\nL'app verrà ora chiusa")
-                .setPositiveButton("Ho capito!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        IntroSlideShow.this.finishAffinity();
-                    }
-                }).show();
+                .setPositiveButton("Ho capito!", (dialog, which) -> IntroSlideShow.this.finishAffinity()).show();
     }
 }

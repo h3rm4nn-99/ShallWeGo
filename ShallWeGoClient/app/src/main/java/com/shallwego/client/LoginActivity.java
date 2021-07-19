@@ -1,11 +1,14 @@
 package com.shallwego.client;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.android.volley.*;
@@ -56,12 +59,18 @@ public class LoginActivity extends AppCompatActivity {
 
         if (check)  return;
 
+        ProgressDialog dialog = ProgressDialog.show(this, "",
+                "Attendere prego...", true);
         RequestQueue q = Volley.newRequestQueue(getApplicationContext());
         String requestBody = "username=" + usernameEditText.getText().toString() + "&password=" + passwordEditText.getText().toString();
-        StringRequest request = new StringRequest(Request.Method.POST, "http://192.168.1.3:8080/api/login", response -> {
+        StringRequest request = new StringRequest(Request.Method.POST,  IpAddress.SERVER_IP_ADDRESS + "/api/login", response -> {
+            username.setError(null);
+            password.setError(null);
             if (response.equals("ERR_USER_NOT_FOUND")) {
+                dialog.dismiss();
                 username.setError("Lo username digitato non è stato trovato!");
             } else if (response.equals("ERR_PWD_INCORRECT")) {
+                dialog.dismiss();
                 password.setError("La password digitata non corrisponde a questo nome utente!");
             } else {
                 JsonObject user = (JsonObject) JsonParser.parseString(response);
@@ -74,10 +83,19 @@ public class LoginActivity extends AppCompatActivity {
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                dialog.dismiss();
                 startActivity(i);
                 LoginActivity.this.finish();
             }
-        }, error -> Toast.makeText(LoginActivity.this, "Errore!", Toast.LENGTH_SHORT).show()) {
+        }, error -> {
+            Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+            AlertDialog alertDialogProvince = new AlertDialog.Builder(this)
+                    .setMessage("Controlla la tua connessione ad Internet e riprova!")
+                    .setPositiveButton("Ho capito!", null).show();
+            alertDialogProvince.setCancelable(false);
+            alertDialogProvince.setCanceledOnTouchOutside(false);
+            dialog.dismiss();
+        }) {
             @Override
             public byte[] getBody() {
                 return requestBody == null ? null : requestBody.getBytes(StandardCharsets.UTF_8);

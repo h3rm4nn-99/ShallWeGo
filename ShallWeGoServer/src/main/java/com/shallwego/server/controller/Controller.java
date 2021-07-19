@@ -2,11 +2,13 @@ package com.shallwego.server.controller;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.shallwego.server.ga.AlgorithmRunner;
 import com.shallwego.server.ga.entities.Individual;
 import com.shallwego.server.ga.entities.Population;
 import com.shallwego.server.logic.entities.*;
 import com.shallwego.server.logic.service.*;
+import com.shallwego.server.service.IpAddress;
 import com.shallwego.server.service.Location;
 import com.shallwego.server.service.Utils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -18,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.io.*;
-import java.time.ZonedDateTime;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -40,6 +45,9 @@ public class Controller {
     @Autowired
     private LineRepository lineRepository;
 
+    @Autowired
+    private TemporaryEventReportRepository temporaryEventReportRepository;
+
     public static List<User> users;
 
     @PutMapping("/api/putLocation")
@@ -53,25 +61,39 @@ public class Controller {
 
         users = userRepository.findByProvincia("Salerno");
 
-        if (users.isEmpty()) {
+        if (users.size() <= 1) {
             Utils.populateDbWithRandomUsers(userRepository);
             users = userRepository.findByProvincia("Salerno");
         }
 
         Random r = new Random();
         Population<Individual> startPopulation = new Population<>();
-        for (int j = 0; j < 10; j++) {
+        for (int j = 0; j < AlgorithmRunner.POPULATION_SIZE; j++) {
             Individual individual = new Individual();
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < AlgorithmRunner.INDIVIDUAL_SIZE; i++) {
                 User user = users.get(r.nextInt(users.size() - 1));
+                if (individual.getUsers().contains(user)) {
+                    i--;
+                    continue;
+                }
                 individual.addUser(user);
             }
             startPopulation.addIndividual(individual);
         }
-        Location location = new Location(40.7415603, 14.6715039);
+        Location location = new Location(40.0742524, 15.6235266);
         Population<Individual> bestPopulation = AlgorithmRunner.run(startPopulation, location);
+        int i = 0;
+        for (Individual individual: bestPopulation.getIndividuals()) {
+            System.out.println("Individuo " + i);
+            for (User user: individual.getUsers()) {
+                System.out.print(user.getComune() + " ");
+            }
+            System.out.println();
+            i++;
+        }
 
-        return "Individuo migliore: " + bestPopulation.getBestIndividual(location).toString();
+        Set<User> bestUsers = Utils.bestUsersFromPopulation(bestPopulation, location);
+        return "Utenti migliori: " + bestUsers.toString();
     }
 
     @PostMapping("/api/login")
@@ -115,7 +137,7 @@ public class Controller {
 
     @GetMapping("/api/province")
     public String province() {
-        return JSONArray.toJSONString(new ArrayList(Utils.province.keySet()));
+        return JSONArray.toJSONString(new ArrayList<String>(Utils.province.keySet()));
     }
 
     @GetMapping("/api/provincia/{provincia}/comuni")
@@ -141,18 +163,21 @@ public class Controller {
                 obj = Utils.setUpReportJson(lineReport);
                 obj.addProperty("companyName", lineReport.getLineAffected().getCompany().getName());
                 obj.addProperty("lineIdentifier", lineReport.getLineAffected().getIdentifier());
+                obj.addProperty("destination", lineReport.getLineAffected().getDestination());
                 obj.addProperty("type", "LineReport");
             } else if (report instanceof TemporaryEventReport) {
                 TemporaryEventReport temporaryEventReport = (TemporaryEventReport) report;
                 obj = Utils.setUpReportJson(temporaryEventReport);
-                obj.addProperty("validityStart", temporaryEventReport.getValidityStart().toString());
-                obj.addProperty("validityEnd", temporaryEventReport.getValidityEnd().toString());
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YYYY HH:mm");
+                obj.addProperty("validityStart", formatter.format(temporaryEventReport.getValidityStart()));
+                obj.addProperty("validityEnd", formatter.format(temporaryEventReport.getValidityEnd()));
                 List<Line> linesAffected = temporaryEventReport.getLinesAffectedEvent();
                 JsonArray linesAffectedJson = new JsonArray();
                 for (Line line: linesAffected) {
                     JsonObject object = new JsonObject();
                     object.addProperty("lineIdentifier", line.getIdentifier());
                     object.addProperty("companyName", line.getCompany().getName());
+                    object.addProperty("destination", line.getDestination());
                     linesAffectedJson.add(object);
                 }
                 obj.add("linesAffected", linesAffectedJson);
@@ -175,23 +200,32 @@ public class Controller {
     }
 
     @Transactional
-    @GetMapping("/api/addToFavorites/{username}/{stopId}")
-    public String addFavoriteStop(@PathVariable String username, @PathVariable String stopId) {
+    @PutMapping("/api/addToFavorites/{username}/{stopId}")
+    public boolean addFavoriteStop(@PathVariable String username, @PathVariable String stopId) {
         Stop stop = stopRepository.findById(Integer.parseInt(stopId)).get();
         User user = userRepository.findById(username).get();
         user.addPreferredStop(stop);
-        return "OK";
+
+        return user.getPreferredStops().contains(stop);
     }
 
     @Transactional
-    @GetMapping("/api/removeFromFavorites/{username}/{stopId}")
-    public String removeFavoriteStop(@PathVariable String username, @PathVariable String stopId) {
+    @DeleteMapping("/api/removeFromFavorites/{username}/{stopId}")
+    public boolean removeFavoriteStop(@PathVariable String username, @PathVariable String stopId) {
         Stop stop = stopRepository.findById(Integer.parseInt(stopId)).get();
         User user = userRepository.findById(username).get();
         if (user.getPreferredStops().contains(stop)) {
             user.removePreferredStop(stop);
         }
-        return "OK";
+        return user.getPreferredStops().contains(stop);
+    }
+
+    @GetMapping("/api/isFavorite/{username}/{stopId}")
+    public boolean isFavorite(@PathVariable String username, @PathVariable String stopId) {
+        Stop stop = stopRepository.findById(Integer.parseInt(stopId)).get();
+        User user = userRepository.findById(username).get();
+
+        return user.getPreferredStops().contains(stop);
     }
 
     @GetMapping("/api/getFavorites/{username}")
@@ -210,5 +244,76 @@ public class Controller {
         }
 
         return stopArray.toString();
+    }
+
+    @Transactional
+    @GetMapping("/api/getStopDetails/{stopId}")
+    public String getStopDetails(@PathVariable String stopId) {
+        int intStopId = Integer.valueOf(stopId);
+        Stop stop = stopRepository.findById(intStopId).get();
+        List<Line> stopLines = stop.getLines();
+        JsonObject responseJson = new JsonObject();
+        responseJson.addProperty("stopName", stop.getName());
+        responseJson.addProperty("hasShelter", stop.getHasShelter());
+        responseJson.addProperty("crowding", Utils.stopCrowding.get(stop.getId()));
+        responseJson.addProperty("hasTimeTables", stop.getHasTimeTables());
+        responseJson.addProperty("hasStopSign", stop.getHasStopSign());
+        responseJson.addProperty("latitude", stop.getLatitude());
+        responseJson.addProperty("longitude", stop.getLongitude());
+        JsonArray linesJson = new JsonArray();
+        for (Line l: stopLines) {
+            JsonObject lineJsonObject = new JsonObject();
+            lineJsonObject.addProperty("lineIdentifier", l.getIdentifier());
+            lineJsonObject.addProperty("companyName", l.getCompany().getName());
+            lineJsonObject.addProperty("destination", l.getDestination());
+
+            linesJson.add(lineJsonObject);
+        }
+
+        responseJson.add("lines", linesJson);
+        return responseJson.toString();
+    }
+
+    @GetMapping("/api/getStopCrowding/{stopId}")
+    public String getStopCrowding(@PathVariable int stopId) {
+        return String.valueOf(Utils.stopCrowding.get(stopId));
+    }
+
+    @PutMapping("/api/updateStopCrowding/{stopId}/{newValue}")
+    public String updateStopCrowding(@PathVariable String stopId, @PathVariable String newValue) {
+        Utils.stopCrowding.put(Integer.valueOf(stopId), Integer.valueOf(newValue));
+        return String.valueOf(Utils.stopCrowding.get(Integer.valueOf(stopId)));
+    }
+
+    @GetMapping("/api/getAlertsNearby/{coordinates}")
+    public String getAlertsNearby(@PathVariable String coordinates) throws IOException {
+        String[] splitCoordinates = coordinates.split(",");
+        Location location = new Location(Double.parseDouble(splitCoordinates[0]), Double.parseDouble(splitCoordinates[1]));
+        ArrayList<TemporaryEventReport> relevantAlerts = new ArrayList<>();
+        List<TemporaryEventReport> allAlerts = temporaryEventReportRepository.findAll();
+        for (TemporaryEventReport temporaryEventReport: allAlerts) {
+            Location alertLocation = new Location(Double.parseDouble(temporaryEventReport.getLatitude()), Double.parseDouble(temporaryEventReport.getLongitude()));
+            if (alertLocation.distance(location) <= 10000) {
+                relevantAlerts.add(temporaryEventReport);
+            }
+        }
+        JsonArray returnArray = new JsonArray();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        for (TemporaryEventReport target: relevantAlerts) {
+            JsonObject targetJson = new JsonObject();
+            targetJson.addProperty("id", target.getId());
+            targetJson.addProperty("type", target.getEventType());
+            targetJson.addProperty("place", Utils.getRoadNameByCoordinates(target.getLatitude(), target.getLongitude()));
+            targetJson.addProperty("timeValid", formatter.format(target.getValidityStart()) + " - " + formatter.format(target.getValidityEnd()));
+            targetJson.addProperty("latitude", target.getLatitude());
+            targetJson.addProperty("longitude", target.getLongitude());
+
+            List<Line> linesAffected = target.getLinesAffectedEvent();
+            StringBuilder linesAffectedPreview = new StringBuilder();
+            linesAffected.forEach((line) -> linesAffectedPreview.append(line.getIdentifier()).append(linesAffected.size() == 1? "" : ", "));
+            targetJson.addProperty("linesAffectedPreview", linesAffectedPreview.toString());
+            returnArray.add(targetJson);
+        }
+        return returnArray.toString();
     }
 }

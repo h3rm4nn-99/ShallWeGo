@@ -40,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
                 "Attendere prego...", true);
 
         RequestQueue q = Volley.newRequestQueue(getApplicationContext());
-        StringRequest request = new StringRequest(Request.Method.GET, "http://192.168.1.3:8080/api/province", response -> {
+        StringRequest request = new StringRequest(Request.Method.GET, IpAddress.SERVER_IP_ADDRESS + "/api/province", response -> {
             JsonArray provinceJson = (JsonArray) JsonParser.parseString(response);
             Iterator<JsonElement> iterator = provinceJson.iterator();
             ArrayList<String> province = new ArrayList<>();
@@ -66,46 +66,38 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         q.add(request);
-        editTextProvincia.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ProgressDialog dialogComuni = ProgressDialog.show(RegisterActivity.this, "",
-                        "Attendere prego...", true);
-                String provincia = (String) parent.getItemAtPosition(position);
-                editTextComune.setText("");
-                RequestQueue q = Volley.newRequestQueue(getApplicationContext());
-                StringRequest request = new StringRequest(Request.Method.GET, "http://192.168.1.3:8080/api/provincia/" + provincia + "/comuni", new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        JsonArray comuniJson = (JsonArray) JsonParser.parseString(response);
-                        Iterator<JsonElement> iterator = comuniJson.iterator();
-                        ArrayList<String> comuni = new ArrayList<>();
-                        while (iterator.hasNext()) {
-                            comuni.add(iterator.next().toString().replace("\"", ""));
-                        }
-                        Collections.sort(comuni);
-                        editTextComune.setAdapter(new ArrayAdapter<String>(RegisterActivity.this, R.layout.provincia_listitem_layout, comuni));
-                        dialogComuni.dismiss();
-
+        editTextProvincia.setOnItemClickListener((parent, view, position, id) -> {
+            ProgressDialog dialogComuni = ProgressDialog.show(RegisterActivity.this, "",
+                    "Attendere prego...", true);
+            String provincia = (String) parent.getItemAtPosition(position);
+            editTextComune.setText("");
+            RequestQueue q1 = Volley.newRequestQueue(getApplicationContext());
+            StringRequest request1 = new StringRequest(Request.Method.GET, IpAddress.SERVER_IP_ADDRESS + "/api/provincia/" + provincia + "/comuni", new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    JsonArray comuniJson = (JsonArray) JsonParser.parseString(response);
+                    Iterator<JsonElement> iterator = comuniJson.iterator();
+                    ArrayList<String> comuni = new ArrayList<>();
+                    while (iterator.hasNext()) {
+                        comuni.add(iterator.next().toString().replace("\"", ""));
                     }
-                }, error -> {
-                    Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                    AlertDialog alertDialogComuni = new AlertDialog.Builder(RegisterActivity.this)
-                            .setMessage("Controlla la tua connessione ad Internet e riprova!")
-                            .setPositiveButton("Ho capito!", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    RegisterActivity.this.finish();
-                                }
-                            }).show();
-                    alertDialogComuni.setCancelable(false);
-                    alertDialogComuni.setCanceledOnTouchOutside(false);
+                    Collections.sort(comuni);
+                    editTextComune.setAdapter(new ArrayAdapter<String>(RegisterActivity.this, R.layout.provincia_listitem_layout, comuni));
                     dialogComuni.dismiss();
 
-                });
-                q.add(request);
+                }
+            }, error -> {
+                Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                AlertDialog alertDialogComuni = new AlertDialog.Builder(RegisterActivity.this)
+                        .setMessage("Controlla la tua connessione ad Internet e riprova!")
+                        .setPositiveButton("Ho capito!", (dialog1, which) -> RegisterActivity.this.finish()).show();
+                alertDialogComuni.setCancelable(false);
+                alertDialogComuni.setCanceledOnTouchOutside(false);
+                dialogComuni.dismiss();
 
-            }
+            });
+            q1.add(request1);
+
         });
 
     }

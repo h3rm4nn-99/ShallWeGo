@@ -10,6 +10,9 @@ import java.time.ZonedDateTime;
 
 public class AlgorithmRunner {
 
+    public static final int INDIVIDUAL_SIZE = 5;
+    public static final int POPULATION_SIZE = 10;
+
     public static Population<Individual> run(Population<Individual> startPopulation, Location location) throws IOException, ParseException {
         Population<Individual> bestPopulation = startPopulation;
         Population<Individual> archive = new Population<>();

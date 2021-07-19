@@ -3,13 +3,17 @@ package com.shallwego.client;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,7 +48,7 @@ public class FavoriteStops extends AppCompatActivity {
                 "Attendere prego...", true);
 
         RequestQueue q = Volley.newRequestQueue(getApplicationContext());
-        StringRequest request = new StringRequest(Request.Method.GET, "http://192.168.1.3:8080/api/getFavorites/" + user, response -> {
+        StringRequest request = new StringRequest(Request.Method.GET, IpAddress.SERVER_IP_ADDRESS + "/api/getFavorites/" + user, response -> {
             JsonArray reportsJson = (JsonArray) JsonParser.parseString(response);
             Iterator<JsonElement> iterator = reportsJson.iterator();
             int index = 0;
@@ -57,6 +61,12 @@ public class FavoriteStops extends AppCompatActivity {
                 String longitudine = currentStop.get("longitude").toString();
                 TextView posizione = stopView.findViewById(R.id.fermata_preferita_posizione);
                 posizione.setText(latitudine + ", " + longitudine);
+                ImageView dettagli = stopView.findViewById(R.id.dettagliFermataPreferita);
+                dettagli.setOnClickListener((view) -> {
+                    Intent i = new Intent(FavoriteStops.this, StopDetails.class);
+                    i.putExtra("stopId", currentStop.get("stopId").toString().replace("\"", ""));
+                    startActivity(i);
+                });
                 container.addView(stopView, index++);
             }
             dialog.dismiss();
@@ -64,16 +74,21 @@ public class FavoriteStops extends AppCompatActivity {
             Toast.makeText(FavoriteStops.this, error.toString(), Toast.LENGTH_SHORT).show();
             AlertDialog alertDialog = new AlertDialog.Builder(this)
                     .setMessage("Controlla la tua connessione ad Internet e riprova!")
-                    .setPositiveButton("Ho capito!", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            FavoriteStops.this.finish();
-                        }
-                    }).show();
+                    .setPositiveButton("Ho capito!", (dialog1, which) -> FavoriteStops.this.finish()).show();
             alertDialog.setCancelable(false);
             alertDialog.setCanceledOnTouchOutside(false);
             dialog.dismiss();
         });
         q.add(request);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

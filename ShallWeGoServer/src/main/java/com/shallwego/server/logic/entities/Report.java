@@ -1,6 +1,7 @@
 package com.shallwego.server.logic.entities;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -12,7 +13,7 @@ public abstract class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String date;
+    private Date date;
 
     @ManyToOne
     private User user;
@@ -38,11 +39,11 @@ public abstract class Report {
         this.id = id;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

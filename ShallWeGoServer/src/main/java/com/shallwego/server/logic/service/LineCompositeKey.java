@@ -9,6 +9,7 @@ import java.util.Objects;
 public class LineCompositeKey implements Serializable {
     private String identifier;
     private Company company;
+    private String destination;
 
     public LineCompositeKey() {}
 
@@ -26,6 +27,14 @@ public class LineCompositeKey implements Serializable {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     @Override

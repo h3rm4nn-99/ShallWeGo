@@ -7,13 +7,17 @@
 
     <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
                                                        android:id="@+id/cardViewEvento"
-                                                       android:layout_height="match_parent">
+                                                       android:layout_marginTop="10pt"
+                                                       android:layout_marginLeft="10pt"
+                                                       android:layout_marginRight="10pt"
+                                                       android:layout_height="wrap_content">
 
         <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:text="Evento Temporaneo"
                       android:id="@+id/evento_text"
+                      android:paddingTop="15pt"
                       android:paddingLeft="15pt"
                       android:textSize="12pt"
                       android:textStyle="bold"/>
@@ -66,6 +70,7 @@
                        android:layout_below="@id/linear_layout_report_evento_posizione"
                        android:id="@+id/dettagliEvento"
                        android:paddingRight="15pt"
+                       android:paddingBottom="15pt"
                        android:layout_alignParentRight="true"
                        android:src="@drawable/ic_double_arrow_white_24dp"/>
         </RelativeLayout>

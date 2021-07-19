@@ -1,11 +1,20 @@
 package com.shallwego.server.logic.entities;
 
+import com.shallwego.server.service.Utils;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Stop {
+
+    @PostPersist
+    public void putCrowding() {
+        System.out.println("Nuova fermata aggiunta. Inizializzazione del valore di affollamento");
+        Utils.stopCrowding.put(this.getId(), 0);
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

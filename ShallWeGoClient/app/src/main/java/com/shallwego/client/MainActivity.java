@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.PopupMenu;
@@ -51,13 +52,16 @@ public class MainActivity extends AppCompatActivity {
     private Marker currentLocationMarker = null;
     private Marker outdatedLocationMarker = null;
     private final CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+    public static String userName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         preferences = getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE);
         boolean skipIntro = preferences.getBoolean("skipIntro", false);
         boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
+        userName = preferences.getString("user", "placeholder");
         if (!skipIntro) {
             Intent i = new Intent(this, IntroSlideShow.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -79,33 +83,35 @@ public class MainActivity extends AppCompatActivity {
             toggle.syncState();
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#6200EE")));
-            navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.logout: {
-                            logout();
-                            break;
-                        }
-                        case R.id.myReports: {
-                            Intent i = new Intent(MainActivity.this, MyReportsActivity.class);
-                            startActivity(i);
-                            break;
-                        }
-                        case R.id.favorite_stops: {
-                            Intent i = new Intent(MainActivity.this, FavoriteStops.class);
-                            startActivity(i);
-                            break;
-                        }
+            navView.setNavigationItemSelectedListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.logout: {
+                        logout();
+                        break;
                     }
-                    return true;
+                    case R.id.myReports: {
+                        Intent i = new Intent(MainActivity.this, MyReportsActivity.class);
+                        startActivity(i);
+                        break;
+                    }
+                    case R.id.favorite_stops: {
+                        Intent i = new Intent(MainActivity.this, FavoriteStops.class);
+                        startActivity(i);
+                        break;
+                    }
+                    case R.id.alerts: {
+                        Intent i = new Intent(MainActivity.this, AlertsNearby.class);
+                        startActivity(i);
+                        break;
+                    }
                 }
+                return true;
             });
 
             setUpHeader();
 
             map = findViewById(R.id.map);
-            map.setTileSource(TileSourceFactory.MAPNIK);
+            map.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
             map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
             map.setMultiTouchControls(true);
             map.getOverlays().add(new CopyrightOverlay(this));
@@ -178,43 +184,40 @@ public class MainActivity extends AppCompatActivity {
         map.invalidate();
     }
 
-    @SuppressLint("MissingPermission") //permession already granted on first launch
+    @SuppressLint("MissingPermission") //permission already granted on first launch
     private void acquireLocation() {
         Location location = null;
         locationClient = LocationServices.getFusedLocationProviderClient(this);
-        locationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY, cancellationTokenSource.getToken()).addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                double currentLatitude = location.getLatitude();
-                double currentLongitude = location.getLongitude();
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.remove("lastKnownLatitude");
-                editor.remove("lastKnownLongitude");
+        locationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY, cancellationTokenSource.getToken()).addOnSuccessListener(this, location1 -> {
+            double currentLatitude = location1.getLatitude();
+            double currentLongitude = location1.getLongitude();
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.remove("lastKnownLatitude");
+            editor.remove("lastKnownLongitude");
 
-                editor.putString("lastKnownLatitude", String.valueOf(currentLatitude));
-                editor.putString("lastKnownLongitude", String.valueOf(currentLongitude));
-                editor.commit();
+            editor.putString("lastKnownLatitude", String.valueOf(currentLatitude));
+            editor.putString("lastKnownLongitude", String.valueOf(currentLongitude));
+            editor.commit();
 
-                if (map.getOverlays().contains(outdatedLocationMarker)) {
-                    map.getOverlays().remove(outdatedLocationMarker);
-                }
-
-                if (currentLocationMarker != null) {
-                    map.getOverlays().remove(currentLocationMarker);
-                }
-
-
-                GeoPoint currentLocation = new GeoPoint(currentLatitude, currentLongitude);
-                currentLocationMarker = new Marker(map);
-                currentLocationMarker.setInfoWindow(null);
-                currentLocationMarker.setIcon(getDrawable(R.drawable.ic_gps_fixed_white_48dp));
-                currentLocationMarker.setPosition(currentLocation);
-                currentLocationMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-                map.getOverlays().add(currentLocationMarker);
-                mapController.setCenter(currentLocation);
-                map.invalidate();
-
+            if (map.getOverlays().contains(outdatedLocationMarker)) {
+                map.getOverlays().remove(outdatedLocationMarker);
             }
+
+            if (currentLocationMarker != null) {
+                map.getOverlays().remove(currentLocationMarker);
+            }
+
+
+            GeoPoint currentLocation = new GeoPoint(currentLatitude, currentLongitude);
+            currentLocationMarker = new Marker(map);
+            currentLocationMarker.setInfoWindow(null);
+            currentLocationMarker.setIcon(getDrawable(R.drawable.ic_gps_fixed_white_48dp));
+            currentLocationMarker.setPosition(currentLocation);
+            currentLocationMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+            map.getOverlays().add(currentLocationMarker);
+            mapController.setCenter(currentLocation);
+            map.invalidate();
+
         });
     }
 
@@ -228,15 +231,12 @@ public class MainActivity extends AppCompatActivity {
         helper.setForceShowIcon(true);
         helper.show();
 
-        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.currentLocationGetter:
-                        acquireLocation();
-                }
-                return true;
+        menu.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.currentLocationGetter:
+                    acquireLocation();
             }
+            return true;
         });
 
     }

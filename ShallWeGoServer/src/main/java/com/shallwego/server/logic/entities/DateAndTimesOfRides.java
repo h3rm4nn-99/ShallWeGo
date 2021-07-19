@@ -19,6 +19,6 @@ public class DateAndTimesOfRides {
     @ElementCollection
     @JoinTable(name = "past_ride_times",
             inverseJoinColumns=@JoinColumn(name="list_of_rides_class_id"))
-    @MapKeyColumn(name = "targetDay")
+    @MapKeyColumn(name = "targetDay", length = 10)
     private Map<String, RidesServiceClass> pastRideTimes;
 }

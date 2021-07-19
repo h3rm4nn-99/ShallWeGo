@@ -1,5 +1,6 @@
 package com.shallwego.server.ga;
 
+import com.shallwego.server.controller.Controller;
 import com.shallwego.server.ga.entities.Couple;
 import com.shallwego.server.ga.entities.Individual;
 import com.shallwego.server.ga.entities.Population;
@@ -67,7 +68,8 @@ public class SinglePointCrossover {
                 continue;
             }
 
-            Couple children = cross(parent1, parent2);
+            Couple tempChildren = cross(parent1, parent2);
+            Couple children = fixChildrenSize(tempChildren);
             newPopulation.addIndividual(children.getindividual1());
             newPopulation.addIndividual(children.getindividual2());
         }
@@ -118,5 +120,36 @@ public class SinglePointCrossover {
         }
 
         return new Couple(child1Individual, child2Individual);
+    }
+
+    private static Couple fixChildrenSize(Couple children) {
+        Couple fixedChildren = new Couple(null, null);
+        Individual child1 = children.getindividual1();
+        Individual child2 = children.getindividual2();
+
+        if (child1.getSize() < AlgorithmRunner.INDIVIDUAL_SIZE) {
+            addRandomUsers(child1, AlgorithmRunner.INDIVIDUAL_SIZE - child1.getSize());
+        }
+
+        if (child2.getSize() < AlgorithmRunner.INDIVIDUAL_SIZE) {
+            addRandomUsers(child2, AlgorithmRunner.INDIVIDUAL_SIZE - child2.getSize());
+        }
+
+        fixedChildren.setindividual1(child1);
+        fixedChildren.setindividual2(child2);
+
+        return fixedChildren;
+    }
+
+    private static void addRandomUsers(Individual individual, int howMany) {
+        Random r = new Random();
+        for (int i = 0; i < howMany; i++) {
+            int randomCandidateIndex = r.nextInt(Controller.users.size() - 1);
+            User candidate = Controller.users.get(randomCandidateIndex);
+            while (individual.getUsers().contains(candidate)) {
+                candidate = Controller.users.get(r.nextInt(Controller.users.size() - 1));
+            }
+            individual.addUser(candidate);
+        }
     }
 }

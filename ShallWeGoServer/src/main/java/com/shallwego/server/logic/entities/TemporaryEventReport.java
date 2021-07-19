@@ -18,6 +18,7 @@ public class TemporaryEventReport extends Report implements Serializable {
 
     private Date validityStart;
     private Date validityEnd;
+    private String eventType;
     private String description;
     private String latitude;
     private String longitude;
@@ -68,5 +69,13 @@ public class TemporaryEventReport extends Report implements Serializable {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 }

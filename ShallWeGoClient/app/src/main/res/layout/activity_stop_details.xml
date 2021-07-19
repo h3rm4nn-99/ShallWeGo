@@ -1,0 +1,187 @@
+<ScrollView
+        android:layout_height="match_parent" xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+
+
+        <org.osmdroid.views.MapView android:layout_width="match_parent"
+                                    android:id="@+id/mappaFermata"
+                                    android:layout_marginTop="25pt"
+                                    android:layout_height="100pt"
+                                    android:layout_marginBottom="10pt"
+                                    android:layout_marginHorizontal="15pt"/>
+
+
+        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                                                           app:cardCornerRadius="5pt"
+                                                           android:layout_margin="5pt"
+                                                           android:clickable="true"
+                                                           android:padding="12pt"
+                                                           android:layout_centerHorizontal="true"
+                                                           android:layout_below="@id/mappaFermata"
+                                                           android:layout_height="wrap_content"
+                                                           android:id="@+id/mainLayoutAffollamento"
+                                                           android:focusable="true">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:orientation="horizontal">
+
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="12pt"
+                           android:id="@+id/affollamentoImageView"
+                           android:src="@drawable/ic_groups_white_24dp"/>
+
+
+                <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:id="@+id/layoutAffollamento">
+
+                    <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                           android:layout_height="wrap_content"
+                                                                           android:text="Affollamento"
+                                                                           android:id="@+id/affollamentoText"
+                                                                           android:textStyle="bold"
+                                                                           android:textSize="10pt"/>
+
+                    <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_below="@id/affollamentoText">
+                        <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                               android:layout_height="wrap_content"
+                                                                               android:id="@+id/affollamentoValue"
+                                                                               android:text=""/>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                                                           android:layout_height="wrap_content"
+                                                           android:layout_margin="5pt"
+                                                           app:cardCornerRadius="5pt"
+                                                           android:padding="12pt"
+                                                           android:layout_centerHorizontal="true"
+                                                           android:layout_below="@id/mainLayoutAffollamento"
+                                                           android:id="@+id/mainLayoutQuadriOrari">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:orientation="horizontal">
+
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="12pt"
+                           android:src="@drawable/ic_feed_white_24dp"/>
+
+                <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:id="@+id/layoutQuadriOrari">
+
+                    <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                           android:layout_height="wrap_content"
+                                                                           android:text="Quadri Orari"
+                                                                           android:textColor="@color/white"
+                                                                           android:id="@+id/quadriOrariText"
+                                                                           android:textStyle="bold"
+                                                                           android:textSize="10pt"/>
+
+                    <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_below="@id/quadriOrariText">
+                        <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                               android:layout_height="wrap_content"
+                                                                               android:textColor="@color/white"
+                                                                               android:id="@+id/quadriOrariValue"
+                                                                               android:text=""/>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                                                           android:layout_height="wrap_content"
+                                                           android:layout_margin="5pt"
+                                                           app:cardCornerRadius="5pt"
+                                                           android:padding="12pt"
+                                                           android:layout_centerHorizontal="true"
+                                                           android:layout_below="@id/mainLayoutQuadriOrari"
+                                                           android:id="@+id/mainLayoutPensilina">
+
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:orientation="horizontal">
+
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="12pt"
+                           android:src="@drawable/ic_home_white_24dp"/>
+
+                <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:id="@+id/layoutPensilina">
+
+                    <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                           android:layout_height="wrap_content"
+                                                                           android:text="Pensilina"
+                                                                           android:id="@+id/pensilinaText"
+                                                                           android:textColor="@color/white"
+                                                                           android:textStyle="bold"
+                                                                           android:textSize="10pt"/>
+
+                    <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_below="@id/pensilinaText">
+                        <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                               android:layout_height="wrap_content"
+                                                                               android:textColor="@color/white"
+                                                                               android:id="@+id/pensilinaValue"
+                                                                               android:text=""/>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                                                           android:layout_height="wrap_content"
+                                                           app:cardCornerRadius="5pt"
+                                                           android:layout_margin="5pt"
+                                                           android:padding="12pt"
+                                                           android:layout_centerHorizontal="true"
+                                                           android:layout_below="@id/mainLayoutPensilina"
+                                                           android:id="@+id/mainLayoutPalinaAziendale">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:orientation="horizontal">
+
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                           android:layout_margin="12pt"
+                           android:src="@drawable/ic_flag_white_24dp"/>
+
+                <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:id="@+id/layoutPalinaAziendale">
+
+                    <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                           android:layout_height="wrap_content"
+                                                                           android:text="Paline Aziendali"
+                                                                           android:id="@+id/palinaAziendaleText"
+                                                                           android:textColor="@color/white"
+                                                                           android:textStyle="bold"
+                                                                           android:textSize="10pt"/>
+
+                    <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    android:layout_below="@id/palinaAziendaleText">
+                        <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                               android:layout_height="wrap_content"
+                                                                               android:textColor="@color/white"
+                                                                               android:id="@+id/palinaAziendaleValue"
+                                                                               android:text=""/>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:layout_marginTop="20pt"
+                      android:layout_below="@id/mainLayoutPalinaAziendale"
+                      android:orientation="vertical"
+                      android:id="@+id/containerFermata">
+
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>
