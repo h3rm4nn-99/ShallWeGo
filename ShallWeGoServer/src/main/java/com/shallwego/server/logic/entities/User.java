@@ -135,12 +135,12 @@ public class User implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
-        User that = (User) o;
-        return userName.equals(that.userName) && comune.equals(that.comune) && karma.equals(that.karma);
+        User user = (User) o;
+        return Objects.equals(getUserName(), user.getUserName()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getComune(), user.getComune()) && Objects.equals(getProvincia(), user.getProvincia()) && Objects.equals(getKarma(), user.getKarma()) && Objects.equals(getPermanenzaSullaPiattaforma(), user.getPermanenzaSullaPiattaforma()) && Objects.equals(getReports(), user.getReports()) && Objects.equals(getAssignedTo(), user.getAssignedTo()) && Objects.equals(getPreferredStops(), user.getPreferredStops());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, comune, karma);
+        return Objects.hash(getUserName(), getPassword(), getComune(), getProvincia(), getKarma(), getPermanenzaSullaPiattaforma(), getReports(), getAssignedTo(), getPreferredStops());
     }
 }

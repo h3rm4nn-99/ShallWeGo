@@ -18,40 +18,37 @@ public class AlgorithmRunner {
 
     public List<UserGA> pool;
     private Location location;
-    private Population<Individual> population;
 
     private AlgorithmRunner(Location location) {
         this.location = location;
-        this.population = new Population<>();
         this.pool = new ArrayList<>();
     }
 
-    public static AlgorithmRunner buildPopulation(List<User> users, Location location) {
+    public static AlgorithmRunner buildPopulation(List<User> users, Location location) throws IOException, ParseException {
         AlgorithmRunner instance = new AlgorithmRunner(location);
-
         for (User user : users) {
             instance.pool.add(new UserGA(user));
-        }
-
-        Random r = new Random();
-        for (int j = 0; j < AlgorithmRunner.POPULATION_SIZE; j++) {
-            Individual individual = new Individual();
-            for (int i = 0; i < AlgorithmRunner.INDIVIDUAL_SIZE; i++) {
-                UserGA user = instance.pool.get(r.nextInt(instance.pool.size() - 1));
-                if (individual.getUsers().contains(user)) {
-                    i--;
-                    continue;
-                }
-                individual.addUser(user);
-            }
-            instance.population.addIndividual(individual);
         }
 
         return instance;
     }
 
     public Set<User> run() throws IOException, ParseException {
-        Population<Individual> bestPopulation = this.population;
+        Random r = new Random();
+        Population<Individual> startPopulation = new Population<>();
+        for (int j = 0; j < AlgorithmRunner.POPULATION_SIZE; j++) {
+            Individual individual = new Individual();
+            for (int i = 0; i < AlgorithmRunner.INDIVIDUAL_SIZE; i++) {
+                UserGA user = pool.get(r.nextInt(pool.size() - 1));
+                if (individual.getUsers().contains(user)) {
+                    i--;
+                    continue;
+                }
+                individual.addUser(user);
+            }
+            startPopulation.addIndividual(individual);
+        }
+        Population<Individual> bestPopulation = startPopulation;
         Population<Individual> archive = new Population<>();
         int generationsWithoutImprovement = 0;
         int i;
@@ -59,7 +56,7 @@ public class AlgorithmRunner {
         long startTime = ZonedDateTime.now().toInstant().toEpochMilli();
         for (i = 0; i < 25; i++) {
 
-            Population<Individual> selectedPopulation = new RouletteWheel(population).run(location);
+            Population<Individual> selectedPopulation = new RouletteWheel(bestPopulation).run(location);
             if (selectedPopulation.isEmpty()) {
                 return null;
             }
@@ -103,7 +100,10 @@ public class AlgorithmRunner {
                 candidate = bestIndividualAfterMutation;
             }
             System.out.println("Mutated population " + mutatedPopulation.getAverageFitness(location) + " Size " + mutatedPopulation.getPopulationSize());
-            archive.addIndividual(candidate);
+
+            if (!archive.getIndividuals().contains(candidate)) {
+                archive.addIndividual(candidate);
+            }
 
             if (mutatedPopulation.getAverageFitness(location) > bestPopulation.getAverageFitness(location)) {
                 generationsWithoutImprovement = 0;
@@ -115,8 +115,6 @@ public class AlgorithmRunner {
                 }
             }
 
-            this.population = bestPopulation;
-
             long currentTime = ZonedDateTime.now().toInstant().toEpochMilli();
             if (currentTime - startTime >= 150000) {
                 break;
@@ -127,12 +125,11 @@ public class AlgorithmRunner {
             bestPopulation = archive;
         }
 
-        this.population = bestPopulation;
 
-        System.out.println("Fine del processo. Fitness popolazione: " + this.population.getAverageFitness(location));
+        System.out.println("Fine del processo. Fitness popolazione: " + bestPopulation.getAverageFitness(location));
 
         int counter = 0;
-        for (Individual individual: this.population.getIndividuals()) {
+        for (Individual individual: bestPopulation.getIndividuals()) {
             System.out.println("Individuo " + counter);
             for (UserGA user: individual.getUsers()) {
                 System.out.print(user.getTarget().getComune() + " ");

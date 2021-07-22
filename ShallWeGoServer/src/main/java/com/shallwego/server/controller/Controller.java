@@ -50,7 +50,7 @@ public class Controller {
 
     public static List<User> users;
 
-    public Controller() throws IOException, ParseException {
+    public Controller() {
     }
 
     @PutMapping("/api/putLocation")
@@ -69,9 +69,8 @@ public class Controller {
             users = userRepository.findByProvincia("Salerno");
         }
 
-        Random r = new Random();
 
-        Location location = new Location(40.74211, 14.6707523);
+        Location location = new Location(40.772812, 14.799443);
         Set<User> bestUsers = AlgorithmRunner.buildPopulation(users, location).run();
 
         return "Utenti migliori: " + bestUsers.toString();

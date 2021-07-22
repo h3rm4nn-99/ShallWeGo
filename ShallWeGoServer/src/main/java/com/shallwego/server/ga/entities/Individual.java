@@ -50,13 +50,14 @@ public class Individual {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Individual)) return false;
+
         Individual that = (Individual) o;
-        return users.equals(that.users);
+
+        return getUsers().equals(that.getUsers());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(users);
+        return getUsers().hashCode();
     }
-
 }
