@@ -4,12 +4,13 @@ import com.shallwego.server.controller.Controller;
 import com.shallwego.server.ga.entities.Couple;
 import com.shallwego.server.ga.entities.Individual;
 import com.shallwego.server.ga.entities.Population;
+import com.shallwego.server.ga.entities.UserGA;
 import com.shallwego.server.logic.entities.User;
 
 import java.util.*;
 
 public class SinglePointCrossover {
-    public static Population<Individual> execute(Population<Individual> parents, int probability) {
+    public static Population<Individual> execute(AlgorithmRunner runner, Population<Individual> parents, int probability) {
         Population<Individual> newPopulation = new Population<>();
         Set<Couple> couples = new HashSet<>();
         int size = parents.getPopulationSize();
@@ -69,7 +70,7 @@ public class SinglePointCrossover {
             }
 
             Couple tempChildren = cross(parent1, parent2);
-            Couple children = fixChildrenSize(tempChildren);
+            Couple children = fixChildrenSize(runner, tempChildren);
             newPopulation.addIndividual(children.getindividual1());
             newPopulation.addIndividual(children.getindividual2());
         }
@@ -80,14 +81,14 @@ public class SinglePointCrossover {
     private static Couple cross(Individual parent1, Individual parent2) {
         Object[] tempParent1Array = parent1.getUsers().toArray();
         Object[] tempParent2Array = parent2.getUsers().toArray();
-        User[] parent1Array = Arrays.copyOf(tempParent1Array, tempParent1Array.length, User[].class);
-        User[] parent2Array = Arrays.copyOf(tempParent2Array, tempParent2Array.length, User[].class);
+        UserGA[] parent1Array = Arrays.copyOf(tempParent1Array, tempParent1Array.length, UserGA[].class);
+        UserGA[] parent2Array = Arrays.copyOf(tempParent2Array, tempParent2Array.length, UserGA[].class);
         int parent1Size = parent1Array.length;
         int parent2Size = parent2Array.length;
 
         int j, k;
 
-        List<User> child1 = new ArrayList<>();
+        List<UserGA> child1 = new ArrayList<>();
 
         for (j = 0; j < parent1Size / 2; j++) {
             child1.add(parent1Array[j]);
@@ -97,7 +98,7 @@ public class SinglePointCrossover {
             child1.add(parent2Array[k]);
         }
 
-        List<User> child2 = new ArrayList<>();
+        List<UserGA> child2 = new ArrayList<>();
 
         for (j = 0; j < parent2Size / 2; j++) {
             child2.add(parent2Array[j]);
@@ -109,30 +110,30 @@ public class SinglePointCrossover {
 
         Individual child1Individual = new Individual();
 
-        for (User user: child1) {
+        for (UserGA user: child1) {
             child1Individual.addUser(user);
         }
 
         Individual child2Individual = new Individual();
 
-        for (User user: child2) {
+        for (UserGA user: child2) {
             child2Individual.addUser(user);
         }
 
         return new Couple(child1Individual, child2Individual);
     }
 
-    private static Couple fixChildrenSize(Couple children) {
+    private static Couple fixChildrenSize(AlgorithmRunner runner, Couple children) {
         Couple fixedChildren = new Couple(null, null);
         Individual child1 = children.getindividual1();
         Individual child2 = children.getindividual2();
 
         if (child1.getSize() < AlgorithmRunner.INDIVIDUAL_SIZE) {
-            addRandomUsers(child1, AlgorithmRunner.INDIVIDUAL_SIZE - child1.getSize());
+            addRandomUsers(runner, child1, AlgorithmRunner.INDIVIDUAL_SIZE - child1.getSize());
         }
 
         if (child2.getSize() < AlgorithmRunner.INDIVIDUAL_SIZE) {
-            addRandomUsers(child2, AlgorithmRunner.INDIVIDUAL_SIZE - child2.getSize());
+            addRandomUsers(runner, child2, AlgorithmRunner.INDIVIDUAL_SIZE - child2.getSize());
         }
 
         fixedChildren.setindividual1(child1);
@@ -141,13 +142,13 @@ public class SinglePointCrossover {
         return fixedChildren;
     }
 
-    private static void addRandomUsers(Individual individual, int howMany) {
+    private static void addRandomUsers(AlgorithmRunner runner, Individual individual, int howMany) {
         Random r = new Random();
         for (int i = 0; i < howMany; i++) {
-            int randomCandidateIndex = r.nextInt(Controller.users.size() - 1);
-            User candidate = Controller.users.get(randomCandidateIndex);
+            int randomCandidateIndex = r.nextInt(runner.pool.size() - 1);
+            UserGA candidate = runner.pool.get(randomCandidateIndex);
             while (individual.getUsers().contains(candidate)) {
-                candidate = Controller.users.get(r.nextInt(Controller.users.size() - 1));
+                candidate = runner.pool.get(r.nextInt(runner.pool.size() - 1));
             }
             individual.addUser(candidate);
         }

@@ -50,6 +50,9 @@ public class Controller {
 
     public static List<User> users;
 
+    public Controller() throws IOException, ParseException {
+    }
+
     @PutMapping("/api/putLocation")
     public String printLocation(@RequestParam("latitude") String latitude, @RequestParam("longitude") String longitude) {
         System.out.println("Latitudine " + latitude + "\nLongitudine " + longitude);
@@ -67,32 +70,10 @@ public class Controller {
         }
 
         Random r = new Random();
-        Population<Individual> startPopulation = new Population<>();
-        for (int j = 0; j < AlgorithmRunner.POPULATION_SIZE; j++) {
-            Individual individual = new Individual();
-            for (int i = 0; i < AlgorithmRunner.INDIVIDUAL_SIZE; i++) {
-                User user = users.get(r.nextInt(users.size() - 1));
-                if (individual.getUsers().contains(user)) {
-                    i--;
-                    continue;
-                }
-                individual.addUser(user);
-            }
-            startPopulation.addIndividual(individual);
-        }
-        Location location = new Location(40.0742524, 15.6235266);
-        Population<Individual> bestPopulation = AlgorithmRunner.run(startPopulation, location);
-        int i = 0;
-        for (Individual individual: bestPopulation.getIndividuals()) {
-            System.out.println("Individuo " + i);
-            for (User user: individual.getUsers()) {
-                System.out.print(user.getComune() + " ");
-            }
-            System.out.println();
-            i++;
-        }
 
-        Set<User> bestUsers = Utils.bestUsersFromPopulation(bestPopulation, location);
+        Location location = new Location(40.74211, 14.6707523);
+        Set<User> bestUsers = AlgorithmRunner.buildPopulation(users, location).run();
+
         return "Utenti migliori: " + bestUsers.toString();
     }
 

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.shallwego.server.ga.entities.Individual;
 import com.shallwego.server.ga.entities.Population;
+import com.shallwego.server.ga.entities.UserGA;
 import com.shallwego.server.logic.entities.Report;
 import com.shallwego.server.logic.entities.Stop;
 import com.shallwego.server.logic.entities.User;
@@ -39,8 +40,10 @@ public class Utils {
         double sumOfFitnessValues = fitnessValues.stream().mapToDouble(value -> value).sum(); //Please forgive me
 
         for (Individual user: usersWithFitness.keySet()) {
+
             normalizedFitness.put(user, (usersWithFitness.get(user) / sumOfFitnessValues));
         }
+
         return normalizedFitness;
     }
 
@@ -86,86 +89,6 @@ public class Utils {
         obj.addProperty("isVerified", report.isVerified());
 
         return obj;
-    }
-
-    public static Set<User> bestUsersFromPopulation(Population<Individual> population, Location location) throws IOException, ParseException {
-        Set<User> bestUsers = new HashSet<>();
-
-        for (Individual individual: population.getIndividuals()) {
-            List<User> userList = new ArrayList<>(individual.getUsers());
-            userList.sort((user1, user2) -> {
-                double user1fitness = 0d;
-                double user2fitness = 0d;
-                try {
-                    user1fitness = getSingleUserFitness(user1, location);
-                    user2fitness = getSingleUserFitness(user2, location);
-
-                } catch (IOException | ParseException e) {
-                    e.printStackTrace();
-                }
-                if (user1fitness < user2fitness) {
-                    return -1;
-                } else if (user1fitness == user2fitness) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            });
-
-            for (int i = userList.size() - 1; i >= 0; i--) {
-                if (!bestUsers.contains(userList.get(i))) {
-                    bestUsers.add(userList.get(i));
-                    break;
-                }
-            }
-        }
-
-        if (bestUsers.size() >= 5) {
-            List<User> cutList = new ArrayList<>(bestUsers);
-            cutList.sort((user1, user2) -> {
-                double user1fitness = 0d;
-                double user2fitness = 0d;
-                try {
-                    user1fitness = getSingleUserFitness(user1, location);
-                    user2fitness = getSingleUserFitness(user2, location);
-
-                } catch (IOException | ParseException e) {
-                    e.printStackTrace();
-                }
-                if (user1fitness < user2fitness) {
-                    return -1;
-                } else if (user1fitness == user2fitness) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            });
-
-            Collections.reverse(cutList);
-            return new HashSet<>(cutList.subList(0, 5));
-        }
-
-        return bestUsers;
-    }
-
-    private static double getSingleUserFitness(User user, Location location) throws IOException, ParseException {
-        double distance = location.distance(user.getComune());
-        double distancePartialFitness;
-        if (distance == 0) {
-            distancePartialFitness = 100 / (distance + 0.3); //avoid division by 0
-        } else {
-            distancePartialFitness = Math.pow(30 / distance, 2);
-        }
-
-        double karmaPartialFitness;
-
-        if (user.getKarma() < 42) {
-            karmaPartialFitness = user.getKarma();
-        } else {
-            karmaPartialFitness = user.getKarma() * 2;
-        }
-
-        return (4 * distancePartialFitness) + (2 * karmaPartialFitness) / 2;
     }
 
     public static String getRoadNameByCoordinates(String latitude, String longitude) throws IOException {

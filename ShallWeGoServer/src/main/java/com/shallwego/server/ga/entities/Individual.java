@@ -1,7 +1,6 @@
 package com.shallwego.server.ga.entities;
 
 import com.shallwego.server.service.Location;
-import com.shallwego.server.logic.entities.User;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -10,21 +9,21 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Individual {
-    private Set<User> users;
+    private Set<UserGA> users;
 
     public Individual() {
         users = new HashSet<>();
     }
 
-    public Set<User> getUsers() {
+    public Set<UserGA> getUsers() {
         return users;
     }
 
-    public boolean addUser(User e) {
+    public boolean addUser(UserGA e) {
         return users.add(e);
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers(Set<UserGA> users) {
         this.users = users;
     }
 
@@ -34,23 +33,8 @@ public class Individual {
 
     public double getFitness(Location location) throws IOException, ParseException {
         double fitness = 0.0;
-        for (User entity: this.getUsers()) {
-            double distance = location.distance(entity.getComune());
-            double distancePartialFitness;
-            if (distance == 0) {
-                distancePartialFitness = 100 / (distance + 0.3); //avoid division by 0
-            } else {
-                distancePartialFitness = Math.pow(30 / distance, 2);
-            }
-
-            double karmaPartialFitness;
-
-            if (entity.getKarma() < 42) {
-                karmaPartialFitness = entity.getKarma();
-            } else {
-                karmaPartialFitness = entity.getKarma() * 2;
-            }
-            fitness += (4 * distancePartialFitness) + (2 * karmaPartialFitness) / 2;
+        for (UserGA entity: this.getUsers()) {
+            fitness += entity.getFitness(location);
         }
         return fitness / this.getSize();
     }
