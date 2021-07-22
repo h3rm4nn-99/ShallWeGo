@@ -29,7 +29,6 @@ public class AlgorithmRunner {
     public static AlgorithmRunner buildPopulation(List<User> users, Location location) {
         AlgorithmRunner instance = new AlgorithmRunner(location);
 
-
         for (User user : users) {
             instance.pool.add(new UserGA(user));
         }
@@ -115,19 +114,18 @@ public class AlgorithmRunner {
                     break;
                 }
             }
-            this.population = mutatedPopulation;
 
             long currentTime = ZonedDateTime.now().toInstant().toEpochMilli();
             if (currentTime - startTime >= 150000) {
                 break;
             }
+            this.population = bestPopulation;
         }
 
         if (bestPopulation.getAverageFitness(location) <= archive.getAverageFitness(location)) {
             bestPopulation = archive;
         }
 
-        this.population = bestPopulation;
 
         System.out.println("Fine del processo. Fitness popolazione: " + this.population.getAverageFitness(location));
 
