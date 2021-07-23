@@ -9,13 +9,17 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Individual {
-    private Set<UserGA> users;
+    private HashSet<UserGA> users;
 
     public Individual() {
         users = new HashSet<>();
     }
 
-    public Set<UserGA> getUsers() {
+    public Individual(HashSet<UserGA> users) {
+        this.users = new HashSet<>(users);
+    }
+
+    public HashSet<UserGA> getUsers() {
         return users;
     }
 
@@ -23,7 +27,7 @@ public class Individual {
         return users.add(e);
     }
 
-    public void setUsers(Set<UserGA> users) {
+    public void setUsers(HashSet<UserGA> users) {
         this.users = users;
     }
 

@@ -101,9 +101,7 @@ public class AlgorithmRunner {
             }
             System.out.println("Mutated population " + mutatedPopulation.getAverageFitness(location) + " Size " + mutatedPopulation.getPopulationSize());
 
-            if (!archive.getIndividuals().contains(candidate)) {
-                archive.addIndividual(candidate);
-            }
+            archive.addIndividual(new Individual(candidate.getUsers()));
 
             if (mutatedPopulation.getAverageFitness(location) > bestPopulation.getAverageFitness(location)) {
                 generationsWithoutImprovement = 0;
