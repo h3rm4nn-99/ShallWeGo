@@ -91,7 +91,7 @@ public class StopDetails extends AppCompatActivity {
             pensilinaValue.setText(hasShelter? "Sì" : "No");
             palinaAziendale.setText(hasStopSign? "Sì" : "No");
 
-            HashMap<String, List<String>> lines = new HashMap<>();
+            HashMap<String, List<String[]>> lines = new HashMap<>();
             JsonArray linesJson = responseJson.getAsJsonArray("lines");
             for (JsonElement currentLine : linesJson) {
                 JsonObject object = (JsonObject) currentLine;
@@ -100,7 +100,11 @@ public class StopDetails extends AppCompatActivity {
                 if (lines.get(company) == null) {
                     lines.put(company, new ArrayList<>());
                 }
-                lines.get(company).add(object.get("lineIdentifier").toString().replace("\"", "") + " " + object.get("destination").toString().replace("\"", ""));
+
+                String[] nameAndDestination = new String[2];
+                nameAndDestination[0] = object.get("lineIdentifier").toString().replace("\"", "");
+                nameAndDestination[1] = object.get("destination").toString().replace("\"", "");
+                lines.get(company).add(nameAndDestination);
             }
 
             LayoutInflater inflater = getLayoutInflater();
@@ -114,12 +118,20 @@ public class StopDetails extends AppCompatActivity {
                 MaterialTextView companyLabel = v.findViewById(R.id.companyName);
                 companyLabel.setText(company);
 
-                List<String> companyLines = lines.get(company);
+                List<String[]> companyLines = lines.get(company);
 
-                for (String lineName : companyLines) {
+                for (String[] lineName : companyLines) {
                     Chip chip = new Chip(this);
-                    chip.setText(lineName);
+                    chip.setText(lineName[0] + " " + lineName[1]);
                     chip.setTextSize(TypedValue.COMPLEX_UNIT_PT, 8);
+                    chip.setOnClickListener((view) -> {
+                        Intent i = new Intent(StopDetails.this, LineDetails.class);
+                        Toast.makeText(this, lineName[0], Toast.LENGTH_SHORT).show();
+                        i.putExtra("lineIdentifier", lineName[0]);
+                        i.putExtra("destination", lineName[1]);
+                        i.putExtra("companyName", company);
+                        startActivity(i);
+                    });
                     chipGroup.addView(chip);
                 }
 

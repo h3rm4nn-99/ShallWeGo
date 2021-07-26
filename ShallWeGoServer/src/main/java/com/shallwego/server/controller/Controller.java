@@ -2,13 +2,9 @@ package com.shallwego.server.controller;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.shallwego.server.ga.AlgorithmRunner;
-import com.shallwego.server.ga.entities.Individual;
-import com.shallwego.server.ga.entities.Population;
 import com.shallwego.server.logic.entities.*;
 import com.shallwego.server.logic.service.*;
-import com.shallwego.server.service.IpAddress;
 import com.shallwego.server.service.Location;
 import com.shallwego.server.service.Utils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -20,9 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -148,7 +141,7 @@ public class Controller {
             } else if (report instanceof TemporaryEventReport) {
                 TemporaryEventReport temporaryEventReport = (TemporaryEventReport) report;
                 obj = Utils.setUpReportJson(temporaryEventReport);
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YYYY HH:mm");
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 obj.addProperty("validityStart", formatter.format(temporaryEventReport.getValidityStart()));
                 obj.addProperty("validityEnd", formatter.format(temporaryEventReport.getValidityEnd()));
                 List<Line> linesAffected = temporaryEventReport.getLinesAffectedEvent();
@@ -295,5 +288,67 @@ public class Controller {
             returnArray.add(targetJson);
         }
         return returnArray.toString();
+    }
+
+    @GetMapping("/api/eventById/{eventId}")
+    public String eventById(@PathVariable String eventId) throws IOException {
+        TemporaryEventReport target = temporaryEventReportRepository.findById(Integer.parseInt(eventId)).get();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        JsonObject targetJson = new JsonObject();
+        targetJson.addProperty("id", target.getId());
+        targetJson.addProperty("type", target.getEventType());
+        targetJson.addProperty("place", Utils.getRoadNameByCoordinates(target.getLatitude(), target.getLongitude()));
+        targetJson.addProperty("validityStart", formatter.format(target.getValidityStart()));
+        targetJson.addProperty("validityEnd", formatter.format(target.getValidityEnd()));
+        targetJson.addProperty("latitude", target.getLatitude());
+        targetJson.addProperty("longitude", target.getLongitude());
+        targetJson.addProperty("description", target.getDescription());
+
+        List<Line> linesAffected = target.getLinesAffectedEvent();
+        JsonArray linesJson = new JsonArray();
+
+        for (Line line: linesAffected) {
+            JsonObject lineJsonObject = new JsonObject();
+            lineJsonObject.addProperty("lineIdentifier", line.getIdentifier());
+            lineJsonObject.addProperty("companyName", line.getCompany().getName());
+            lineJsonObject.addProperty("destination", line.getDestination());
+
+            linesJson.add(lineJsonObject);
+        }
+
+        targetJson.add("affectedLines", linesJson);
+
+        return targetJson.toString();
+    }
+
+    @GetMapping("/api/getLineDetails/{lineIdentifier}/{companyName}/{destination}")
+    public String getLineDetails(@PathVariable String lineIdentifier, @PathVariable String companyName, @PathVariable String destination) {
+        Line line = lineRepository.findById(new LineCompositeKey(lineIdentifier, companyRepository.findById(companyName).get(), destination)).get();
+        JsonObject result = new JsonObject();
+        result.addProperty("lineIdentifier", line.getIdentifier());
+        result.addProperty("companyName", line.getCompany().getName());
+        result.addProperty("origin", line.getOrigin());
+        result.addProperty("destination", line.getDestination());
+        JsonArray routesJson = new JsonArray();
+        List<Route> routes = line.getPaths();
+        for (Route route: routes) {
+            JsonObject object = new JsonObject();
+            object.addProperty("pathname", route.getPathname());
+            JsonArray stopOrders = new JsonArray();
+            for (Integer stopId: route.getStopIds()) {
+                JsonObject stopDetails = new JsonObject();
+                Stop s = stopRepository.findById(stopId).get();
+                stopDetails.addProperty("name", s.getName());
+                stopDetails.addProperty("stopId", stopId);
+                stopDetails.addProperty("latitude", s.getLatitude());
+                stopDetails.addProperty("longitude", s.getLongitude());
+                stopOrders.add(stopDetails);
+            }
+            object.add("stops", stopOrders);
+            routesJson.add(object);
+        }
+        result.add("routes", routesJson);
+
+        return result.toString();
     }
 }

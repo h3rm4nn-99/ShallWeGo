@@ -71,7 +71,7 @@ public class AlertsNearby extends AppCompatActivity {
                     double latitude = Double.parseDouble(currentAlert.get("latitude").toString().replace("\"", ""));
                     double longitude = Double.parseDouble(currentAlert.get("longitude").toString().replace("\"", ""));
 
-                    View view = getLayoutInflater().inflate(R.layout.evento_general_cardview, null);
+                    View view = getLayoutInflater().inflate(R.layout.evento_nearby_cardview, null);
                     MaterialCardView materialCardView = view.findViewById(R.id.eventCardview);
                     MapView map = view.findViewById(R.id.alertMap);
                     MaterialTextView eventType = view.findViewById(R.id.eventType);

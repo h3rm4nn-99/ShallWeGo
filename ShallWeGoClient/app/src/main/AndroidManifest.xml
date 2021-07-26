@@ -19,7 +19,8 @@
             android:usesCleartextTraffic="true">
         <activity android:name=".AlertsNearby">
         </activity>
-        <activity android:name=".LineDetails">
+        <activity android:name=".LineDetails"
+                  android:theme="@style/Theme.ShallWeGoNoBar">
         </activity>
         <activity android:name=".EventDetails">
         </activity>

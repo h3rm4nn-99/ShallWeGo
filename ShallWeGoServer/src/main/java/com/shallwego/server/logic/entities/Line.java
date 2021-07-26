@@ -5,7 +5,9 @@ import com.shallwego.server.logic.service.LineCompositeKey;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @IdClass(LineCompositeKey.class)
@@ -39,15 +41,15 @@ public class Line implements Serializable {
     @OneToMany(mappedBy = "targetLine")
     private List<DateAndTimesOfRides> dateAndTimesOfRidesByLine;
 
-    @ElementCollection
-    private List<Integer> stopOrder = new ArrayList<>();
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL)
+    private List<Route> paths;
 
-    public List<Integer> getStopOrder() {
-        return stopOrder;
+    public List<Route> getPaths() {
+        return paths;
     }
 
-    public void setStopOrder(List<Integer> stopOrder) {
-        this.stopOrder = stopOrder;
+    public void setPaths(List<Route> paths) {
+        this.paths = paths;
     }
 
     public String getIdentifier() {

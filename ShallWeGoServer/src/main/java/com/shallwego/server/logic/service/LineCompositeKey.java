@@ -13,6 +13,12 @@ public class LineCompositeKey implements Serializable {
 
     public LineCompositeKey() {}
 
+    public LineCompositeKey(String identifier, Company company, String destination) {
+        this.identifier = identifier;
+        this.company = company;
+        this.destination = destination;
+    }
+
     public String getIdentifier() {
         return identifier;
     }

@@ -88,7 +88,7 @@ public class MyReportsActivity extends AppCompatActivity {
                         ImageView dettagliEvento = eventReportView.findViewById(R.id.dettagliEvento);
                         dettagliEvento.setOnClickListener((view) -> {
                             Intent i = new Intent(MyReportsActivity.this, EventDetails.class);
-                            i.putExtra("id", currentReport.get("id").toString().replace("\"", ""));
+                            i.putExtra("eventId", currentReport.get("id").toString().replace("\"", ""));
                             startActivity(i);
                         });
                         container.addView(eventReportView, index++);
@@ -107,6 +107,7 @@ public class MyReportsActivity extends AppCompatActivity {
                             Intent i = new Intent(MyReportsActivity.this, LineDetails.class);
                             i.putExtra("lineIdentifier", currentReport.get("lineIdentifier").toString().replace("\"", ""));
                             i.putExtra("companyName", currentReport.get("companyName").toString().replace("\"", ""));
+                            i.putExtra("destination", currentReport.get("destination").toString().replace("\"", ""));
                             startActivity(i);
                         });
                         container.addView(lineReportView, index++);
