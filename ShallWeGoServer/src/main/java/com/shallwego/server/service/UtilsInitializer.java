@@ -19,7 +19,7 @@ public class UtilsInitializer implements ApplicationListener<ApplicationReadyEve
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         System.out.println("Inizializzazione del database dei comuni...");
-        HashMap<String, List<String>> province = new HashMap<>();
+        HashMap<String, Set<String>> province = new HashMap<>();
         JSONParser parser = new JSONParser();
         Random r = new Random();
         JSONArray array = null;
@@ -39,7 +39,7 @@ public class UtilsInitializer implements ApplicationListener<ApplicationReadyEve
             String comune = (String) obj.get("nome");
             System.out.println(comune);
             if (!province.containsKey(provincia)) {
-                province.put(provincia, new ArrayList<>());
+                province.put(provincia, new HashSet<String>());
             }
             province.get(provincia).add(comune);
         }

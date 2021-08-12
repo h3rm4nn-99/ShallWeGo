@@ -20,6 +20,10 @@ public class Population<T extends Individual> {
         return individualSet;
     }
 
+    public void setIndividualSet(Set<Individual> individualSet) {
+        this.individualSet = individualSet;
+    }
+
     public Integer getPopulationSize() {
         return individualSet.size();
     }

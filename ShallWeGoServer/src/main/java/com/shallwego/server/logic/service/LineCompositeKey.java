@@ -1,22 +1,17 @@
 package com.shallwego.server.logic.service;
 
-import com.shallwego.server.logic.entities.Company;
-
 import java.io.Serializable;
 import java.util.Objects;
 
-
 public class LineCompositeKey implements Serializable {
     private String identifier;
-    private Company company;
-    private String destination;
+    private String company;
 
     public LineCompositeKey() {}
 
-    public LineCompositeKey(String identifier, Company company, String destination) {
+    public LineCompositeKey(String identifier, String companyName) {
         this.identifier = identifier;
-        this.company = company;
-        this.destination = destination;
+        this.company = companyName;
     }
 
     public String getIdentifier() {
@@ -27,20 +22,12 @@ public class LineCompositeKey implements Serializable {
         this.identifier = identifier;
     }
 
-    public Company getCompany() {
+    public String getCompany() {
         return company;
     }
 
-    public void setCompany(Company company) {
+    public void setCompany(String company) {
         this.company = company;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
     }
 
     @Override

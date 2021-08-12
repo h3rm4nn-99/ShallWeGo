@@ -2,11 +2,10 @@ package com.shallwego.server.logic.entities;
 
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +19,12 @@ public class User implements Serializable {
     private String comune;
     private String provincia;
     private Double karma;
-    private Integer permanenzaSullaPiattaforma;
 
     @OneToMany(mappedBy = "user")
     private List<Report> reports;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "verifiers", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<Report> assignedTo = new ArrayList<>();
 
     @ManyToMany
@@ -81,14 +80,6 @@ public class User implements Serializable {
         this.provincia = provincia;
     }
 
-    public Integer getPermanenzaSullaPiattaforma() {
-        return permanenzaSullaPiattaforma;
-    }
-
-    public void setPermanenzaSullaPiattaforma(Integer permanenzaSullaPiattaforma) {
-        this.permanenzaSullaPiattaforma = permanenzaSullaPiattaforma;
-    }
-
     public List<Report> getReports() {
         return reports;
     }
@@ -121,6 +112,10 @@ public class User implements Serializable {
         this.preferredStops.remove(s);
     }
 
+    public void addAssignedTo(Report report) {
+        assignedTo.add(report);
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -136,11 +131,11 @@ public class User implements Serializable {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return Objects.equals(getUserName(), user.getUserName()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getComune(), user.getComune()) && Objects.equals(getProvincia(), user.getProvincia()) && Objects.equals(getKarma(), user.getKarma()) && Objects.equals(getPermanenzaSullaPiattaforma(), user.getPermanenzaSullaPiattaforma()) && Objects.equals(getReports(), user.getReports()) && Objects.equals(getAssignedTo(), user.getAssignedTo()) && Objects.equals(getPreferredStops(), user.getPreferredStops());
+        return Objects.equals(getUserName(), user.getUserName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserName(), getPassword(), getComune(), getProvincia(), getKarma(), getPermanenzaSullaPiattaforma(), getReports(), getAssignedTo(), getPreferredStops());
+        return Objects.hash(getUserName());
     }
 }

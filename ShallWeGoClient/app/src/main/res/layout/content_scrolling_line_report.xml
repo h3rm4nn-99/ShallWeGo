@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/activity_line_report"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".LineReportActivity">
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+                  android:layout_marginTop="34dp">
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/company"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                android:hint="Azienda">
+
+            <AutoCompleteTextView
+                    android:id="@+id/editTextCompany"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+            />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+            <com.google.android.material.checkbox.MaterialCheckBox android:layout_width="wrap_content"
+                                                                   android:layout_height="wrap_content"
+                                                                   android:id="@+id/hasIdentifier"
+                                                                   android:text="Questa linea possiede un identificativo?"/>
+
+            <ImageView android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_gravity="center"
+                       android:tag="identifier"
+                       android:layout_marginStart="10dp"
+                       android:id="@+id/moreInfoIdentifier"
+                       android:src="@drawable/ic_help_white_24dp"/>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/identifier"
+                android:layout_marginBottom="20dp"
+                android:layout_marginHorizontal="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                android:hint="Identificativo Linea">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextIdentifier"
+                    android:enabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+            />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+            <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                   android:layout_height="wrap_content"
+                                                                   android:layout_marginStart="10pt"
+                                                                   android:gravity="center"
+                                                                   android:layout_gravity="center"
+                                                                   android:text="Origine?"/>
+
+            <ImageView android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_gravity="center"
+                       android:layout_marginStart="10dp"
+                       android:tag="origin"
+                       android:id="@+id/moreInfoOrigin"
+                       android:src="@drawable/ic_help_white_24dp"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical">
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:baselineAligned="false">
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/provinciaOrigin"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.50"
+                        android:layout_height="wrap_content"
+                        app:errorEnabled="true"
+                        android:hint="Provincia">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/provinciaOriginEditText"
+                            android:inputType="none"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                    />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/comuneOrigin"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.50"
+                        android:layout_height="wrap_content"
+                        app:errorEnabled="true"
+                        android:hint="Comune">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/comuneOriginEditText"
+                            android:layout_width="match_parent"
+                            android:inputType="none"
+                            android:layout_height="wrap_content"
+                    />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/furtherDetailsOrigin"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="true"
+                    android:hint="Nome Origine?">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/furtherDetailsOriginEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+            <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                   android:layout_height="wrap_content"
+                                                                   android:layout_marginStart="10pt"
+                                                                   android:gravity="center"
+                                                                   android:layout_gravity="center"
+                                                                   android:text="Destinazione?"/>
+
+            <ImageView android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_gravity="center"
+                       android:layout_marginStart="10dp"
+                       android:tag="destination"
+                       android:id="@+id/moreInfoDestination"
+                       android:src="@drawable/ic_help_white_24dp"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical">
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:baselineAligned="false">
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/provinciaDestination"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.50"
+                        android:layout_height="wrap_content"
+                        app:errorEnabled="true"
+                        android:hint="Provincia">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/provinciaDestinationEditText"
+                            android:inputType="none"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                    />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/comuneDestination"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.50"
+                        android:layout_height="wrap_content"
+                        app:errorEnabled="true"
+                        android:hint="Comune">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/comuneDestinationEditText"
+                            android:inputType="none"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                    />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/furtherDetailsDestination"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="true"
+                    android:hint="Nome Destinazione?">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/furtherDetailsDestinationEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:id="@+id/destinationsContainer">
+            <HorizontalScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+                <com.google.android.material.chip.ChipGroup android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:id="@+id/chipGroupOtherDestinations"
+                                                            app:chipSpacing="5dp"
+                                                            app:singleLine="true">
+
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+        </LinearLayout>
+        <com.google.android.material.chip.Chip android:layout_width="wrap_content"
+                                               android:layout_height="wrap_content"
+                                               android:layout_margin="10dp"
+                                               app:chipIcon="@drawable/ic_add_circle_white_24dp"
+                                               android:text="Aggiungi un'altra destinazione"
+                                               android:id="@+id/anotherDestination"/>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

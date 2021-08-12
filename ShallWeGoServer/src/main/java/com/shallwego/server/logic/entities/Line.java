@@ -1,17 +1,20 @@
 package com.shallwego.server.logic.entities;
 
+import com.shallwego.server.logic.service.DestinationsByStopAndLineRepository;
 import com.shallwego.server.logic.service.LineCompositeKey;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 @Entity
+
 @IdClass(LineCompositeKey.class)
 public class Line implements Serializable {
+
 
     public Line() {}
 
@@ -19,27 +22,31 @@ public class Line implements Serializable {
     @Column(length = 100)
     private String identifier;
 
-    @ManyToOne
     @Id
+    @JoinColumn(name = "name", referencedColumnName = "name")
+    @ManyToOne
     private Company company;
 
-    private String origin;
-
-    @Id
-    @Column(length = 100)
-    private String destination;
-
-    @ManyToMany(mappedBy = "lines")
-    private List<Stop> stops;
+    @ElementCollection
+    private List<String> destinations;
 
     @ManyToMany(mappedBy = "linesAffectedEvent")
     private List<TemporaryEventReport> eventReports;
 
-    @OneToOne(mappedBy = "lineAffected")
+    @ManyToMany(mappedBy = "lines")
+    private List<Stop> stops;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "lineAffected")
     private LineReport lineReport;
 
     @OneToMany(mappedBy = "targetLine")
-    private List<DateAndTimesOfRides> dateAndTimesOfRidesByLine;
+    private List<DateAndTimesOfRides> dateAndTimesOfRidesByLine = new ArrayList<>();
+
+    @OneToMany(mappedBy = "targetLine", fetch = FetchType.EAGER)
+    private List<DestinationsByStopAndLine> destinationsByLine = new ArrayList<>(); //needed for the many-to-many relation.
+
+    @OneToMany(mappedBy = "targetLine")
+    private List<DestinationsByReportAndLine> destinationsByLineReport = new ArrayList<>();
 
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL)
     private List<Route> paths;
@@ -68,22 +75,6 @@ public class Line implements Serializable {
         this.company = company;
     }
 
-    public String getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(String origin) {
-        this.origin = origin;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
-
     public Report getLineReport() {
         return lineReport;
     }
@@ -100,6 +91,42 @@ public class Line implements Serializable {
         this.stops = stops;
     }
 
+    public List<DestinationsByReportAndLine> getDestinationsByLineReport() {
+        return destinationsByLineReport;
+    }
+
+    public void setDestinationsByLineReport(List<DestinationsByReportAndLine> destinationsByLineReport) {
+        this.destinationsByLineReport = destinationsByLineReport;
+    }
+
+    public List<DateAndTimesOfRides> getDateAndTimesOfRidesByLine() {
+        return dateAndTimesOfRidesByLine;
+    }
+
+    public List<String> getDestinations() {
+        return destinations;
+    }
+
+    public void setDestinations(List<String> destinations) {
+        this.destinations = destinations;
+    }
+
+    public void setDateAndTimesOfRidesByLine(List<DateAndTimesOfRides> dateAndTimesOfRidesByLine) {
+        this.dateAndTimesOfRidesByLine = dateAndTimesOfRidesByLine;
+    }
+
+    public List<DestinationsByStopAndLine> getDestinationsByLine() {
+        return destinationsByLine;
+    }
+
+    public void setDestinationsByLine(List<DestinationsByStopAndLine> destinationsByLine) {
+        this.destinationsByLine = destinationsByLine;
+    }
+
+    public void addDestinationByLine(DestinationsByStopAndLine destinationsByStopAndLine) {
+        this.destinationsByLine.add(destinationsByStopAndLine);
+    }
+
     public List<TemporaryEventReport> getEventReports() {
         return eventReports;
     }
@@ -108,11 +135,20 @@ public class Line implements Serializable {
         this.eventReports = eventReports;
     }
 
-    public List<DateAndTimesOfRides> getDateAndTimesOfRidesByLine() {
-        return dateAndTimesOfRidesByLine;
+    public void addTemporaryEvent(TemporaryEventReport report) {
+        this.eventReports.add(report);
     }
 
-    public void setDateAndTimesOfRidesByLine(List<DateAndTimesOfRides> dateAndTimesOfRidesByLine) {
-        this.dateAndTimesOfRidesByLine = dateAndTimesOfRidesByLine;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Line)) return false;
+        Line line = (Line) o;
+        return Objects.equals(getIdentifier(), line.getIdentifier()) && Objects.equals(getCompany(), line.getCompany());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getIdentifier(), getCompany());
     }
 }

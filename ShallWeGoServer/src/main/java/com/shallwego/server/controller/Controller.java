@@ -1,12 +1,10 @@
 package com.shallwego.server.controller;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.shallwego.server.ga.AlgorithmRunner;
 import com.shallwego.server.logic.entities.*;
 import com.shallwego.server.logic.service.*;
-import com.shallwego.server.service.Location;
-import com.shallwego.server.service.Utils;
+import com.shallwego.server.service.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
@@ -41,6 +39,16 @@ public class Controller {
     @Autowired
     private TemporaryEventReportRepository temporaryEventReportRepository;
 
+    @Autowired
+    private DestinationsByStopAndLineRepository destinationsByStopAndLineRepository;
+
+    @Autowired
+    private DestinationsByReportAndLineRepository destinationsByReportAndLineRepository;
+
+    @Autowired
+    private Pool pool;
+
+
     public static List<User> users;
 
     public Controller() {
@@ -63,7 +71,7 @@ public class Controller {
         }
 
 
-        Location location = new Location(40.772812, 14.799443);
+        Location location = new Location(40.7472133, 14.6433202);
         Set<User> bestUsers = AlgorithmRunner.buildPopulation(users, location).run();
 
         return "Utenti migliori: " + bestUsers.toString();
@@ -115,12 +123,15 @@ public class Controller {
 
     @GetMapping("/api/provincia/{provincia}/comuni")
     public String comuniByProvincia(@PathVariable String provincia) {
-        return JSONArray.toJSONString(Utils.province.get(provincia));
+        JsonArray comuniByProvincia = new JsonArray();
+        Utils.province.get(provincia).forEach(comuniByProvincia::add);
+        return comuniByProvincia.toString();
     }
 
     @PostMapping("/api/reports/{userId}")
     public String reportsByUser(@PathVariable String userId) {
-        List<Report> reports = reportRepository.findByUser(userRepository.findById(userId).get());
+        User user = userRepository.findById(userId).get();
+        List<Report> reports = reportRepository.findByUser(user);
         JsonArray array = new JsonArray();
         for (Report report: reports) {
             JsonObject obj = null;
@@ -136,27 +147,29 @@ public class Controller {
                 obj = Utils.setUpReportJson(lineReport);
                 obj.addProperty("companyName", lineReport.getLineAffected().getCompany().getName());
                 obj.addProperty("lineIdentifier", lineReport.getLineAffected().getIdentifier());
-                obj.addProperty("destination", lineReport.getLineAffected().getDestination());
                 obj.addProperty("type", "LineReport");
             } else if (report instanceof TemporaryEventReport) {
                 TemporaryEventReport temporaryEventReport = (TemporaryEventReport) report;
                 obj = Utils.setUpReportJson(temporaryEventReport);
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                 obj.addProperty("validityStart", formatter.format(temporaryEventReport.getValidityStart()));
-                obj.addProperty("validityEnd", formatter.format(temporaryEventReport.getValidityEnd()));
+                if (temporaryEventReport.getValidityEnd() != null) {
+                    obj.addProperty("validityEnd", formatter.format(temporaryEventReport.getValidityEnd()));
+                }
+
                 List<Line> linesAffected = temporaryEventReport.getLinesAffectedEvent();
                 JsonArray linesAffectedJson = new JsonArray();
                 for (Line line: linesAffected) {
                     JsonObject object = new JsonObject();
                     object.addProperty("lineIdentifier", line.getIdentifier());
                     object.addProperty("companyName", line.getCompany().getName());
-                    object.addProperty("destination", line.getDestination());
                     linesAffectedJson.add(object);
                 }
                 obj.add("linesAffected", linesAffectedJson);
                 obj.addProperty("latitude", temporaryEventReport.getLatitude());
                 obj.addProperty("longitude", temporaryEventReport.getLongitude());
                 obj.addProperty("description", temporaryEventReport.getDescription());
+                obj.addProperty("eventType", temporaryEventReport.getEventType());
                 obj.addProperty("type", "TemporaryEventReport");
             } else if (report instanceof StopReport) {
                 StopReport stopReport = (StopReport) report;
@@ -238,7 +251,14 @@ public class Controller {
             JsonObject lineJsonObject = new JsonObject();
             lineJsonObject.addProperty("lineIdentifier", l.getIdentifier());
             lineJsonObject.addProperty("companyName", l.getCompany().getName());
-            lineJsonObject.addProperty("destination", l.getDestination());
+            List<DestinationsByStopAndLine> destinationsList = destinationsByStopAndLineRepository.findByTargetLineAndTargetStop(stop, l);
+            DestinationsByStopAndLine destinationsObject = destinationsList.get(0);
+            List<String> destinations = destinationsObject.getTargetDestinations();
+            JsonArray destinationsJsonArray = new JsonArray();
+            for (String destination: destinations) {
+                destinationsJsonArray.add(destination);
+            }
+            lineJsonObject.add("destinations", destinationsJsonArray);
 
             linesJson.add(lineJsonObject);
         }
@@ -277,7 +297,7 @@ public class Controller {
             targetJson.addProperty("id", target.getId());
             targetJson.addProperty("type", target.getEventType());
             targetJson.addProperty("place", Utils.getRoadNameByCoordinates(target.getLatitude(), target.getLongitude()));
-            targetJson.addProperty("timeValid", formatter.format(target.getValidityStart()) + " - " + formatter.format(target.getValidityEnd()));
+            targetJson.addProperty("timeValid", formatter.format(target.getValidityStart()) + " - " + (target.getValidityEnd() != null? formatter.format(target.getValidityEnd()) : "in corso"));
             targetJson.addProperty("latitude", target.getLatitude());
             targetJson.addProperty("longitude", target.getLongitude());
 
@@ -293,13 +313,15 @@ public class Controller {
     @GetMapping("/api/eventById/{eventId}")
     public String eventById(@PathVariable String eventId) throws IOException {
         TemporaryEventReport target = temporaryEventReportRepository.findById(Integer.parseInt(eventId)).get();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         JsonObject targetJson = new JsonObject();
         targetJson.addProperty("id", target.getId());
         targetJson.addProperty("type", target.getEventType());
         targetJson.addProperty("place", Utils.getRoadNameByCoordinates(target.getLatitude(), target.getLongitude()));
         targetJson.addProperty("validityStart", formatter.format(target.getValidityStart()));
-        targetJson.addProperty("validityEnd", formatter.format(target.getValidityEnd()));
+        if (target.getValidityEnd() != null) {
+            targetJson.addProperty("validityEnd", formatter.format(target.getValidityEnd()));
+        }
         targetJson.addProperty("latitude", target.getLatitude());
         targetJson.addProperty("longitude", target.getLongitude());
         targetJson.addProperty("description", target.getDescription());
@@ -311,24 +333,21 @@ public class Controller {
             JsonObject lineJsonObject = new JsonObject();
             lineJsonObject.addProperty("lineIdentifier", line.getIdentifier());
             lineJsonObject.addProperty("companyName", line.getCompany().getName());
-            lineJsonObject.addProperty("destination", line.getDestination());
 
             linesJson.add(lineJsonObject);
         }
 
-        targetJson.add("affectedLines", linesJson);
+        targetJson.add("linesAffected", linesJson);
 
         return targetJson.toString();
     }
 
-    @GetMapping("/api/getLineDetails/{lineIdentifier}/{companyName}/{destination}")
-    public String getLineDetails(@PathVariable String lineIdentifier, @PathVariable String companyName, @PathVariable String destination) {
-        Line line = lineRepository.findById(new LineCompositeKey(lineIdentifier, companyRepository.findById(companyName).get(), destination)).get();
+    @GetMapping("/api/getLineDetails/{lineIdentifier}/{companyName}")
+    public String getLineDetails(@PathVariable String lineIdentifier, @PathVariable String companyName) {
+        Line line = lineRepository.findById(new LineCompositeKey(lineIdentifier, companyName)).get();
         JsonObject result = new JsonObject();
         result.addProperty("lineIdentifier", line.getIdentifier());
         result.addProperty("companyName", line.getCompany().getName());
-        result.addProperty("origin", line.getOrigin());
-        result.addProperty("destination", line.getDestination());
         JsonArray routesJson = new JsonArray();
         List<Route> routes = line.getPaths();
         for (Route route: routes) {
@@ -350,5 +369,265 @@ public class Controller {
         result.add("routes", routesJson);
 
         return result.toString();
+    }
+
+    @GetMapping("/api/getCompanies")
+    public String getCompanies() {
+        List<Company> companies = companyRepository.findAll();
+        JsonArray companyArray = new JsonArray();
+        companies.forEach((company) -> {
+            companyArray.add(company.getName());
+        });
+
+        return companyArray.toString();
+    }
+
+    @GetMapping("/api/getCompanyLines/{companyName}")
+    public String getComapnyLines(@PathVariable String companyName) {
+        Company company = companyRepository.findById(companyName).get();
+        JsonArray linesArray = new JsonArray();
+        company.getLinee().forEach((line) -> {
+            linesArray.add(line.getIdentifier());
+        });
+
+        return linesArray.toString();
+    }
+
+    @GetMapping("/api/getLineDestinations/{companyName}/{identifier}")
+    public String getLineDestinations(@PathVariable String companyName, @PathVariable String identifier) {
+        Company company = companyRepository.findById(companyName).get();
+        Line line = lineRepository.findById(new LineCompositeKey(identifier, companyName)).get();
+        JsonArray jsonArray = new JsonArray();
+        line.getDestinations().forEach(jsonArray::add);
+        return jsonArray.toString();
+    }
+
+    @PutMapping("/api/newStopReport/{userName}")
+    public String newStopReport(@PathVariable String userName, @RequestBody String jsonBody) throws IOException, ParseException {
+        JsonObject bodyObject = (JsonObject) JsonParser.parseString(jsonBody);
+        StopReport report = new StopReport();
+        Stop stop = Stop.newInstance();
+        report.setDate(new Date());
+        report.setUser(userRepository.findById(userName).get());
+        report.setStopReported(stop);
+        stop.setName(bodyObject.get("stopName").toString().replace("\"", ""));
+        JsonArray array = bodyObject.getAsJsonArray("lines");
+        HashMap<Line, List<String>> stopDestinations = new HashMap<>();
+        for (JsonElement line: array) {
+            JsonObject lineObject = (JsonObject) line;
+            String identifier = lineObject.get("lineIdentifier").toString().replace("\"", "");
+            Line lineFromDb = lineRepository.findById(new LineCompositeKey(identifier, lineObject.get("companyName").getAsString())).get();
+            stop.addLine(lineFromDb);
+            ArrayList<String> destinations = new ArrayList<>();
+            JsonArray lineDestinations = lineObject.getAsJsonArray("destinations");
+            lineDestinations.forEach((destination) -> {
+                destinations.add(destination.toString().replace("\"", ""));
+            });
+            stopDestinations.put(lineFromDb, destinations);
+        }
+        double latitude = bodyObject.get("latitude").getAsDouble();
+        double longitude = bodyObject.get("longitude").getAsDouble();
+        stop.setLatitude(latitude);
+        stop.setLongitude(longitude);
+        stop.setHasShelter(bodyObject.get("hasShelter").getAsBoolean());
+        stop.setHasStopSign(bodyObject.get("hasStopSign").getAsBoolean());
+        stop.setHasTimeTables(bodyObject.get("hasTimeTables").getAsBoolean());
+        List<User> candidates = null;
+        try {
+            candidates = Utils.getByProvincia(latitude, longitude, userRepository);
+        } catch (IOException e) {
+            return "GEOCODING_ERROR";
+        }
+        Set<User> verifiers = AlgorithmRunner.buildPopulation(candidates, new Location(latitude, longitude)).run();
+        pool.addPendingReports(report, verifiers, stopDestinations);
+        System.out.println(verifiers.toString());
+        return new Gson().toJson(verifiers.stream().map(User::getComune).toArray(String[]::new));
+    }
+
+    @PutMapping("/api/newLineReport/{userName}")
+    @Transactional
+    public String newLineReport(@PathVariable String userName, @RequestBody String jsonBody) throws IOException, ParseException {
+        JsonObject objectBody = (JsonObject) JsonParser.parseString(jsonBody);
+        LineReport lineReport = new LineReport();
+        lineReport.setDate(new Date());
+        lineReport.setUser(userRepository.findById(userName).get());
+        lineReport.setVerified(false);
+        Line line = new Line();
+        line.setCompany(companyRepository.findById(objectBody.get("company").getAsString()).get());
+        boolean hasIdentifier = objectBody.get("hasIdentifier").getAsBoolean();
+        String identifier = "";
+        if (objectBody.get("hasIdentifier").getAsBoolean()) {
+            identifier = objectBody.get("identifier").getAsString();
+        } else {
+            if (objectBody.get("comuneOrigin").getAsString().equals(objectBody.get("comuneDestination").getAsString())) {
+                identifier = objectBody.get("detailsOrigin").getAsString().substring(0, 3).toUpperCase().trim() + " - " + objectBody.get("detailsDestination").getAsString().substring(0, 3).toUpperCase().trim();
+            } else {
+                identifier = objectBody.get("comuneOrigin").getAsString().substring(0, 3).toUpperCase().trim() + " - " + objectBody.get("comuneDestination").getAsString().substring(0, 3).toUpperCase().trim();
+            }
+        }
+        line.setIdentifier(identifier);
+        ArrayList<String> destinations = new ArrayList<>();
+        objectBody.get("destinations").getAsJsonArray().forEach((destination) -> {
+            String destinationString = ((JsonObject) destination).get("comune") + " " + ((JsonObject) destination).get("name");
+            destinations.add(destinationString);
+        });
+        line.setDestinations(destinations);
+        Set<User> verifiers = new HashSet<>();
+        for (JsonElement object: objectBody.get("destinations").getAsJsonArray()) {
+            JsonObject destinationObject = (JsonObject) object;
+            Location location = Utils.getCoordinatesByComune(destinationObject.get("comune").getAsString(), destinationObject.get("provincia").getAsString());
+            List<User> candidates = userRepository.findByProvincia(destinationObject.get("provincia").getAsString());
+            verifiers.addAll(AlgorithmRunner.buildPopulation(candidates, location).run());
+        }
+        lineReport.setLineAffected(line);
+        pool.addPendingReports(lineReport, verifiers);
+        System.out.println(verifiers.toString());
+        return new Gson().toJson(verifiers.stream().map(User::getComune).toArray(String[]::new));
+    }
+
+    @Transactional
+    @PutMapping("/api/newCompanyReport/{userName}")
+    public String newCompanyReport(@RequestBody String reportBody, @PathVariable String userName) throws IOException, ParseException {
+        JsonObject object = (JsonObject) JsonParser.parseString(reportBody);
+        Company company = new Company();
+        company.setName(object.get("companyName").getAsString());
+        company.setWebsite(object.get("website").getAsString());
+        CompanyReport report = new CompanyReport();
+        report.setCompany(company);
+        report.setUser(userRepository.findById(userName).get());
+        report.setDate(new Date());
+        double latitude = object.get("latitude").getAsDouble();
+        double longitude = object.get("longitude").getAsDouble();
+        Location location = new Location(latitude, longitude);
+        List<User> candidates = Utils.getByProvincia(latitude, longitude, userRepository);
+        Set<User> verifiers = AlgorithmRunner.buildPopulation(candidates, location).run();
+        pool.addPendingReports(report, verifiers);
+        System.out.println(verifiers.toString());
+        return new Gson().toJson(verifiers.stream().map(User::getComune).toArray(String[]::new));
+    }
+
+    @Transactional
+    @PutMapping("/api/newTemporaryEventReport/{userName}")
+    public String newTemporaryEventReport(@RequestBody String reportBody, @PathVariable String userName) throws java.text.ParseException {
+        JsonObject object = (JsonObject) JsonParser.parseString(reportBody);
+        TemporaryEventReport report = new TemporaryEventReport();
+        report.setDate(new Date());
+        report.setUser(userRepository.findById(userName).get());
+        report.setSource(object.get("source").getAsString());
+        report.setDescription(object.get("description").getAsString());
+        report.setEventType(object.get("type").getAsString());
+        report.setLatitude(object.get("latitude").getAsString());
+        report.setLongitude(object.get("longitude").getAsString());
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        report.setValidityStart(formatter.parse(object.get("start").getAsString()));
+
+        if (object.has("end")) {
+            report.setValidityEnd(formatter.parse(object.get("end").getAsString()));
+        }
+
+        JsonArray array = object.getAsJsonArray("linesAffected");
+        for (JsonElement element: array) {
+            JsonObject lineObject = (JsonObject) element;
+            Line line = lineRepository.findById(new LineCompositeKey(lineObject.get("lineIdentifier").getAsString(), lineObject.get("companyName").getAsString())).get();
+            report.addAffectedLine(line);
+            line.addTemporaryEvent(report);
+            DestinationsByReportAndLine destinationsByReportAndLine = new DestinationsByReportAndLine();
+            destinationsByReportAndLine.setTargetReport(report);
+            destinationsByReportAndLine.setTargetLine(line);
+            HashSet<String> destinations = new HashSet<>();
+            lineObject.get("destinations").getAsJsonArray().forEach((destination) -> {
+                destinations.add(destination.getAsString());
+            });
+
+            destinationsByReportAndLine.setTargetDestinations(destinations);
+            report.getDestinationsByReport().add(destinationsByReportAndLine);
+            line.getDestinationsByLineReport().add(destinationsByReportAndLine);
+            destinationsByReportAndLineRepository.save(destinationsByReportAndLine);
+        }
+
+        temporaryEventReportRepository.saveAndFlush(report);
+
+        return "OK";
+    }
+
+    @PutMapping("/api/verifyReport/{username}/{pendingId}/{vote}")
+    public String verifyReport(@PathVariable String username, @PathVariable Integer pendingId, @PathVariable Integer vote) {
+        User user = userRepository.findById(username).get();
+        return String.valueOf(pool.verifyReport(pendingId, user, vote));
+    }
+
+    @GetMapping("/api/getReportDetails/{id}/{userName}")
+    public String getAssignedReports(@PathVariable String id, @PathVariable String userName) {
+        PendingReport report = pool.findById(Integer.parseInt(id));
+            JsonObject object = new JsonObject();
+            object.addProperty("sumOfVotes", report.getSumOfVotes());
+            object.addProperty("userVote", report.getUserVote(userRepository.findById(userName).get()));
+            object.addProperty("date", new SimpleDateFormat("dd/MM/yyyy").format(report.getReport().getDate()));
+            if (report.getReport() instanceof CompanyReport) {
+                CompanyReport companyReport = (CompanyReport) report.getReport();
+                object.addProperty("companyName", companyReport.getCompany().getName());
+                object.addProperty("companyWebSite", companyReport.getCompany().getWebsite() == null? "" : companyReport.getCompany().getWebsite());
+            } else if (report.getReport() instanceof LineReport) {
+                LineReport lineReport = (LineReport) report.getReport();
+                object.addProperty("companyName", lineReport.getLineAffected().getCompany().getName());
+                object.addProperty("lineIdentifier", lineReport.getLineAffected().getIdentifier());
+                JsonArray destinations = new JsonArray();
+                lineReport.getLineAffected().getDestinations().forEach(destinations::add);
+                object.add("destinations", destinations);
+            } else if (report.getReport() instanceof StopReport) {
+                PendingStopReport pendingReport = (PendingStopReport) report;
+                StopReport stopReport = (StopReport) report.getReport();
+                object.addProperty("stopName", stopReport.getStopReported().getName());
+                JsonArray destinationsByLine = new JsonArray();
+
+                for (Line line: pendingReport.getDestinations().keySet()) {
+                    JsonObject lineWithDestinations = new JsonObject();
+                    lineWithDestinations.addProperty("companyName", line.getCompany().getName());
+                    JsonArray destinations = new JsonArray();
+                    pendingReport.getDestinations().get(line).forEach(destinations::add);
+                    lineWithDestinations.add("destinations", destinations);
+                    lineWithDestinations.addProperty("lineIdentifier", line.getIdentifier());
+                    destinationsByLine.add(lineWithDestinations);
+                }
+                object.add("reachableFromThisStop", destinationsByLine);
+                object.addProperty("hasShelter", stopReport.getStopReported().getHasShelter());
+                object.addProperty("hasTimeTables", stopReport.getStopReported().getHasTimeTables());
+                object.addProperty("hasStopSign", stopReport.getStopReported().getHasTimeTables());
+            }
+
+        return object.toString();
+    }
+
+    @PostMapping("/api/pendingReports/{userId}")
+    public String pendingReportsByUser(@PathVariable String userId) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        User user = userRepository.findById(userId).get();
+        List<PendingReport> reports = pool.reportsByAssignedUser(user);
+        JsonArray array = new JsonArray();
+        for (PendingReport report: reports) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("date", formatter.format(report.getReport().getDate()));
+            obj.addProperty("pendingId", report.getId());
+            if (report.getReport() instanceof CompanyReport) {
+                CompanyReport companyReport = (CompanyReport) report.getReport();
+                Company company = companyReport.getCompany();
+                obj.addProperty("companyName", company.getName());
+                obj.addProperty("companyWebsite", company.getWebsite());
+                obj.addProperty("type", "CompanyReport");
+            } else if (report.getReport() instanceof LineReport) {
+                LineReport lineReport = (LineReport) report.getReport();
+                obj.addProperty("companyName", lineReport.getLineAffected().getCompany().getName());
+                obj.addProperty("lineIdentifier", lineReport.getLineAffected().getIdentifier());
+                obj.addProperty("type", "LineReport");
+            } else if (report.getReport() instanceof StopReport) {
+                StopReport stopReport = (StopReport) report.getReport();
+                obj.addProperty("stopName", stopReport.getStopReported().getName());
+                obj.addProperty("latitude", stopReport.getStopReported().getLatitude());
+                obj.addProperty("longitude", stopReport.getStopReported().getLongitude());
+                obj.addProperty("type", "StopReport");
+            }
+            array.add(obj);
+        }
+        return array.toString();
     }
 }

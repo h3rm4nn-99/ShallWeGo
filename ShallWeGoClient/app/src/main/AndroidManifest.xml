@@ -17,10 +17,39 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.ShallWeGo"
             android:usesCleartextTraffic="true">
+        <activity android:name=".VerifyReports">
+        </activity>
+        <activity android:name=".VerifyCompanyReport">
+        </activity>
+        <activity android:name=".VerifyLineReport">
+        </activity>
+        <activity android:name=".VerifyStopReport">
+        </activity>
+        <activity
+                android:name=".TemporaryEventReportActivity"
+                android:label="@string/title_activity_temporary_event_report"
+                android:theme="@style/Theme.ShallWeGo.NoActionBar">
+        </activity>
+        <activity
+                android:name=".CompanyReportActivity"
+                android:label="@string/title_activity_company_report"
+                android:theme="@style/Theme.ShallWeGo.NoActionBar">
+        </activity>
+        <activity
+                android:name=".LineReportActivity"
+                android:label="@string/title_activity_line_report"
+                android:theme="@style/Theme.ShallWeGo.NoActionBar">
+        </activity>
+        <activity
+                android:name=".StopReportActivity"
+                android:label="@string/title_activity_scrolling"
+                android:theme="@style/Theme.ShallWeGo.NoActionBar">
+        </activity>
         <activity android:name=".AlertsNearby">
         </activity>
-        <activity android:name=".LineDetails"
-                  android:theme="@style/Theme.ShallWeGoNoBar">
+        <activity
+                android:name=".LineDetails"
+                android:theme="@style/Theme.ShallWeGoNoBar">
         </activity>
         <activity android:name=".EventDetails">
         </activity>

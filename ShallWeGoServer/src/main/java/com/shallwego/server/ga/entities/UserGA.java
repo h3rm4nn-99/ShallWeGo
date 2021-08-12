@@ -38,7 +38,7 @@ public class UserGA {
             distancePartialFitness = Math.pow(30 / distance, 2);
         }
 
-        this.fitness = (4 * distancePartialFitness) + (2 * this.getTarget().getKarma()) / 2;
+        this.fitness = ((4 * distancePartialFitness) + (2 * this.getTarget().getKarma())) / 2;
 
         return this.fitness;
     }

@@ -7,5 +7,5 @@
     <item
             android:id="@+id/report"
             android:icon="@drawable/ic_edit_white_48dp"
-            android:title="Effettua una segnalazione"/>
+            android:title="Segnalazione rapida"/>
 </menu>

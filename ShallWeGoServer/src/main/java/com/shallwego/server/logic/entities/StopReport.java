@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class StopReport extends Report implements Serializable {
     public StopReport() {}
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private Stop stopReported;
 
     public Stop getStopReported() {

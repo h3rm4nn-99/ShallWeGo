@@ -2,6 +2,7 @@ package com.shallwego.client;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,9 +12,12 @@ import android.location.Location;
 import android.preference.PreferenceManager;
 import android.view.*;
 
+import android.widget.LinearLayout;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -25,17 +29,20 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.CancellationTokenSource;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textview.MaterialTextView;
-import org.jetbrains.annotations.NotNull;
+import com.leinardi.android.speeddial.SpeedDialActionItem;
+import com.leinardi.android.speeddial.SpeedDialView;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
+import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
 import java.text.DecimalFormat;
@@ -81,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             toggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout, R.string.open, R.string.close);
             drawerLayout.addDrawerListener(toggle);
             toggle.syncState();
+            configureSpeedDial();
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#6200EE")));
             navView.setNavigationItemSelectedListener(item -> {
@@ -104,6 +112,11 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(i);
                         break;
                     }
+                    case R.id.verifyReports: {
+                        Intent i = new Intent(MainActivity.this, VerifyReports.class);
+                        startActivity(i);
+                        break;
+                    }
                 }
                 return true;
             });
@@ -118,11 +131,48 @@ public class MainActivity extends AppCompatActivity {
             mapController = (MapController) map.getController();
             mapController.setZoom(18.5);
 
+            MapEventsOverlay events = new MapEventsOverlay(new MapEventsReceiver() {
+                @Override
+                public boolean singleTapConfirmedHelper(GeoPoint p) {
+                    return false;
+                }
+
+                @Override
+                public boolean longPressHelper(GeoPoint p) {
+                    Intent i = new Intent(MainActivity.this, StopReportActivity.class);
+                    i.putExtra("latitude", p.getLatitude());
+                    i.putExtra("longitude", p.getLongitude());
+                    startActivity(i);
+                    return true;
+                }
+            });
+            map.getOverlays().add(events);
+
             setStartPoint();
-            acquireLocation();
+            acquireLocationForMap();
 
 
         }
+    }
+
+    private void configureSpeedDial() {
+        SpeedDialView speedDialView = findViewById(R.id.speedDial);
+        speedDialView.inflate(R.menu.fabmenu);
+
+        speedDialView.setOnActionSelectedListener(actionItem -> {
+            switch (actionItem.getId()) {
+                case R.id.currentLocationGetter: {
+                    acquireLocationForMap();
+                    break;
+                }
+                case R.id.report: {
+                    acquireLocationForReport();
+                    break;
+                }
+            }
+
+            return true;
+        });
     }
 
     @Override
@@ -185,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("MissingPermission") //permission already granted on first launch
-    private void acquireLocation() {
+    private void acquireLocationForMap() {
         Location location = null;
         locationClient = LocationServices.getFusedLocationProviderClient(this);
         locationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY, cancellationTokenSource.getToken()).addOnSuccessListener(this, location1 -> {
@@ -221,23 +271,90 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @SuppressLint("RestrictedApi")
-    public void showPopUpMenu(View view) {
-        PopupMenu menu = new PopupMenu(this, findViewById(R.id.floating_action_button));
-        MenuInflater menuInflater = menu.getMenuInflater();
-        menuInflater.inflate(R.menu.fabmenu, menu.getMenu());
+    @SuppressLint("MissingPermission") //already got on first run
+    private void acquireLocationForReport() {
+        ProgressDialog dialog = ProgressDialog.show(this, "",
+                "Aggiornamento della posizione in corso...", true);
+        Location location = null;
+        if (locationClient == null) {
+            locationClient = LocationServices.getFusedLocationProviderClient(this);
+        }
+            locationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY, cancellationTokenSource.getToken()).addOnSuccessListener((location1) -> {
+                double currentLatitude = location1.getLatitude();
+                double currentLongitude = location1.getLongitude();
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.remove("lastKnownLatitude");
+                editor.remove("lastKnownLongitude");
 
-        MenuPopupHelper helper = new MenuPopupHelper(this, (MenuBuilder) menu.getMenu(), findViewById(R.id.floating_action_button));
-        helper.setForceShowIcon(true);
-        helper.show();
+                editor.putString("lastKnownLatitude", String.valueOf(currentLatitude));
+                editor.putString("lastKnownLongitude", String.valueOf(currentLongitude));
+                editor.commit();
+                showReportTypeChooserDialog(currentLatitude, currentLongitude);
+                dialog.dismiss();
 
-        menu.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.currentLocationGetter:
-                    acquireLocation();
+
+            }).addOnFailureListener((error) -> {
+                Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                AlertDialog alertDialog = new AlertDialog.Builder(this)
+                        .setMessage("Impossibile recuperare la tua posizione precisa in questo momento. Data la natura particolare dell'operazione, essa è strettamente necessaria. Riprova.")
+                        .setPositiveButton("Ho capito!", (dialog1, which) -> dialog1.dismiss()).show();
+                alertDialog.setCancelable(false);
+                alertDialog.setCanceledOnTouchOutside(false);
+                dialog.dismiss();
+            });
+        }
+
+    private void showReportTypeChooserDialog(double currentLatitude, double currentLongitude) {
+
+        View dialogLayout = getLayoutInflater().inflate(R.layout.alert_dialog_report_type, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog dialogReport = builder.setView(dialogLayout).setNegativeButton("Annulla", (dialog, which) -> {
+            dialog.dismiss();
+        }).setTitle("Cosa vuoi segnalarci?").show();
+
+        View.OnClickListener listener = (view) -> {
+            switch (view.getId()) {
+                case R.id.buttonStop: {
+                    Intent i = new Intent(MainActivity.this, StopReportActivity.class);
+                    i.putExtra("latitude", currentLatitude);
+                    i.putExtra("longitude", currentLongitude);
+                    startActivity(i);
+                    dialogReport.dismiss();
+                    break;
+                }
+
+                case R.id.buttonLine: {
+                    Intent i = new Intent(MainActivity.this, LineReportActivity.class);
+                    startActivity(i);
+                    dialogReport.dismiss();
+                    break;
+                }
+                case R.id.buttonCompany: {
+                    Intent i = new Intent(MainActivity.this, CompanyReportActivity.class);
+                    i.putExtra("latitude", currentLatitude);
+                    i.putExtra("longitude", currentLongitude);
+                    startActivity(i);
+                    dialogReport.dismiss();
+                    break;
+                }
+                case R.id.buttonTemporaryEvent: {
+                    Intent i = new Intent(MainActivity.this, TemporaryEventReportActivity.class);
+                    i.putExtra("latitude", currentLatitude);
+                    i.putExtra("longitude", currentLongitude);
+                    startActivity(i);
+                    dialogReport.dismiss();
+                    break;
+                }
             }
-            return true;
-        });
+        };
 
+        LinearLayout stopButton = dialogLayout.findViewById(R.id.buttonStop);
+        stopButton.setOnClickListener(listener);
+        LinearLayout lineButton = dialogLayout.findViewById(R.id.buttonLine);
+        lineButton.setOnClickListener(listener);
+        LinearLayout companyButton = dialogLayout.findViewById(R.id.buttonCompany);
+        companyButton.setOnClickListener(listener);
+        LinearLayout eventButton = dialogLayout.findViewById(R.id.buttonTemporaryEvent);
+        eventButton.setOnClickListener(listener);
     }
 }

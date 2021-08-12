@@ -1,0 +1,51 @@
+\chapter{Stato dell'arte} %\label{1cap:spinta_laterale}
+% [titolo ridotto se non ci dovesse stare] {titolo completo}
+%
+
+\begin{citazione}
+    \textit{Lo scopo di questo capitolo è di illustrare la situazione attuale dei vari applicativi che sono a disposizione degli utenti del trasporto pubblico locale (TPL) per permettergli di organizzare i loro spostamenti.}
+\end{citazione}
+
+\newpage
+
+I principali attori sul panorama della diffusione di informazioni sul TPL sono senz'altro Maps di Google e soprattutto Moovit, che ha acquisito una maggiore popolarità nell'ultimo anno.
+
+\section{Google Maps}
+    Transit è un servizio messo a disposizione da Google ed integrato nella piattaforma Maps che consente all'utente di visualizzare le informazioni \textit{statiche} messe a disposizione dalle varie aziende di trasporto tramite il programma "Google Transit Partners", che quindi consistono nella programmazione giornaliera delle corse e dell'organizzazione delle fermate sul territorio in questione. \\
+    Oltre ai dati statici, le aziende di trasporto possono condividere con Google, mediante la piattafroma \textbf{Realtime Transit} che quindi permette di visualizzare all'interno di Maps i dati in tempo reale sulla posizione dei mezzi pubblici in un dterminato istante. Questa funzionalità, così come tutti i dati relativi al trasporto pubblico su Maps sono disponibili solo su iniziativa delle aziende che decidono di partecipare al programma. Un esempio di azienda che mette a disposizione i dati realtime è per esempio l'ATAC di Roma, che li offre a partire da Settembre 2019 (\cite{atactransit})  \\
+    I dati (siano essi statici o dinamici) sono comunicati a Google su base regolare dalle aziende (tipicamente settimanale, secondo quanto riportato nella sezione FAQ della pagina dedicata \footnote[3]{\url{https://developers.google.com/transit/gtfs/guides/faq}}) tramite il formato GTFS \textit{(General Transit Feed Specification)} che permette di strutturare in maniera efficiente i dati riguardanti il trasporto pubblico.
+
+    Esistono due "varianti" del formato GTFS:
+    \begin{itemize}
+        \item \textbf{GTFS Statico}, che raccoglie i dati "statici" (quindi gli orari previsti delle corse e l'organizzazione delle fermate sul territorio)
+        \item \textbf{GTFS Realtime}, che raccoglie i dati "dinamici" (come l'andamento delle corse in tempo reale)
+    \end{itemize}
+
+    Tuttavia, come accennato in precedenza, questi dati sono comunicati su richiesta delle aziende e solo un numero limitato di queste ultime (almeno in Italia) aderisce al programma, limitando così i dati a disposzione dell'utente.
+
+\section{Moovit ed il crowdsourcing.}
+    Moovit è una piattaforma che, al contrario di Google Maps si occupa esclusivamente di mobilità, fornendo al cittadino sostanzialmente gli stessi servizi messi a disposizione da Google Maps (organizzazione delle fermate e dati realtime se messi a disposizione dalle aziende). \\
+    Nasce nel 2012 e nel 2015 viene acquistata da Intel. Attualemnte Moovit si sta impegnando per sviluppare soluzioni di Mobility as a Service.
+    Il Mobility as a Service (MaaS) è un concetto relativamente nuovo, che permette all'utente di scegliere il modo che ritiene più adatto di spostarsi (tramite mezzi pubblici, car sharing e simili) usando una sola piattaforma che mette a disposizione tutti questi servizi, favorendo quindi l'interoperabilità tra i vari mezzi di trasporto. \\
+
+    Dal 2015, inoltre, Moovit mette a disposizine un servizio chiamato Mooviter Community, che permette al singolo utente della piattaforma di partecipare alla mappatura delle fermate e delle linee della sua zona tramite un Editor accessibile via web. I cambiamenti dovranno quindi essere approvati dagli amministratori della piattaforma o da utenti esperti. \\
+
+    In particolare, la piattaforma di Moovit organizza gli utenti in "livelli", che potranno essere "scalati" man mano che si matura esperienza in termini di segnalazioni. Nello specifico, se un utente $x$ di livello $n$ effettua una segnalazione, chi potrà verificare questa segnalazione è solamente un certo utente $z$ il cui livello risulta almeno $n + 1$ o che è membro del Team. Il problema di questo approccio è che se un utente con molta esperienza si unisce alla piattaforma in un certo momento, egli non potrà immediatamente cominciare a verificare segnalazioni poiché inizialmente il suo livello sarà troppo basso.\\
+    Attualemnte, l'Editor della Community di Moovit è disponibile in tutte le sue funzionalità esclusivamente via web tramite un browser che riporta uno \textit{user-agent} desktop. \\
+
+    Oltre all'editor delle fermate e delle linee, nell'ultimo periodo Moovit ha messo a disposizione direttamente dall'app mobile uno strumento che permette di segnalare anche l'affollamento di una determinata corsa, come riportato sul sito web della piattaforma.\footnote[4]{\url{https://moovit.com/press-releases/moovit-crowding-report/}}
+
+\section{Il focus di ShallWeGo}
+    La piattaforma ShallWeGo si basa principalmente sul modello delineato da Moovit con la sua community rendendola tuttavia la fonte principale dei dati disponibili, fornendo all'utente gli strumenti adatti per rendere disponibili i dettagli sulle aziende, sulle corse e sulle fermate in una determinata zona tramite un'applicazione mobile che ne semplifichi l'accessibilità anche all'esterno, in quanto, come accennato in precedenza, la piattaforma di Moovit è prettamente web-based e, soprattutto, separata dall'applicazione principale che è più conosciuta al grande pubblico. \\
+    Inoltre, a differenza della Community di Moovit, in ShallWeGo le segnalazioni non sono limitate solamente a quanto appena specificato ma si estendono anche ad eventi temporanei (come strade chiuse, deviazioni, traffico oppure incidenti), ai dettagli di una singola fermata (come l'affollamento, la presenza di pensiline, di paline di riconoscimento delle aziende che la utilizzano o dei quadri orari) ed all'andamento delle corse, sfruttando il GPS dello smartphone dell'utente, permettendo quindi ad altri membri della community di verificare la presenza e la posizione di una corsa nell'ambito di una linea, in modo simile a quanto avviene con Transit Realtime di Google, ma con la differenza che non risulta necessario che le aziende condividano i dati, al contempo comunicando informazioni quali l'affollamento, la temperatura o le condizioni del mezzo in quel momento (come ad esempio lo stato di funzionamento delle obliteratrici o dell'aria condizionata) \\
+    Infine, dal punto di vista della verifica delle segnalazioni, ShallWeGo non possiede un team che si dedica a valutare le segnalazioni, ma al contrario i verificatori più adatti vengono scelti mediante una componente di Intelligenza Artificiale creata a questo scopo ed integrata nell'infrastruttura dell'applicazione. In particolare, l'Algoritmo si basa, oltre all'esperienza accumulata sulla piattaforma (in termini di segnalazioni effettuate e valutate) anche (e soprattutto) sulla distanza geografica dell'area in cui opera dal luogo della segnalazione. In questo modo, virtualmente chiunque può cominciare a valutare segnalazioni se gli sono state assegnate. 
+
+
+
+
+
+        
+
+    
+
+

@@ -12,7 +12,7 @@ public class CompanyReport extends Report implements Serializable {
         super();
     }
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private Company company;
 
     public Company getCompany() {

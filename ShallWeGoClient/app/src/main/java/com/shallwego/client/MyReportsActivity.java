@@ -77,10 +77,16 @@ public class MyReportsActivity extends AppCompatActivity {
                     }
                     case "TemporaryEventReport": {
                         View eventReportView = getLayoutInflater().inflate(R.layout.evento_report_cardview, null);
+                        TextView eventType = eventReportView.findViewById(R.id.evento_text);
+                        eventType.setText(currentReport.get("eventType").getAsString());
                         TextView inizioValidita = eventReportView.findViewById(R.id.evento_inizio_validita);
                         inizioValidita.setText(currentReport.get("validityStart").toString().replace("\"", ""));
                         TextView fineValidita = eventReportView.findViewById(R.id.evento_fine_validita);
-                        fineValidita.setText(currentReport.get("validityEnd").toString().replace("\"", ""));
+                        if (currentReport.has("validityEnd")) {
+                            fineValidita.setText(currentReport.get("validityEnd").toString().replace("\"", ""));
+                        } else {
+                            fineValidita.setText(" in corso");
+                        }
                         String latitudine = currentReport.get("latitude").toString();
                         String longitudine = currentReport.get("longitude").toString();
                         TextView posizione = eventReportView.findViewById(R.id.evento_posizione);
@@ -107,7 +113,6 @@ public class MyReportsActivity extends AppCompatActivity {
                             Intent i = new Intent(MyReportsActivity.this, LineDetails.class);
                             i.putExtra("lineIdentifier", currentReport.get("lineIdentifier").toString().replace("\"", ""));
                             i.putExtra("companyName", currentReport.get("companyName").toString().replace("\"", ""));
-                            i.putExtra("destination", currentReport.get("destination").toString().replace("\"", ""));
                             startActivity(i);
                         });
                         container.addView(lineReportView, index++);
@@ -117,9 +122,9 @@ public class MyReportsActivity extends AppCompatActivity {
                     case "CompanyReport": {
                         View companyReportView = getLayoutInflater().inflate(R.layout.azienda_report_cardview, null);
                         TextView nomeAzienda = companyReportView.findViewById(R.id.nome_azienda);
-                        nomeAzienda.setText(currentReport.get("companyName").toString().replace("", "\""));
+                        nomeAzienda.setText(currentReport.get("companyName").toString().replace("\"", ""));
                         TextView webAzienda = companyReportView.findViewById(R.id.web_azienda);
-                        webAzienda.setText(currentReport.get("companyWebsite").toString().replace("", "\""));
+                        webAzienda.setText(currentReport.get("companyWebsite").toString().replace("\"", ""));
                         container.addView(companyReportView, index++);
                     }
                 }

@@ -6,7 +6,7 @@
             android:title="Le mie segnalazioni"/>
 
     <item
-            android:id="@+id/item2"
+            android:id="@+id/verifyReports"
             android:icon="@drawable/ic_edit_white_24dp"
             android:title="Valuta segnalazioni"/>
 

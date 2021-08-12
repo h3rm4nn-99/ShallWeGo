@@ -2,4 +2,35 @@
     <string name="app_name">ShallWeGo</string>
     <string name="open">Apri</string>
     <string name="close">Chiudi</string>
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+    <string name="help_identifier">
+        "Un identificativo di solito è quel numero o quella lettera (o una combinazione di questi) che identifica
+        univocamente una linea di una determinata azienda.\n"
+        "Ci sono tuttavia delle aziende che non adottano questa convenzione e identificano le proprie linee tramite la
+        loro origine e destinazione.\n"
+        "Ad esempio, Busitalia Campania sfrutta il sistema degli identificatori usando i numeri per le sue linee mentre
+        la SITA Sud invece no.\n"
+        "Se la linea che stai segnalando non possiede un identificatore, puoi deselezionare la casella qui a sinistra e
+        procedere ad inserire solamente origine e destinazione.\n"
+    </string>
+    <string name="help_origin">
+        "In questi campi ti è possibile scegliere il Comune da cui solitamente si originano le corse della linea che
+        stai segnalando.\n"
+        "Solitamente, nel caso di linee extraurbane esso è indicato sui quadri orari disponibili sul sito
+        dell'azienda.\n"
+        "Oltre che nel caso di una linea senza identificatore, è necessario specificarlo anche per permettere alla
+        piattafoma di determinare gli utenti più adatti a verificare la tua segnalazione."
+    </string>
+    <string name="help_destination">
+        "In questi campi ti è possibile scegliere il Comune in cui solitamente terminano le corse della linea che stai
+        segnalando.\n"
+        "Solitamente, nel caso di linee extraurbane esso è indicato sui quadri orari disponibili sul sito
+        dell'azienda.\n"
+        "Oltre che nel caso di una linea senza identificatore, è necessario specificarlo anche per permettere alla
+        piattafoma di determinare gli utenti più adatti a verificare la tua segnalazione."
+    </string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_line_report">ScrollingActivity</string>
+    <string name="title_activity_company_report">ScrollingActivity</string>
+    <string name="title_activity_temporary_event_report">ScrollingActivity</string>
 </resources>

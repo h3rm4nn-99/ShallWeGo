@@ -101,10 +101,14 @@ public class StopDetails extends AppCompatActivity {
                     lines.put(company, new ArrayList<>());
                 }
 
-                String[] nameAndDestination = new String[2];
-                nameAndDestination[0] = object.get("lineIdentifier").toString().replace("\"", "");
-                nameAndDestination[1] = object.get("destination").toString().replace("\"", "");
-                lines.get(company).add(nameAndDestination);
+                String[] nameAndDestinations = new String[2];
+                nameAndDestinations[0] = object.get("lineIdentifier").toString().replace("\"", "");
+                String destinations =  "";
+                for (JsonElement destination: (JsonArray) object.get("destinations")) {
+                    destinations += ((JsonObject) destination).toString().replace("\"", "");
+                }
+                nameAndDestinations[1] = destinations;
+                lines.get(company).add(nameAndDestinations);
             }
 
             LayoutInflater inflater = getLayoutInflater();
@@ -126,7 +130,6 @@ public class StopDetails extends AppCompatActivity {
                     chip.setTextSize(TypedValue.COMPLEX_UNIT_PT, 8);
                     chip.setOnClickListener((view) -> {
                         Intent i = new Intent(StopDetails.this, LineDetails.class);
-                        Toast.makeText(this, lineName[0], Toast.LENGTH_SHORT).show();
                         i.putExtra("lineIdentifier", lineName[0]);
                         i.putExtra("destination", lineName[1]);
                         i.putExtra("companyName", company);
@@ -237,7 +240,6 @@ public class StopDetails extends AppCompatActivity {
 
 
     private void updateCrowdingOnServer(int stopId, int newCrowding) {
-        Toast.makeText(this, "" + newCrowding, Toast.LENGTH_SHORT).show();
         ProgressDialog dialog = ProgressDialog.show(StopDetails.this, "",
                 "Attendere prego...", true);
         RequestQueue queue = Volley.newRequestQueue(StopDetails.this);

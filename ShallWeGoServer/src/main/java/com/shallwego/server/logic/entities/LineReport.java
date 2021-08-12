@@ -4,6 +4,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 public class LineReport extends Report implements Serializable {
@@ -12,7 +13,7 @@ public class LineReport extends Report implements Serializable {
         super();
     }
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private Line lineAffected;
 
     public Line getLineAffected() {
@@ -21,5 +22,19 @@ public class LineReport extends Report implements Serializable {
 
     public void setLineAffected(Line lineAffected) {
         this.lineAffected = lineAffected;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LineReport)) return false;
+        if (!super.equals(o)) return false;
+        LineReport that = (LineReport) o;
+        return Objects.equals(getLineAffected(), that.getLineAffected());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getLineAffected());
     }
 }

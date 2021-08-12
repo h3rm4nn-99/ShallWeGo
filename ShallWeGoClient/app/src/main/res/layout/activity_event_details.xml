@@ -4,12 +4,6 @@
         android:layout_height="match_parent"
         xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-        <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
-                                                               android:layout_height="wrap_content"
-                                                               android:text="Avviso"
-                                                               android:layout_marginBottom="12dp"
-                                                               android:textColor="@color/white"
-                                                               android:textSize="12pt"/>
 
         <org.osmdroid.views.MapView android:layout_width="match_parent" android:layout_height="150dp"
                                     android:layout_marginHorizontal="12pt"
@@ -105,7 +99,7 @@
                                                            android:clickable="true"
                                                            android:focusable="true"
                                                            android:layout_centerHorizontal="true"
-                                                           android:layout_below="@id/mainLayoutTipoEvento"
+                                                           android:layout_below="@id/mainLayoutDurata"
                                                            android:id="@+id/mainLayoutPosizione">
 
 

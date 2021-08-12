@@ -5,6 +5,7 @@ import com.shallwego.server.service.Utils;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Stop {
@@ -21,14 +22,17 @@ public class Stop {
 
     private String name;
 
-    @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-    private List<Line> lines;
+    @ManyToMany
+    private List<Line> lines = new ArrayList<>();
 
-    @OneToOne(mappedBy = "stopReported")
+    @OneToOne(mappedBy = "stopReported", cascade = CascadeType.ALL)
     private StopReport stopReport;
 
     @OneToMany(mappedBy = "targetStop")
-    private List<DateAndTimesOfRides> dateAndTimesOfRidesByStop;
+    private List<DateAndTimesOfRides> dateAndTimesOfRidesByStop = new ArrayList<>();
+
+    @OneToMany(mappedBy = "targetStop")
+    private List<DestinationsByStopAndLine> destinationsByStop = new ArrayList<>();
 
     @ManyToMany(mappedBy = "preferredStops")
     private List<User> userFavorites;
@@ -130,5 +134,50 @@ public class Stop {
 
     public void setDateAndTimesOfRidesByStop(List<DateAndTimesOfRides> dateAndTimesOfRidesByStop) {
         this.dateAndTimesOfRidesByStop = dateAndTimesOfRidesByStop;
+    }
+
+    public List<DestinationsByStopAndLine> getDestinationsByStop() {
+        return destinationsByStop;
+    }
+
+    public void setDestinationsByStop(List<DestinationsByStopAndLine> destinationsByStop) {
+        this.destinationsByStop = destinationsByStop;
+    }
+
+    public void addDestinationsByStop(DestinationsByStopAndLine destinationsByStopAndLine) {
+        this.destinationsByStop.add(destinationsByStopAndLine);
+    }
+
+    public List<User> getUserFavorites() {
+        return userFavorites;
+    }
+
+    public void setUserFavorites(List<User> userFavorites) {
+        this.userFavorites = userFavorites;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Stop)) return false;
+        Stop stop = (Stop) o;
+        return Objects.equals(getId(), stop.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+
+    @Override
+    public String toString() {
+        return "Stop{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", hasShelter=" + hasShelter +
+                ", hasTimeTables=" + hasTimeTables +
+                ", hasStopSign=" + hasStopSign +
+                '}';
     }
 }

@@ -12,6 +12,8 @@ public class DateAndTimesOfRides {
     @ManyToOne
     private Line targetLine;
 
+    private String destination;
+
     @Id
     @ManyToOne
     private Stop targetStop;

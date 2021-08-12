@@ -62,6 +62,30 @@ public class IntroSlideShow extends AppIntro {
         );
 
         AppIntroFragment slide4 = AppIntroFragment.newInstance(
+                "Un po' di concetti di base",
+                "Puoi effettuare una segnalazione rapida nella tua posizione usando il pulsante in basso a destra e scegliendo l'opzione 'Segnalazione rapida'",
+                R.drawable.fast_report,
+                Color.DKGRAY,
+                0,
+                0,
+                0,
+                0,
+                0
+        );
+
+        AppIntroFragment slide5 = AppIntroFragment.newInstance(
+                "Un po' di concetti di base",
+                "Se invece vuoi effettuare la segnalazione di una fermata in un altro punto, tieni premuto quel punto sulla mappa nella schermata principale",
+                R.drawable.ic_map_white_48dp,
+                Color.DKGRAY,
+                0,
+                0,
+                0,
+                0,
+                0
+        );
+
+        AppIntroFragment slide6 = AppIntroFragment.newInstance(
                 "Un'ultima cosa...",
                 "Data la natura dell'app è necessario concedere i permessi per la Geolocalizzazione e per l'Archiviazione",
                 R.drawable.ic_gps_fixed_white_48dp,
@@ -73,7 +97,7 @@ public class IntroSlideShow extends AppIntro {
                 0
         );
 
-        AppIntroFragment slide5 = AppIntroFragment.newInstance(
+        AppIntroFragment slide7 = AppIntroFragment.newInstance(
                 "Tutto pronto!",
                 "Ci auguriamo che l'esperienza sia di tuo gradimento!",
                 R.drawable.ic_favorite_white_48dp,
@@ -90,8 +114,10 @@ public class IntroSlideShow extends AppIntro {
         addSlide(slide3);
         addSlide(slide4);
         addSlide(slide5);
+        addSlide(slide6);
+        addSlide(slide7);
 
-        askForPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4, true);
+        askForPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 6, true);
     }
 
     @Override

@@ -81,12 +81,17 @@ public class EventDetails extends AppCompatActivity {
 
             String validityStart = responseJson.get("validityStart").toString().replace("\"", "");
             Date validityEnd = null;
-            try {
-                validityEnd = formatter.parse(responseJson.get("validityEnd").toString().replace("\"", ""));
-            } catch (ParseException e) {
-                e.printStackTrace();
+            boolean inProgress = false;
+            if (responseJson.has("validityEnd")) {
+                try {
+                    validityEnd = formatter.parse(responseJson.get("validityEnd").toString().replace("\"", ""));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                inProgress = validityEnd.after(new Date());
+            } else {
+                inProgress = true;
             }
-            boolean inProgress = validityEnd.after(new Date());
 
             if (inProgress) {
                 ImageView durataIv = findViewById(R.id.durataIV);
@@ -115,7 +120,7 @@ public class EventDetails extends AppCompatActivity {
                 if (lines.get(company) == null) {
                     lines.put(company, new ArrayList<>());
                 }
-                lines.get(company).add(object.get("lineIdentifier").toString().replace("\"", "") + " " + object.get("destination").toString().replace("\"", ""));
+                lines.get(company).add(object.get("lineIdentifier").toString().replace("\"", ""));
             }
 
             int index = 0;

@@ -14,7 +14,7 @@ import java.util.*;
 public class AlgorithmRunner {
 
     public static final int INDIVIDUAL_SIZE = 5;
-    public static final int POPULATION_SIZE = 10;
+    public static final int POPULATION_SIZE = 50;
 
     public List<UserGA> pool;
     private Location location;

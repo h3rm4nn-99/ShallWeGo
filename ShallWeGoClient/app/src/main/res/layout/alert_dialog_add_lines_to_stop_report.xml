@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:padding="35dp"
+              android:layout_height="match_parent">
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/company"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            android:hint="Azienda">
+
+        <AutoCompleteTextView
+                android:id="@+id/editTextCompany"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+        />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/line"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            android:hint="Linea">
+
+        <AutoCompleteTextView
+                android:id="@+id/editTextLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+        />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                           android:layout_height="wrap_content"
+                                                           android:layout_marginTop="10dp"
+                                                           android:gravity="center"
+                                                           android:fontFamily="sans-serif-thin"
+                                                           android:textSize="5pt"
+                                                           android:id="@+id/destinationsText"
+                                                           android:visibility="invisible"
+                                                           android:textColor="@color/white"
+                                                           android:text="Destinazioni raggiungibili con questa linea da questa fermata"/>
+    <ScrollView android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="5dp"
+                      android:padding="10dp"
+                      android:id="@+id/checkboxContainer"
+                      android:orientation="vertical"/>
+    </ScrollView>
+
+</LinearLayout>

@@ -1,8 +1,10 @@
 package com.shallwego.server.logic.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -20,8 +22,8 @@ public abstract class Report {
 
     private boolean verified;
 
-    @ManyToMany(mappedBy = "assignedTo")
-    private List<User> verifiers;
+    @ManyToMany
+    private List<User> verifiers = new ArrayList<>();
 
     public List<User> getVerifiers() {
         return verifiers;
@@ -65,5 +67,18 @@ public abstract class Report {
 
     public void setVerifiers(List<User> verifiers) {
         this.verifiers = verifiers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Report)) return false;
+        Report report = (Report) o;
+        return Objects.equals(getId(), report.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

@@ -2,7 +2,9 @@ package com.shallwego.server.logic.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,23 +15,19 @@ public class TemporaryEventReport extends Report implements Serializable {
         super();
     }
 
-    @ManyToMany
-    private List<Line> linesAffectedEvent;
-
     private Date validityStart;
     private Date validityEnd;
     private String eventType;
     private String description;
     private String latitude;
     private String longitude;
+    private String source;
 
-    public List<Line> getLinesAffectedEvent() {
-        return linesAffectedEvent;
-    }
+    @OneToMany(mappedBy = "targetReport")
+    private List<DestinationsByReportAndLine> destinationsByReport = new ArrayList<>();
 
-    public void setLinesAffectedEvent(List<Line> linesAffectedEvent) {
-        this.linesAffectedEvent = linesAffectedEvent;
-    }
+    @ManyToMany
+    private List<Line> linesAffectedEvent = new ArrayList<>();
 
     public Date getValidityStart() {
         return validityStart;
@@ -77,5 +75,33 @@ public class TemporaryEventReport extends Report implements Serializable {
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
+    }
+
+    public void addAffectedLine(Line line) {
+        linesAffectedEvent.add(line);
+    }
+
+    public List<DestinationsByReportAndLine> getDestinationsByReport() {
+        return destinationsByReport;
+    }
+
+    public void setDestinationsByReport(List<DestinationsByReportAndLine> destinationsByReport) {
+        this.destinationsByReport = destinationsByReport;
+    }
+
+    public List<Line> getLinesAffectedEvent() {
+        return linesAffectedEvent;
+    }
+
+    public void setLinesAffectedEvent(List<Line> linesAffectedEvent) {
+        this.linesAffectedEvent = linesAffectedEvent;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

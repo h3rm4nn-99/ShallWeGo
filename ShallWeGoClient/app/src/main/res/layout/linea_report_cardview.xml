@@ -7,19 +7,24 @@
 
     <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
                                                        android:id="@+id/cardViewLinea"
+                                                       android:layout_marginTop="10pt"
+                                                       android:layout_marginLeft="10pt"
+                                                       android:layout_marginRight="10pt"
                                                        android:layout_height="match_parent">
 
         <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="LINEA "
+                      android:text="Linea "
                       android:id="@+id/linea_text"
                       android:paddingLeft="15pt"
+                      android:paddingTop="15pt"
                       android:textSize="12pt"
                       android:textStyle="bold"/>
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:id="@+id/linea_identifier"
+                      android:paddingTop="15pt"
                       android:textSize="12pt"
                       android:textStyle="bold"
                       android:layout_toRightOf="@id/linea_text"/>
@@ -57,6 +62,7 @@
                        android:layout_below="@id/linear_layout_report_linea_compagnia"
                        android:id="@+id/dettagliLinea"
                        android:paddingRight="15pt"
+                       android:paddingBottom="15pt"
                        android:layout_alignParentRight="true"
                        android:src="@drawable/ic_double_arrow_white_24dp"/>
         </RelativeLayout>
