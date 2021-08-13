@@ -3,9 +3,7 @@ package com.shallwego.client;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -26,6 +24,7 @@ import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.CancellationTokenSource;
@@ -60,6 +59,25 @@ public class MainActivity extends AppCompatActivity {
     private Marker outdatedLocationMarker = null;
     private final CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
     public static String userName = "";
+    public static int myRideId;
+    public static boolean isServiceStarted;
+    private final IntentFilter intentFilter = new IntentFilter();
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case "freshLocation": {
+                    //update UI
+                    break;
+                }
+
+                case "shallWeGoIsNoMore": {
+                    // remove marker from ui + other stuff
+                    break;
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +171,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+        intentFilter.addAction("freshLocation");
+        intentFilter.addAction("shallWeGoIsNoMore");
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, intentFilter);
+
     }
 
     private void configureSpeedDial() {
@@ -173,6 +196,8 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         });
+
+
     }
 
     @Override
@@ -356,5 +381,11 @@ public class MainActivity extends AppCompatActivity {
         companyButton.setOnClickListener(listener);
         LinearLayout eventButton = dialogLayout.findViewById(R.id.buttonTemporaryEvent);
         eventButton.setOnClickListener(listener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 }

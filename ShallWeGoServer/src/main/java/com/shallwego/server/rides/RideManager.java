@@ -46,6 +46,17 @@ public class RideManager {
         return output;
     }
 
+    public List<Ride> findByLine(Line line) {
+        ArrayList<Ride> output = new ArrayList<>();
+        for (Ride ride: rides) {
+            if (ride.getLine().equals(line)) {
+                output.add(ride);
+            }
+        }
+
+        return output;
+    }
+
     public void updateLocation(Ride ride, Location location) {
         rides.remove(ride);
         ride.setLastLocation(location);

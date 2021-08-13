@@ -4,6 +4,8 @@ import com.google.gson.*;
 import com.shallwego.server.ga.AlgorithmRunner;
 import com.shallwego.server.logic.entities.*;
 import com.shallwego.server.logic.service.*;
+import com.shallwego.server.rides.Ride;
+import com.shallwego.server.rides.RideManager;
 import com.shallwego.server.service.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.simple.JSONArray;
@@ -44,6 +46,9 @@ public class Controller {
 
     @Autowired
     private DestinationsByReportAndLineRepository destinationsByReportAndLineRepository;
+
+    @Autowired
+    private RideManager rideManager;
 
     @Autowired
     private Pool pool;
@@ -629,5 +634,65 @@ public class Controller {
             array.add(obj);
         }
         return array.toString();
+    }
+
+    @PostMapping("/api/initRide")
+    public String initRide(@RequestBody String rideData) {
+        JsonObject object = (JsonObject) JsonParser.parseString(rideData);
+        String lineIdentifier = object.get("lineIdentifier").getAsString();
+        String companyName = object.get("companyName").getAsString();
+        String destination = object.get("destination").getAsString();
+        int crowding = object.get("crowding").getAsInt();
+        ArrayList<String> notes = new ArrayList<>();
+        JsonArray notesJson = object.get("notes").getAsJsonArray();
+        notesJson.forEach((jsonElement -> {
+            notes.add(jsonElement.toString());
+        }));
+
+        double latitude = object.get("latitude").getAsDouble();
+        double longitude = object.get("longitude").getAsDouble();
+        Line line = lineRepository.findById(new LineCompositeKey(lineIdentifier, companyName)).get();
+        Ride ride = new Ride(line, destination, new Location(latitude, longitude));
+        ride.setCrowding(crowding);
+        ride.setNotes(notes);
+        rideManager.addRide(ride);
+        return Integer.toString(ride.getId());
+    }
+
+    @PutMapping("/api/updateRideLocation/{rideId}/{userName}")
+    public String updateRideLocation(@RequestBody String location, @PathVariable String rideId, @PathVariable String userName) {
+        JsonObject object = (JsonObject) JsonParser.parseString(location);
+        double latitude = object.get("latitude").getAsDouble();
+        double longitude = object.get("longitude").getAsDouble();
+        Location newLocation = new Location(latitude, longitude);
+        Ride ride = rideManager.findById(Integer.parseInt(rideId));
+        ride.setLastLocation(newLocation);
+
+        return Integer.toString(ride.getId());
+    }
+
+    @GetMapping("/api/getRidesByLine/{companyName}/{lineIdentifier}")
+    public String getRidesByLine(@PathVariable String companyName, @PathVariable String lineIdentifier) {
+        Line line = lineRepository.findById(new LineCompositeKey(companyName, lineIdentifier)).get();
+        List<Ride> rides = rideManager.findByLine(line);
+
+        JsonArray outputRides = new JsonArray();
+
+        for (Ride ride: rides) {
+            JsonObject rideJson = new JsonObject();
+            Location location = ride.getLastLocation();
+            rideJson.addProperty("lastLatitude", location.getLatitude());
+            rideJson.addProperty("lastLongitude", location.getLongitude());
+            rideJson.addProperty("companyName", companyName);
+            rideJson.addProperty("lineIdentifier", lineIdentifier);
+            rideJson.addProperty("crowding", ride.getCrowding());
+            rideJson.addProperty("destination", ride.getDestination());
+            JsonArray notes = new JsonArray();
+            ride.getNotes().forEach(notes::add);
+            rideJson.add("notes", notes);
+            outputRides.add(rideJson);
+        }
+
+        return outputRides.toString();
     }
 }

@@ -2,7 +2,11 @@ package com.shallwego.server.rides;
 
 import com.shallwego.server.logic.entities.Line;
 import com.shallwego.server.logic.entities.Stop;
+import com.shallwego.server.logic.entities.User;
 import com.shallwego.server.service.Location;
+
+import java.util.List;
+import java.util.Objects;
 
 public class Ride {
     public static int LAST_ID = 0;
@@ -10,11 +14,12 @@ public class Ride {
     private Line line;
     private String destination;
     private Location lastLocation;
+    private User user;
 
-    private String notes;
+    private List<String> notes;
     private int crowding;
 
-    public Ride(Line line, String destination, Stop firstStop, Location lastLocation) {
+    public Ride(Line line, String destination, Location lastLocation) {
         synchronized(this) {
            this.id = LAST_ID++;
         }
@@ -39,7 +44,6 @@ public class Ride {
         this.destination = destination;
     }
 
-
     public Location getLastLocation() {
         return lastLocation;
     }
@@ -48,11 +52,11 @@ public class Ride {
         this.lastLocation = lastLocation;
     }
 
-    public String getNotes() {
+    public List<String> getNotes() {
         return notes;
     }
 
-    public void setNotes(String notes) {
+    public void setNotes(List<String> notes) {
         this.notes = notes;
     }
 
@@ -70,5 +74,39 @@ public class Ride {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Ride)) return false;
+        Ride ride = (Ride) o;
+        return getId() == ride.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+    @Override
+    public String toString() {
+        return "Ride{" +
+                "id=" + id +
+                ", line=" + line +
+                ", destination='" + destination + '\'' +
+                ", lastLocation=" + lastLocation +
+                ", user=" + user +
+                ", notes=" + notes +
+                ", crowding=" + crowding +
+                '}';
     }
 }

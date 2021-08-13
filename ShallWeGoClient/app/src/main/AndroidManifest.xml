@@ -17,6 +17,13 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.ShallWeGo"
             android:usesCleartextTraffic="true">
+        <service
+                android:name=".LiveTracking"
+                android:enabled="true"
+                android:stopWithTask="false"
+                android:exported="true">
+        </service>
+
         <activity android:name=".VerifyReports">
         </activity>
         <activity android:name=".VerifyCompanyReport">
