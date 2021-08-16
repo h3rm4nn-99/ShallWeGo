@@ -13,8 +13,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import com.android.volley.*;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.*;
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
+
+import java.nio.charset.StandardCharsets;
 
 public class LiveTracking extends Service {
 
@@ -35,8 +41,8 @@ public class LiveTracking extends Service {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationRequest = LocationRequest.create();
 
-        fusedLocationRequest.setInterval(10000);
-        fusedLocationRequest.setFastestInterval(10000);
+        fusedLocationRequest.setInterval(20000);
+        fusedLocationRequest.setFastestInterval(20000);
         fusedLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         callbackMethod = new LocationCallback() {
@@ -50,6 +56,32 @@ public class LiveTracking extends Service {
                 messenger.putExtra("longitude", locationResult.getLastLocation().getLatitude());
                 sendBroadcast(messenger);
 
+                JsonObject object = new JsonObject();
+                object.addProperty("latitude", locationResult.getLastLocation().getLatitude());
+                object.addProperty("longitude", locationResult.getLastLocation().getLongitude());
+                String requestBody = object.toString();
+                RequestQueue queue = Volley.newRequestQueue(LiveTracking.this);
+                StringRequest request = new StringRequest(Request.Method.PUT, IpAddress.SERVER_IP_ADDRESS + "/api/updateRideLocation/" + rideId + "/" + MainActivity.userName, (response) -> {
+
+                }, Throwable::printStackTrace) {
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json; charset=utf-8";
+                    }
+
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+                        return requestBody == null ? null : requestBody.getBytes(StandardCharsets.UTF_8);
+                    }
+                };
+
+                RetryPolicy mRetryPolicy = new DefaultRetryPolicy(
+                        0,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
+                request.setRetryPolicy(mRetryPolicy);
+                queue.add(request);
             }
         };
     }
@@ -62,11 +94,15 @@ public class LiveTracking extends Service {
         switch (intent.getAction()) {
             case "STOP_SERVICE": {
                 fusedLocationClient.removeLocationUpdates(callbackMethod);
-                Intent stopMessenger = new Intent(this, MainActivity.class); // again, can't come up with a better name ;);
-                stopMessenger.setAction("shallWeGoIsNoMore");
-                sendBroadcast(stopMessenger);
-                stopForeground(true);
-                stopSelf();
+                RequestQueue queue = Volley.newRequestQueue(LiveTracking.this);
+                StringRequest request = new StringRequest(Request.Method.PUT, IpAddress.SERVER_IP_ADDRESS + "/api/terminateRide/" + rideId, (response) -> {
+                    Intent stopMessenger = new Intent(this, MainActivity.class); // again, can't come up with a better name ;);
+                    stopMessenger.setAction("shallWeGoIsNoMore");
+                    sendBroadcast(stopMessenger);
+                    stopForeground(true);
+                    stopSelf();
+                }, Throwable::printStackTrace);
+                queue.add(request);
                 break;
             }
 

@@ -8,4 +8,9 @@
             android:id="@+id/report"
             android:icon="@drawable/ic_edit_white_48dp"
             android:title="Segnalazione rapida"/>
+
+    <item
+            android:id="@+id/shallWeGo"
+            android:icon="@drawable/ic_share_location_white_24dp"
+            android:title="Shall We Go?"/>
 </menu>

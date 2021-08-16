@@ -18,6 +18,7 @@ public class Ride {
 
     private List<String> notes;
     private int crowding;
+    private boolean hasAirConditioning;
 
     public Ride(Line line, String destination, Location lastLocation) {
         synchronized(this) {
@@ -84,6 +85,14 @@ public class Ride {
         this.user = user;
     }
 
+    public boolean isHasAirConditioning() {
+        return hasAirConditioning;
+    }
+
+    public void setHasAirConditioning(boolean hasAirConditioning) {
+        this.hasAirConditioning = hasAirConditioning;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -95,18 +104,5 @@ public class Ride {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
-    }
-
-    @Override
-    public String toString() {
-        return "Ride{" +
-                "id=" + id +
-                ", line=" + line +
-                ", destination='" + destination + '\'' +
-                ", lastLocation=" + lastLocation +
-                ", user=" + user +
-                ", notes=" + notes +
-                ", crowding=" + crowding +
-                '}';
     }
 }

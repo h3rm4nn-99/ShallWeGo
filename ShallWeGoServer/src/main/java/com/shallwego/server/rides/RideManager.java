@@ -70,6 +70,10 @@ public class RideManager {
         rides.add(ride);
     }
 
+    public void removeRide(Ride ride) {
+        rides.remove(ride);
+    }
+
     /*private Stop findNearestStop(Location location, Line line, String destination) {
         List<Stop> linesStops = line.getStops();
         List<Stop> targetStops = new ArrayList<>();

@@ -17,11 +17,17 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.ShallWeGo"
             android:usesCleartextTraffic="true">
+        <activity
+                android:name=".NewRideActivity"
+                android:label="@string/title_activity_new_ride"
+                android:theme="@style/Theme.ShallWeGo.NoActionBar">
+        </activity>
+
         <service
                 android:name=".LiveTracking"
                 android:enabled="true"
-                android:stopWithTask="false"
-                android:exported="true">
+                android:exported="true"
+                android:stopWithTask="true">
         </service>
 
         <activity android:name=".VerifyReports">

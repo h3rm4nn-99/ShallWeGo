@@ -642,6 +642,7 @@ public class Controller {
         String lineIdentifier = object.get("lineIdentifier").getAsString();
         String companyName = object.get("companyName").getAsString();
         String destination = object.get("destination").getAsString();
+        boolean hasAirConditioning = object.get("hasAirConditioning").getAsBoolean();
         int crowding = object.get("crowding").getAsInt();
         ArrayList<String> notes = new ArrayList<>();
         JsonArray notesJson = object.get("notes").getAsJsonArray();
@@ -666,8 +667,7 @@ public class Controller {
         double longitude = object.get("longitude").getAsDouble();
         Location newLocation = new Location(latitude, longitude);
         Ride ride = rideManager.findById(Integer.parseInt(rideId));
-        ride.setLastLocation(newLocation);
-
+        rideManager.updateLocation(ride, newLocation);
         return Integer.toString(ride.getId());
     }
 
@@ -694,5 +694,13 @@ public class Controller {
         }
 
         return outputRides.toString();
+    }
+
+    @PostMapping("/api/terminateRide/{rideId}")
+    public String terminateRide(@PathVariable String rideId) {
+        Ride ride = rideManager.findById(Integer.parseInt(rideId));
+        rideManager.removeRide(ride);
+
+        return "OKAY";
     }
 }

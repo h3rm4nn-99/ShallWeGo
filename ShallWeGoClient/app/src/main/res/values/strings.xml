@@ -33,4 +33,6 @@
     <string name="title_activity_line_report">ScrollingActivity</string>
     <string name="title_activity_company_report">ScrollingActivity</string>
     <string name="title_activity_temporary_event_report">ScrollingActivity</string>
+    <string name="title_activity_new_ride">ScrollingActivity</string>
+
 </resources>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/activity_new_ride"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".NewRideActivity">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:layout_marginTop="34dp"
+                  android:orientation="vertical">
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/company"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                android:hint="Azienda">
+
+            <AutoCompleteTextView
+                    android:id="@+id/editTextCompany"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+            />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/line"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                android:hint="Linea">
+
+            <AutoCompleteTextView
+                    android:id="@+id/editTextLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+            />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                               android:layout_height="wrap_content"
+                                                               android:layout_marginTop="10dp"
+                                                               android:gravity="center"
+                                                               android:fontFamily="sans-serif-thin"
+                                                               android:textSize="10pt"
+                                                               android:visibility="invisible"
+                                                               android:id="@+id/destinationsText"
+                                                               android:textColor="@color/white"
+                                                               android:text="Dove stai andando?"/>
+        <HorizontalScrollView android:layout_width="wrap_content"
+                              android:visibility="invisible"
+                              android:id="@+id/horizontalScrollView"
+                              android:layout_margin="10dp"
+                              android:layout_height="wrap_content">
+            <RadioGroup android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="5dp"
+                          android:padding="10dp"
+                          android:id="@+id/destinationsContainer"
+                          android:orientation="horizontal"/>
+        </HorizontalScrollView>
+
+        <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                               android:layout_height="wrap_content"
+                                                               android:layout_marginTop="10dp"
+                                                               android:gravity="center"
+                                                               android:fontFamily="sans-serif-thin"
+                                                               android:textSize="10pt"
+                                                               android:visibility="invisible"
+                                                               android:id="@+id/destinationsError"
+                                                               android:textColor="#FF0000"
+                                                               android:text="Seleziona una destinazione"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:layout_margin="5dp"
+                      android:orientation="horizontal">
+            <com.google.android.material.card.MaterialCardView android:layout_width="wrap_content"
+                                                               android:layout_height="wrap_content"
+                                                               android:id="@+id/airConditioning"
+                                                               android:layout_marginEnd="5dp"
+                                                               app:cardCornerRadius="5dp"
+                                                               app:cardBackgroundColor="#6200EE"
+                                                               app:contentPadding="10dp">
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent"
+                              android:orientation="horizontal">
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:gravity="center"
+                                  android:layout_gravity="center">
+                        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                   android:layout_marginRight="4dp"
+                                   android:src="@drawable/ic_ac_unit_white_24dp"/>
+                        <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                               android:layout_height="wrap_content"
+                                                                               android:textColor="@color/white"
+                                                                               android:singleLine="true"
+                                                                               android:maxLines="2"
+                                                                               android:text="Aria\nCondizionata?"/>
+
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content">
+                        <RadioGroup android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:id="@+id/radioGroupAirConditioning">
+                            <com.google.android.material.radiobutton.MaterialRadioButton android:layout_width="wrap_content"
+                                                                                         android:layout_height="wrap_content"
+                                                                                         android:textColor="@color/white"
+                                                                                         android:id="@+id/airConditioningYes"
+                                                                                         android:text="Sì"/>
+                            <com.google.android.material.radiobutton.MaterialRadioButton android:layout_width="wrap_content"
+                                                                                         android:layout_height="wrap_content"
+                                                                                         android:textColor="@color/white"
+                                                                                         android:text="No"/>
+                        </RadioGroup>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView android:layout_width="wrap_content"
+                                                               android:layout_height="wrap_content"
+                                                               android:id="@+id/ticketValidator"
+                                                               app:cardCornerRadius="5dp"
+                                                               app:cardBackgroundColor="#6200EE"
+                                                               app:contentPadding="10dp">
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent"
+                              android:orientation="horizontal">
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:gravity="center"
+                                  android:layout_gravity="center">
+                        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                   android:layout_marginRight="4dp"
+                                   android:src="@drawable/ic_approval_white_24dp"/>
+                        <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                               android:layout_height="wrap_content"
+                                                                               android:textColor="@color/white"
+                                                                               android:singleLine="true"
+                                                                               android:text="Obliteratrice?"/>
+
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content">
+                        <RadioGroup android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:id="@+id/radioGroupTicketValidator">
+                            <com.google.android.material.radiobutton.MaterialRadioButton android:layout_width="wrap_content"
+                                                                                         android:layout_height="wrap_content"
+                                                                                         android:textColor="@color/white"
+                                                                                         android:id="@+id/ticketValidatorYes"
+                                                                                         android:text="Sì"/>
+                            <com.google.android.material.radiobutton.MaterialRadioButton android:layout_width="wrap_content"
+                                                                                         android:layout_height="wrap_content"
+                                                                                         android:textColor="@color/white"
+                                                                                         android:text="No"/>
+                        </RadioGroup>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                               android:layout_height="wrap_content"
+                                                               android:layout_gravity="center"
+                                                               android:layout_margin="10dp"
+                                                               android:gravity="center"
+                                                               android:text="Quanto è affollata questa corsa?"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:gravity="center"
+                      android:layout_gravity="center">
+
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:src="@drawable/ic_sentiment_dissatisfied_white_48dp"
+                       android:tag="3"
+                       android:id="@+id/veryCrowded"
+                       android:layout_margin="5dp"/>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:src="@drawable/ic_sentiment_neutral_white_48dp"
+                       android:id="@+id/slightlyCrowded"
+                       android:tag="2"
+                       android:layout_margin="5dp"/>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:src="@drawable/ic_sentiment_satisfied_white_48dp"
+                       android:id="@+id/notCrowded"
+                       android:tag="1"
+                       android:layout_margin="5dp"/>
+        </LinearLayout>
+
+        <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                               android:layout_height="wrap_content"
+                                                               android:layout_marginTop="10dp"
+                                                               android:gravity="center"
+                                                               android:fontFamily="sans-serif-thin"
+                                                               android:textSize="10pt"
+                                                               android:visibility="invisible"
+                                                               android:id="@+id/crowdingError"
+                                                               android:textColor="#FF0000"
+                                                               android:text="Seleziona un valore, per favore"/>
+
+        <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                               android:layout_height="wrap_content"
+                                                               android:layout_gravity="center"
+                                                               android:layout_margin="10dp"
+                                                               android:gravity="center"
+                                                               android:text="Aggiungi dettagli"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:id="@+id/containerNotes"
+                      android:orientation="vertical">
+
+        </LinearLayout>
+
+        <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                               android:padding="5dp"
+                                               android:id="@+id/moreInfo"
+                                               android:layout_margin="10dp"
+                                               app:chipIcon="@drawable/ic_add_circle_white_24dp"
+                                               android:text="Più dettagli"/>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
