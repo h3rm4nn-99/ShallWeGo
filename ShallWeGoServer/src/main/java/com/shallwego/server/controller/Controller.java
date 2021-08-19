@@ -76,7 +76,7 @@ public class Controller {
         }
 
 
-        Location location = new Location(40.7472133, 14.6433202);
+        Location location = new Location(40.6803601, 14.7594542);
         Set<User> bestUsers = AlgorithmRunner.buildPopulation(users, location).run();
 
         return "Utenti migliori: " + bestUsers.toString();
@@ -681,6 +681,7 @@ public class Controller {
         for (Ride ride: rides) {
             JsonObject rideJson = new JsonObject();
             Location location = ride.getLastLocation();
+            rideJson.addProperty("id", ride.getId());
             rideJson.addProperty("lastLatitude", location.getLatitude());
             rideJson.addProperty("lastLongitude", location.getLongitude());
             rideJson.addProperty("companyName", companyName);

@@ -13,7 +13,7 @@
     Le persone più adatte a validare i dati di una certa segnalazione sono quelle che possiedono principalmente i seguenti requisiti:
     \begin{itemize}
         \item Risiedano (oppure operino abitualmente) in una zona vicina al luogo oggetto della segnalazione.
-        \item Abbiano una certa "reputazione" all'interno della piattaforma. (ShallWeGo infatti tiene traccia del livello di attività in termini di segnalazioni e di verifica delle stesse. Questo livello, similemnet a quanto avviene sul social network Reddit, viene chiamato "\textit{karma}" e cresce all'aumentare dell'attività del singolo)
+        \item Abbiano una certa "reputazione" all'interno della piattaforma. (ShallWeGo infatti tiene traccia del livello di attività in termini di segnalazioni e di verifica delle stesse. Questo livello, similmente a quanto avviene sul social network Reddit, viene chiamato "\textit{karma}" e cresce all'aumentare dell'attività del singolo)
     \end{itemize}
 
     I "verificatori" sono assegnati all'atto dell'invio di una segnalazione da parte dell'utente. 
@@ -21,19 +21,19 @@
 
 \section{Algoritmi genetici}
     Un algoritmo genetico non consiste tanto in una tipologia vera e propria di algoritmi quanto in un paradigma (una \textbf{metaeuristica}) che consente di implementare un algoritmo di \textbf{ricerca} per risolvere problemi di ottimizzazione. In quanto metaeuristica, il paradigma che sta alla base degli algoritmi generici non garantisce di trovare la soluzione ottima nello spazio di ricerca che si sta considerano ma permette di trovare in maniera molto veloce (e in questo risiede uno dei suoi vantaggi che lo fanno preferire ad altri approcci) delle soluzioni che vi si avvicinano. Un altro vantaggio che rende molto utile l'impiego di algoritmi che si basano su questa metaeuristica, consiste nel fatto che essi siano sempre applicabili, a prescindere dalla struttura del problema. \\
-    In particoalre, ad un algoritmo che sfrutta questa metaeuristica viene presentato un insieme iniziale di solzuioni ammissibili al problema che si sta affrontano e, secondo determinate metriche che forniscono una stima di quanto \textit{"buona"} sia una certa solzuione a quel determinato problema, stabilire la migliore (o le migliori), andando a crearne di nuove se necessario.
+    In particolare, ad un algoritmo che sfrutta questa metaeuristica viene presentato un insieme iniziale di soluzioni ammissibili al problema che si sta affrontano e, secondo determinate metriche che forniscono una stima di quanto \textit{"buona"} sia una certa soluzione a quel determinato problema, stabilire la migliore (o le migliori), andando a crearne di nuove se necessario.
 
 \section{Struttura e funzionamento degli algoritmi genetici}
     In generale, il funzionamento degli algoritmi genetici (e da qui la denominazione del paradigma) ricalca a grandi linee quella dell'evoluzione delle specie descritte da Charles Darwin nel 1854 nella sua opera \textit{"L'origine della specie"} per cui l'evoluzione delle specie presenti in natura segue un cammino ben preciso, che consiste in tre fasi ben precise, a partire da una popolazione iniziale di individui:
 
     \begin{itemize}
         \item Selezione naturale
-        \item Accoppiamento tra individui (detto anche, nel contesto che si sta trattando, \textit{corossover})
+        \item Accoppiamento tra individui (detto anche, nel contesto che si sta trattando, \textit{crossover})
         \item Mutazione di un gene di un individuo
     \end{itemize}
 
     Un individuo, secondo quanto descritto da Darwin, può essere visto come un insieme di caratteristiche (o \textit{geni}) che ne definiscono l'identità. Mediante l'accoppiamento i geni di due individui si mescolano, risultando nella creazione di un altro individuo che possiederà quindi una combinazione di quelli dei suoi genitori. \\
-    Con una certa probabilità, inoltre, avviene il feonomeno della mutazione, descritto poc'anzi.
+    Con una certa probabilità, inoltre, avviene il fenomeno della mutazione, descritto poc'anzi.
 
     Infine, sulla base di quanto buone siano le caratteristiche di un individuo, esso potrà "sopravvivere" ed eventualmente riprodursi per formare nuovi individui o "morire", non propagando oltre i suoi geni, che evidentemente non erano abbastanza adatti all'ambiente in cui si trovava. Il processo quindi risulta \textit{iterativo}.
 
@@ -49,9 +49,9 @@
         \item Terminare il processo
     \end{itemize}
 
-    Per prendere una decisione, l'algortimo fa riferimento alla cosiddetta \textbf{condizione di terminazione}, che rappresenta le condizioni che si devono verificare per mettere fine al processo (come ad esempio il numero di iterazioni effettuate, il tempo di esecuzione o il peggioramento in termini di fitness media della popolazione dopo un numero $n$ fissato di iterazioni). Se la condizione di terminazione viene soddisfatta, allora il processo giunge al termine e solitamente viene restituito l'individuo migliore in termini di fitness dell'ultima popolazione, al netto di accorgimenti particolari e di operazioni di post-processing.
+    Per prendere una decisione, l'algoritmo fa riferimento alla cosiddetta \textbf{condizione di terminazione}, che rappresenta le condizioni che si devono verificare per mettere fine al processo (come ad esempio il numero di iterazioni effettuate, il tempo di esecuzione o il peggioramento in termini di fitness media della popolazione dopo un numero $n$ fissato di iterazioni). Se la condizione di terminazione viene soddisfatta, allora il processo giunge al termine e solitamente viene restituito l'individuo migliore in termini di fitness dell'ultima popolazione, al netto di accorgimenti particolari e di operazioni di post-processing.
 
-    Le operazioni di selezione, crossover e mutazione vengono implementate tramite procedure chiamate \textbf{operatori genetici}, la cui definizione rappresenta uno degli step più importanti dell'implementazione di un algortimo di ricerca che sfrutta questa metaeuristica, assieme a stabilire come debba essere calcolata la fitness e come e quando debba terminare il processo. 
+    Le operazioni di selezione, crossover e mutazione vengono implementate tramite procedure chiamate \textbf{operatori genetici}, la cui definizione rappresenta uno degli step più importanti dell'implementazione di un algoritmo di ricerca che sfrutta questa metaeuristica, assieme a stabilire come debba essere calcolata la fitness e come e quando debba terminare il processo. 
 
 \section{L'algoritmo utilizzato da ShallWeGo}
     In questa sezione verrà descritto accuratamente l'algoritmo di ricerca utilizzato dalla piattaforma che segue il paradigma degli algoritmi genetici e che va a risolvere il problema di ottimizzazione consistente nel selezionare i migliori potenziali verificatori di una determinata segnalazione.
@@ -88,7 +88,7 @@ Ed infatti, visto l'andamento della funzione $f(x) = \frac{100}{x}, x \neq 0$ (i
 
 
 \section{Operatori genetici}
-  Verranno ora illustrate le scelte riguardo all'implementazione dei vari operatori genetici che prendono parte al processo di evoluzione tipco degli algoritmi genetici.
+  Verranno ora illustrate le scelte riguardo all'implementazione dei vari operatori genetici che prendono parte al processo di evoluzione tipico degli algoritmi genetici.
 
     \subsection{L'operatore genetico di Selezione}
         Il primo operatore che viene applicato in una singola iterazione dell'algoritmo è quello di \textbf{Selezione}, che, riprendendo quanto descritto in precedenza, permette di stabilire a quali individui possano essere ammessi a riprodursi ed eventualmente a mutare (sulla base della loro fitness). In letteratura, esistono diversi approcci a quest'operatore. Quelli principali sono stati illustrati durante la sesta lezione del corso di \textit{Fondamenti di Intelligenza Artificiale} tenuta dal Prof. Fabio Palomba e dal Dott. Emanuele Iannone. \\
@@ -96,8 +96,8 @@ Ed infatti, visto l'andamento della funzione $f(x) = \frac{100}{x}, x \neq 0$ (i
 
         \begin{itemize}
             \item L'approccio basato su \textbf{roulette wheel} in cui gli individui con la fitness più alta hanno più possibilità di sopravvivere a questa fase, proprio come succede ad un elemento posto su una roulette che ha una porzione di area maggiore rispetto agli altri. In questo caso, la "porzione" di roulette dedicata ad un individuo è direttamente proporzionale al valore della sua fitness (normalizzata in $[0, 1]$)
-            \item L'approccio basato su \textbf{rank}, nel quale ogni individuo della popolazione è ordinato decrescentemente rispetto alla sua fitness e ad ogni posizione in questa lista viene associato un numero, il cosiddetto \textit{rango}: la probabilità di selezione del singolo risulta inversamente proporzionale al suo rango.
-            \item L'approccio basato su \textbf{truncation}, in qualche modo simile al precdente (ne mutua l'ordinamento degli individui) che consiste nel fissare un numero $n$ < $|P|$ (se P rappresenta la popolazione) e di selezionare i primi $n$ individui nella popolazione che hanno la fitness più alta
+            \item L'approccio basato su \textbf{rank}, nel quale ogni individuo della popolazione è ordinato in modo decrescente rispetto alla sua fitness e ad ogni posizione in questa lista viene associato un numero, il cosiddetto \textit{rango}: la probabilità di selezione del singolo risulta inversamente proporzionale al suo rango.
+            \item L'approccio basato su \textbf{truncation}, in qualche modo simile al precedente (ne mutua l'ordinamento degli individui) che consiste nel fissare un numero $n$ < $|P|$ (se P rappresenta la popolazione) e di selezionare i primi $n$ individui nella popolazione che hanno la fitness più alta
         \end{itemize}
 
         Per l'algoritmo utilizzato in ShallWeGo si è scelto di utilizzare l'approccio basato su \textbf{roulette wheel} in quanto risulta quello di più immediata comprensione ed implementazione (essendo molto più fedele a quanto avviene in natura). Inoltre, non essendoci alcun caso in cui la fitness possa scendere sotto il valore $0$ quest'approccio è stato applicabile senza problemi.
@@ -115,14 +115,14 @@ Ed infatti, visto l'andamento della funzione $f(x) = \frac{100}{x}, x \neq 0$ (i
                 \end{itemize}
             \item La tecnica \textbf{\textit{k}-points}, che rappresenta una generalizzazione della tecnica Single Point, in cui un individuo viene diviso in \textit{$k$} porzioni prima di essere incrociato con un altro individuo
         \end{itemize}
-        La tecnica che viene usata da ShallWeGo è quella del \textbf{Single Point}. C'è da precisare che nel caso del problema che si sta affrontando la posizione di un gene all'interno di un individuo risulta irrilevante e di conseguenza un approccio k-points non averbbe portato ad un qualche tipo di miglioramento.
+        La tecnica che viene usata da ShallWeGo è quella del \textbf{Single Point}. C'è da precisare che nel caso del problema che si sta affrontando la posizione di un gene all'interno di un individuo risulta irrilevante e di conseguenza un approccio k-points non avrebbe portato ad un qualche tipo di miglioramento.
     \subsection{L'operatore genetico di Mutazione}
         L'ultimo operatore genetico che viene applicato durante un'iterazione è quello di \textbf{Mutazione} che ricalca, come accennato precedentemente, il processo di mutazione spontanea che avviene in natura. Una mutazione consiste nel cambiamento casuale di un gene all'interno di un individuo. Anche in questo caso, esistono diversi approcci che in generale possono essere seguiti. \\
         Tra questi si menzionano:
         \begin{itemize}
             \item La tecnica del \textbf{Bit Flip} che, come suggerisce il nome, è applicabile solo nel caso di individui codificati in modo \textit{binario} e consiste nel scegliere in maniera casuale un gene all'interno dell'individuo e "capovolgere" il suo valore (quindi da 0 si passa ad 1 e vice-versa).
             \item La tecnica del \textbf{Random Resetting} che prevede il cambiamento di un gene preso casualmente all'interno dell'individuo con un altro valore ammissibile per quel gene preso altrettanto casualmente.
-            \item La tecnice dello \textbf{Swap} che prevede lo scambio di due geni all'interno dell'individuo
+            \item La tecnica dello \textbf{Swap} che prevede lo scambio di due geni all'interno dell'individuo
             \item La tecnica dello \textbf{Scramble} che prevede una permutazione dei geni all'interno di un individuo
         \end{itemize}
 
@@ -142,7 +142,7 @@ Ed infatti, visto l'andamento della funzione $f(x) = \frac{100}{x}, x \neq 0$ (i
 
         \subsection{La strategia dell'archivio}
             Come ulteriore accorgimento nello sviluppo dell'algoritmo per la piattaforma, è stata implementata la cosiddetta \textbf{Strategia dell'Archivio} che consiste nel conservare una popolazione separata che non evolve composta da individui particolarmente forti, che si va a costruire man mano che le iterazioni vanno avanti. Nel caso specifico di ShallWeGo si è provveduto, per ogni iterazione, a tenere traccia del miglior individuo in termini di fitness della popolazione risultante dall'applicazione dei tre operatori genetici. Il migliore tra questi tre verrà quindi aggiunto all'archivio.
-            Essendo costituito da individui "forti", l'archivio può essere usato come alternativa alla popolazione che viene restituita dopo il termine della computazione dell'algoritmo. Questo, infatti, è proprio l'approccio scelto per la piattaforma: se al termine delle iterazioni la popoalzione risultante avrà una fitness media minore o uguale a quella dell'archivio, la popolazione restituita sarà sostituita dall'archivio. \\
+            Essendo costituito da individui "forti", l'archivio può essere usato come alternativa alla popolazione che viene restituita dopo il termine della computazione dell'algoritmo. Questo, infatti, è proprio l'approccio scelto per la piattaforma: se al termine delle iterazioni la popolazione risultante avrà una fitness media minore o uguale a quella dell'archivio, la popolazione restituita sarà sostituita dall'archivio. \\
             La popolazione restituita sarà quindi soggetta a delle operazioni di postprocessing.
 
         \subsection{Postprocessing}
@@ -158,7 +158,7 @@ Ed infatti, visto l'andamento della funzione $f(x) = \frac{100}{x}, x \neq 0$ (i
 
 
     \subsection{Risultati dell'algoritmo con i parametri correnti}
-        Nella sua fase di testing, l'algoritmo è stato eseguito su un insieme molto grande di utenti generato in maniera casuale (un utente per ogni comune e con fitness presa casualmente tra 0 e 65). Nella tabella che segue sono riportati i rusultati dell'algoritmo su diverse istanze. In particolare, 
+        Nella sua fase di testing, l'algoritmo è stato eseguito su un insieme molto grande di utenti generato in maniera casuale (un utente per ogni comune e con fitness presa casualmente tra 0 e 65). Nella tabella che segue sono riportati i risultati dell'algoritmo su diverse istanze. In particolare, 
 
         \begin{itemize}
             \item Nella \textbf{prima colonna} è riportato il comune della segnalazione (e le sue coordinate);
@@ -173,13 +173,13 @@ Ed infatti, visto l'andamento della funzione $f(x) = \frac{100}{x}, x \neq 0$ (i
                 \hline
                 Fisciano         & \begin{tabular}[c]{@{}l@{}}Cava de' Tirreni (karma: 48.6)\\ Siano (karma: 12.5)\\ Baronissi (karma: 17.8)\\ Roccapiemonte (karma: 47.8)\\ Trentinara (karma: 53.6)\end{tabular}                                          \\ \hline
                 Nocera Inferiore & \begin{tabular}[c]{@{}l@{}}Nocera Inferiore (karma: 29.2)\\ Sant'Egidio del Monte Albino (karma: 39.3)\\ San Marzano sul Sarno (karma: 53.4)\\ Roccapiemonte (karma: 47.8)\\ Nocera Superiore (karma: 24.2)\end{tabular} \\ \hline
-                                 &                                                                                                                                                                                                                          \\ \hline
-                                 &                                                                                                                                                                                                                          \\ \hline
+                Salerno          & \begin{tabular}[c]{@{}l@{}}Giffoni Sei Casali (karma: 45.3)\\ Pontecagnano Faiano (karma: 44.2)\\ Baronissi (karma: 17.8)\\ Laviano (karma: 46.8)\\ Maiori (karma: 46.6) \end{tabular}                                   \\ \hline
                 \end{tabular}
                 \caption{\label{tab:table-name}Risultati dell'algoritmo su diversi input.}
                 \end{table}
         \end{center}
-        
+    
+        Si noti come nel caso dell'istanza dell'algoritmo per la città di Nocera Inferiore sia presente un utente che opera proprio lì: egli rappresenta quindi parte della soluzione ottima. Nel caso della città di Salerno, invece, è stato incluso un utente la cui distanza dal luogo della segnalazione si aggira attorno ai 47km in linea d'aria. Quest'utente è stato incluso nella soluzione in virtù del proprio valore di \textit{karma} che risulta discretamente alto. 
         
 
 \newpage

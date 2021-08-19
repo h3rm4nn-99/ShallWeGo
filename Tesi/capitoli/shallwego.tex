@@ -1,4 +1,5 @@
 \chapter{ShallWeGo}
+\newenvironment{code}{\captionsetup{type=listing}}{}
 
 \begin{citazione}
     \textit{Lo scopo di questo capitolo è di descrivere in termini di implementazione il funzionamento e l'architettura della piattaforma.}
@@ -7,7 +8,156 @@
 \newpage
 
 \section{Architettura del sistema}
+    Il sistema ShallWeGo si configura come una classica architettura \textbf{client-server}.
+    \begin{itemize}
+        \item Il server è rappresentato da una \textit{Java Enterprise application}
+        \item Il client è stato realizzato tramite un'applicazione utilizzabile sulla piattaforma Android dalla versione 10 in poi, a causa di scelte implementative riguardo alcune librerie incluse nel progetto. Queste scelte saranno documentate più avanti nel capitolo.
+    \end{itemize}
 
-\section{Framework e librerie utilizzate}
+\section{Implementazione: framework e librerie utilizzate}
+    Il server, come precedentemente menzionato, è realizzato usando le specifiche Java Enterprise Edition (da qui in poi \textit{Java EE}), usando a questo scopo il framework \textbf{\textit{Spring Boot}}, che permette una più semplice realizzazione dei task necessari a sviluppare un'applicazione che sfrutta il paradigma Client-Server, come ad esempio la gestione delle API accessibili dall'esterno i cosiddetti \textit{endpoint} oppure la gestione dei dati persistenti.
 
-\section{Implementazione}
+    \subsection{Gestione dei dati persistenti: breve introduzione a JPA}
+        Per quanto riguarda quest'ultimo aspetto, Spring supporta il cosiddetto \textit{Object-Relational Mapping} (\textbf{ORM}).
+        
+        ORM è definito come "una tecnica di programmazione che permette l'integrazione di sistemi software che aderiscono al paradigma della programmazione orientata agli oggetti (\textbf{OOP}) con sistemi \textbf{RDBMS} (\textit{Relational DataBase Management System})".
+
+        Uno dei principali vantaggi di ORM risiede nel contrasto della complessità di gestione della persistenza derivata dalla mancanza di compatibilità tra dati salvati all'interno di un database e oggetti in un linguaggio di programmazione, oltre che ad una sostanziale indipendenza dal \textit{vendor} che fornisce il DBMS utilizzato. \cite{wiki:orm}
+        
+        Spring, nello specifico, mette a disposizione una serie di API che implementano le specifiche di \textbf{JPA} (Java Persistence API). JPA è definito come "un insieme di specifiche che mette a disposizione degli sviluppatori un insieme di servizi e di strutture dati che permettono l'ORM e quindi la gestione dei dati persistenti all'interno di applicazioni Java." (\cite{jpa}). Essendo solamente una specifica, JPA necessita di un'implementazione. Quella di riferimento è \textbf{EclipseLink}, sviluppata dalla Eclipse Foundation a partire dal 2015.
+
+        Il framework Spring, tuttavia, utilizza come implementazione delle specifiche JPA la libreria open source \textbf{Hibernate 5.5} sviluppata in partnership con l'azienda \textit{Red Hat}. 
+
+        Per effettuare il mapping tra oggetti istanze di una classe e righe presenti in una tabella in un database, JPA si serve del concetto di \textbf{Entity}, che rappresenta un'istanza di una classe (in gergo, \textbf{POJO}, ovvero \textit{Plain Old Java Object}) che può essere salvata all'interno di un database.
+
+        Le specifiche JPA introducono il concetto di \textbf{Configuration By Excpetion}. In questo modo, se non specificato altrimenti, le impostazioni riguardo persistenza e mapping di oggetti risulteranno essere quelle di default. Per fare un esempio concreto, in un progetto dove è previsto l'utilizzo di JPA tutte le classi Java vengono viste come tali fino a che non viene utilizzata l'annotazione Entity su una di queste. Ad esempio:
+
+        \begin{code}
+            \begin{minted}{java}
+                @Entity
+                public class POJO implements Serializable {
+                    @Id 
+                    private Integer id;
+
+                    public POJO() {}
+                }
+            \end{minted}
+            \caption{\textbf{File:} POJO.java}
+        \end{code}
+    
+        Tramite questo setup è possibile rendere la classe contenuta in \textit{POJO.java} un'entity di cui è possibile effettuare la persistenza su un database.\\
+
+        Per poter rappresentare un'Entity, un POJO deve rispettare i seguenti requisiti: (\cite{jee7})
+
+        \begin{itemize}
+            \item Essere annotata con @javax.persistence.Entity
+            \item Avere un attributo annotato con @javax.persistence.Id che ne denota la chiave primaria (nel caso di chiave primaria semplice: è possibile anche avere chiavi composte, come descritto più avanti)
+            \item Deve possedere un costruttore vuoto che abbia come modificatore di accesso \textit{public} o \textit{protected}. Sono ammessi ulteriori costruttori.
+            \item Non deve essere una classe \textit{final}
+            \item Non deve essere una classe interna ad un'altra classe
+            \item Deve implementare l'interfaccia \mintinline{java}{Serializable}.
+        \end{itemize}
+
+        Le Entity presenti nel dominio applicativo sono le seguenti:
+
+        \begin{itemize}
+            \item \textbf{Stop}, che modella una fermata dei mezzi pubblici,
+            \item \textbf{Line}, che modella una linea di trasporto pubblico,
+            \item \textbf{Company}, che modella un'azienda di trasporto pubblico,
+            \item \textbf{Report}, che modella il concetto di segnalazione,
+            \item \textbf{LineReport}, che modella il concetto di segnalazione di una linea,
+            \item \textbf{CompanyReport}, che modella il concetto di segnalazione di un'azienda,
+            \item \textbf{StopReport}, che modella il concetto di segnalazione di una fermata,
+            \item \textbf{TemporaryEventReport}, che modella il concetto di segnalazione di un evento temporaneo,
+            \item \textbf{User}, che modella un utente registrato alla piattaforma.
+        \end{itemize}
+
+        oltre che ad altre classi "di servizio" create per mappare relazioni di tipo Many-to-Many.
+
+        Si ponga attenzione sulla modellazione del concetto di segnalazione. Qui di seguito è mostrato lo scheletro delle classi che modellano i vari tipi di segnalazione:
+        
+        \begin{framed}
+            \begin{code}
+                \begin{minted}[autogobble]{java}
+                    @Entity
+                    public abstract class Report {
+                        @Id 
+                        private Integer Id;
+                    }
+                \end{minted}
+                \caption{\textbf{File:} Report.java}
+            \end{code}
+        \end{framed}
+        \begin{framed}
+            \begin{code}
+                \begin{minted}[autogobble]{java}
+                    @Entity
+                    public class StopReport extends Report {        
+                        private Stop stopReported;
+                    }
+                \end{minted}  
+                \caption{\textbf{File:} StopReport.java}
+            \end{code}
+        \end{framed}
+        \begin{framed}
+            \begin{code}
+                \begin{minted}[autogobble]{java}
+                    @Entity
+                    public class LineReport extends Report {        
+                        private Line lineReported;
+                    }
+                \end{minted}  
+                \caption{\textbf{File:} LineReport.java}
+            \end{code}
+        \end{framed}
+        \begin{framed}
+            \begin{code}
+                \begin{minted}[autogobble]{java}
+                    @Entity
+                    public class CompanyReport extends Report {        
+                        private Company companyReported;
+                    }
+                \end{minted}  
+                \caption{\textbf{File:} CompanyReport.java}
+            \end{code}
+        \end{framed}
+        \begin{framed}
+            \begin{code}
+                \begin{minted}[autogobble]{java}
+                    @Entity
+                    public class TemporaryEventReport extends Report {        
+                        private Date validityStart;
+                        private Date validityEnd;
+                        private String eventType;
+                        private String description;
+                        private String latitude;
+                        private String longitude;
+                        private String source;
+
+                        private List<Line> affectedLines;
+                    }
+                \end{minted}  
+                \caption{\textbf{File:} TemporaryEventReport.java}
+            \end{code}
+        \end{framed}
+        
+        Si noti l'utilizzo della keyword \mintinline{java}{extends} che segnala l'utilizzo dell'ereditarietà, un concetto tipico dei linguaggi Object-Oriented come Java e che non è modellato in nessun DBMS relazionale. Per ovviare a questo problema, JPA mette a disposizione la seguente annotazione: 
+
+        \begin{minted}{java}
+            public @interface Inheritance {
+                InheritanceType strategy() default SINGLE_TABLE;
+            }
+        \end{minted}
+
+        Quest'annotazione, attraverso il campo \textit{strategy} permette di stabilire con che strategia effettuare il mapping di una gerarchia.
+
+        I valori che \textit{strategy} può assumere sono i seguenti: (\cite{jee7})
+
+        \begin{itemize}
+            \item \detokenize{SINGLE_TABLE}, che crea una sola tabella all'interno del database che rappresenta l'intera gerarchia e che per disambiguare tra i vari tipi delle sottoclassi usa un attributo chiamato "DTYPE" che assume come valore il nome della sottoclasse di un determinato elemento della tabella. Questa strategia, in virtù della configuration by exception è quella utilizzata di default in assenza dell'annotazione.
+            \item \detokenize{TABLE_PER_CLASS}, che crea una tabella all'interno del database per ogni sottoclasse in una strategia.
+            \item \detokenize{JOINED}, che colloca gli attributi che compaiono esclusivamente nelle sottoclassi della gerarchia in altre tabelle, una per membro della gerarchia.
+        \end{itemize}
+
+        In ShallWeGo, la strategia utilizzata è quella \detokenize{SINGLE_TABLE} poiché si è preferito non aumentare la complessità dello schema.
+        

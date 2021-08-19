@@ -19,6 +19,7 @@ public class Ride {
     private List<String> notes;
     private int crowding;
     private boolean hasAirConditioning;
+    private boolean hasValidatingMachine;
 
     public Ride(Line line, String destination, Location lastLocation) {
         synchronized(this) {
@@ -91,6 +92,14 @@ public class Ride {
 
     public void setHasAirConditioning(boolean hasAirConditioning) {
         this.hasAirConditioning = hasAirConditioning;
+    }
+
+    public boolean isHasValidatingMachine() {
+        return hasValidatingMachine;
+    }
+
+    public void setHasValidatingMachine(boolean hasValidatingMachine) {
+        this.hasValidatingMachine = hasValidatingMachine;
     }
 
     @Override

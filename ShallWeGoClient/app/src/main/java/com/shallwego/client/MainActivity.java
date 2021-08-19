@@ -251,86 +251,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == 101) && resultCode == Activity.RESULT_OK) {
-            Intent i = new Intent(this, LoginActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-            finish();
-        } else if ((requestCode == 102) && resultCode == Activity.RESULT_OK) {
-            String lineIdentifier = data.getStringExtra("lineIdentifier");
-            String companyName = data.getStringExtra("companyName");
-            String destination = data.getStringExtra("destination");
-            int crowding = data.getIntExtra("crowding", 0);
-            boolean airConditioning = data.getBooleanExtra("airConditioning", false);
-            boolean validatingMachine = data.getBooleanExtra("validatingMachine", false);
-            String[] details = data.getStringArrayExtra("details");
-            double latitude = data.getDoubleExtra("latitude", 0d);
-            double longitude = data.getDoubleExtra("longitude", 0d);
-
-
-            JsonObject requestBodyJson = new JsonObject();
-            requestBodyJson.addProperty("lineIdentifier", lineIdentifier);
-            requestBodyJson.addProperty("companyName", companyName);
-            requestBodyJson.addProperty("destination", destination);
-            requestBodyJson.addProperty("crowding", crowding);
-            requestBodyJson.addProperty("airConditioning", airConditioning);
-            requestBodyJson.addProperty("validatingMachine", validatingMachine);
-            requestBodyJson.addProperty("latitude", latitude);
-            requestBodyJson.addProperty("longitude", longitude);
-
-            JsonArray detailsJsonArray = new JsonArray();
-            for (String detail : details) {
-                detailsJsonArray.add(detail);
-            }
-            requestBodyJson.add("notes", detailsJsonArray);
-
-            String requestBody = requestBodyJson.toString();
-            RequestQueue queue = Volley.newRequestQueue(this);
-            StringRequest request = new StringRequest(Request.Method.POST, IpAddress.SERVER_IP_ADDRESS + "/api/initRide", (response) -> {
-                int rideId = Integer.parseInt(response);
-                Intent starter = new Intent(MainActivity.this, LiveTracking.class);
-                starter.putExtra("rideId", rideId);
-                starter.setAction("START_SERVICE");
-                startForegroundService(starter);
-
-            }, Throwable::printStackTrace) {
-                @Override
-                public String getBodyContentType() {
-                    return "application/json; charset=utf-8";
-                }
-
-                @Override
-                public byte[] getBody() throws AuthFailureError {
-                    return requestBody == null ? null : requestBody.getBytes(StandardCharsets.UTF_8);
-                }
-            };
-
-            RetryPolicy mRetryPolicy = new DefaultRetryPolicy(
-                    0,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-
-            request.setRetryPolicy(mRetryPolicy);
-            queue.add(request);
-
-            Intent serviceStarter = new Intent(this, LiveTracking.class);
-            startForegroundService(serviceStarter);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (toggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
     private void logout() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove("user");
@@ -491,6 +411,85 @@ public class MainActivity extends AppCompatActivity {
         companyButton.setOnClickListener(listener);
         LinearLayout eventButton = dialogLayout.findViewById(R.id.buttonTemporaryEvent);
         eventButton.setOnClickListener(listener);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if ((requestCode == 101) && resultCode == Activity.RESULT_OK) {
+            Intent i = new Intent(this, LoginActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            finish();
+        } else if ((requestCode == 102) && resultCode == Activity.RESULT_OK) {
+            String lineIdentifier = data.getStringExtra("lineIdentifier");
+            String companyName = data.getStringExtra("companyName");
+            String destination = data.getStringExtra("destination");
+            int crowding = data.getIntExtra("crowding", 0);
+            boolean airConditioning = data.getBooleanExtra("airConditioning", false);
+            boolean validatingMachine = data.getBooleanExtra("validatingMachine", false);
+            String[] details = data.getStringArrayExtra("details");
+            double latitude = data.getDoubleExtra("latitude", 0d);
+            double longitude = data.getDoubleExtra("longitude", 0d);
+
+
+            JsonObject requestBodyJson = new JsonObject();
+            requestBodyJson.addProperty("lineIdentifier", lineIdentifier);
+            requestBodyJson.addProperty("companyName", companyName);
+            requestBodyJson.addProperty("destination", destination);
+            requestBodyJson.addProperty("crowding", crowding);
+            requestBodyJson.addProperty("airConditioning", airConditioning);
+            requestBodyJson.addProperty("validatingMachine", validatingMachine);
+            requestBodyJson.addProperty("latitude", latitude);
+            requestBodyJson.addProperty("longitude", longitude);
+
+            JsonArray detailsJsonArray = new JsonArray();
+            for (String detail : details) {
+                detailsJsonArray.add(detail);
+            }
+            requestBodyJson.add("notes", detailsJsonArray);
+
+            String requestBody = requestBodyJson.toString();
+            RequestQueue queue = Volley.newRequestQueue(this);
+            StringRequest request = new StringRequest(Request.Method.POST, IpAddress.SERVER_IP_ADDRESS + "/api/initRide", (response) -> {
+                int rideId = Integer.parseInt(response);
+                Intent starter = new Intent(MainActivity.this, LiveTracking.class);
+                starter.putExtra("rideId", rideId);
+                starter.setAction("START_SERVICE");
+                startForegroundService(starter);
+
+            }, Throwable::printStackTrace) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    return requestBody == null ? null : requestBody.getBytes(StandardCharsets.UTF_8);
+                }
+            };
+
+            RetryPolicy mRetryPolicy = new DefaultRetryPolicy(
+                    0,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
+            request.setRetryPolicy(mRetryPolicy);
+            queue.add(request);
+
+            Intent serviceStarter = new Intent(this, LiveTracking.class);
+            startForegroundService(serviceStarter);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (toggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
