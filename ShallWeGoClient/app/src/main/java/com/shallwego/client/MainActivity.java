@@ -7,10 +7,13 @@ import android.content.*;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.view.*;
 
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -28,10 +32,14 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.CancellationTokenSource;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.leinardi.android.speeddial.SpeedDialView;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -43,9 +51,11 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
 
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
 
@@ -63,7 +73,12 @@ public class MainActivity extends AppCompatActivity {
     public static String userName = "";
     public static int myRideId;
     public static boolean isServiceStarted;
+
     private final IntentFilter intentFilter = new IntentFilter();
+    private final ArrayList<Marker> allStops = new ArrayList<>();
+    private final ArrayList<Marker> allRides = new ArrayList<>();
+    private final ArrayList<Marker> allEvents = new ArrayList<>();
+
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -89,6 +104,10 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private final int updateDelay = 20 * 1000; // 20 seconds
+    private Runnable refreshRidesRunnable, refreshAllRunnable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -433,13 +452,12 @@ public class MainActivity extends AppCompatActivity {
             double latitude = data.getDoubleExtra("latitude", 0d);
             double longitude = data.getDoubleExtra("longitude", 0d);
 
-
             JsonObject requestBodyJson = new JsonObject();
             requestBodyJson.addProperty("lineIdentifier", lineIdentifier);
             requestBodyJson.addProperty("companyName", companyName);
             requestBodyJson.addProperty("destination", destination);
             requestBodyJson.addProperty("crowding", crowding);
-            requestBodyJson.addProperty("airConditioning", airConditioning);
+            requestBodyJson.addProperty("hasAirConditioning", airConditioning);
             requestBodyJson.addProperty("validatingMachine", validatingMachine);
             requestBodyJson.addProperty("latitude", latitude);
             requestBodyJson.addProperty("longitude", longitude);
@@ -478,9 +496,6 @@ public class MainActivity extends AppCompatActivity {
 
             request.setRetryPolicy(mRetryPolicy);
             queue.add(request);
-
-            Intent serviceStarter = new Intent(this, LiveTracking.class);
-            startForegroundService(serviceStarter);
         }
     }
 
@@ -493,8 +508,122 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        refreshData();
+        refreshRides();
+        super.onResume();
+    }
+
+    private void refreshData() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(Request.Method.GET, IpAddress.SERVER_IP_ADDRESS + "/api/getEventsAndStops", (response) -> {
+            map.getOverlays().removeAll(allStops);
+            map.getOverlays().removeAll(allEvents);
+            allStops.clear();
+            allEvents.clear();
+            JsonObject object = (JsonObject) JsonParser.parseString(response);
+            JsonArray stops = object.get("stops").getAsJsonArray();
+            JsonArray events = object.get("events").getAsJsonArray();
+
+            for (JsonElement stopElement: stops) {
+                JsonObject stop = stopElement.getAsJsonObject();
+                Marker marker = new Marker(map);
+                marker.setPosition(new GeoPoint(stop.get("latitude").getAsDouble(), stop.get("longitude").getAsDouble()));
+                marker.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_bus_stop));
+                MarkerInfoWindow window = new MarkerInfoWindow(R.layout.stop_preview_layout_main_activity, map);
+
+                View view = window.getView();
+                view.setOnClickListener((view1) -> {
+                    Intent intent = new Intent(this, StopDetails.class);
+                    intent.putExtra("stopId", stop.get("id").getAsInt());
+                    startActivity(intent);
+                });
+
+                TextView stopName = view.findViewById(R.id.name);
+                stopName.setText(stop.get("name").getAsString());
+                ChipGroup lines = view.findViewById(R.id.chipGroup);
+                JsonArray linesArray = stop.get("lines").getAsJsonArray();
+                linesArray.forEach((line) -> {
+                    Chip currentLine = new Chip(this);
+                    currentLine.setText(line.getAsString());
+                    lines.addView(currentLine);
+                });
+
+                marker.setInfoWindow(window);
+                allStops.add(marker);
+            }
+
+            for (JsonElement eventElement: events) {
+                JsonObject event = eventElement.getAsJsonObject();
+                Marker marker = new Marker(map);
+                marker.setPosition(new GeoPoint(event.get("latitude").getAsDouble(), event.get("longitude").getAsDouble()));
+                marker.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_info_white_24dp));
+                MarkerInfoWindow windows = new MarkerInfoWindow(R.layout.event_details_preview_main_activity, map);
+                View view = windows.getView();
+                view.setOnClickListener((view1) -> {
+                    Intent intent = new Intent(this, EventDetails.class);
+                    intent.putExtra("eventId", event.get("id").getAsString());
+                    startActivity(intent);
+                });
+
+                TextView eventType = view.findViewById(R.id.text);
+                eventType.setText(event.get("eventType").getAsString());
+
+                allEvents.add(marker);
+            }
+
+            map.getOverlays().addAll(allStops);
+            map.getOverlays().addAll(allEvents);
+
+        }, (error) -> {
+            Toast.makeText(this, "Errore di rete.", Toast.LENGTH_SHORT).show();
+        });
+        queue.add(request);
+    }
+
+    @Override
+    protected void onPause() {
+        handler.removeCallbacks(refreshRidesRunnable);
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+    }
+
+    private void refreshRides() {
+        refreshRidesRunnable = this::refreshRides;
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(Request.Method.GET, IpAddress.SERVER_IP_ADDRESS + "/api/refreshRides", (response) -> {
+            JsonArray rides = (JsonArray) JsonParser.parseString(response);
+            map.getOverlays().removeAll(allRides);
+            allRides.clear();
+
+            for (JsonElement ride: rides) {
+                JsonObject rideObject = (JsonObject) ride;
+                Marker marker = new Marker(map);
+                marker.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_directions_bus_white_24dp));
+                marker.setPosition(new GeoPoint(rideObject.get("latitude").getAsDouble(), rideObject.get("longitude").getAsDouble()));
+
+                MarkerInfoWindow window = new MarkerInfoWindow(R.layout.destination_layout_main_activity, map);
+                TextView destination = window.getView().findViewById(R.id.text);
+                destination.setText(rideObject.get("lineIdentifier").getAsString() + " - " + rideObject.get("destination").getAsString());
+                destination.setOnClickListener((view) -> {
+                    Intent intent = new Intent(this, RideDetails.class);
+                    intent.putExtra("rideId", rideObject.get("id").getAsInt());
+                    startActivity(intent);
+                });
+                allRides.add(marker);
+            }
+            map.getOverlays().addAll(allRides);
+            map.invalidate();
+            handler.postDelayed(refreshRidesRunnable, updateDelay);
+        }, (error) -> {
+            Toast.makeText(this, "Errore di rete. Riprovo tra 30 secondi", Toast.LENGTH_SHORT).show();
+            handler.postDelayed(refreshRidesRunnable, updateDelay * 3);
+        });
+        queue.add(request);
     }
 }

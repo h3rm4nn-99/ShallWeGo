@@ -158,7 +158,7 @@ public class NewRideActivity extends AppCompatActivity {
         validatingMachine = findViewById(R.id.radioGroupTicketValidator);
 
         acYes = findViewById(R.id.airConditioningYes);
-        validatingMachine = findViewById(R.id.ticketValidatorYes);
+        validatingMachineYes = findViewById(R.id.ticketValidatorYes);
 
         dialog = ProgressDialog.show(this, "",
                 "Attendere prego...", true);

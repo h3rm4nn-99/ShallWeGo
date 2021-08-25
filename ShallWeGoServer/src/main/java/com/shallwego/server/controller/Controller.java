@@ -662,6 +662,7 @@ public class Controller {
 
     @PutMapping("/api/updateRideLocation/{rideId}/{userName}")
     public String updateRideLocation(@RequestBody String location, @PathVariable String rideId, @PathVariable String userName) {
+        System.out.println(location);
         JsonObject object = (JsonObject) JsonParser.parseString(location);
         double latitude = object.get("latitude").getAsDouble();
         double longitude = object.get("longitude").getAsDouble();
@@ -697,11 +698,94 @@ public class Controller {
         return outputRides.toString();
     }
 
-    @PostMapping("/api/terminateRide/{rideId}")
+    @GetMapping("/api/rideById/{rideId}")
+    public String rideById(@PathVariable String rideId) throws IOException {
+        Ride ride = rideManager.findById(Integer.parseInt(rideId));
+        Location location = ride.getLastLocation();
+
+        JsonObject rideJson = new JsonObject();
+        rideJson.addProperty("id", ride.getId());
+        rideJson.addProperty("lastLatitude", location.getLatitude());
+        rideJson.addProperty("lastLongitude", location.getLongitude());
+        rideJson.addProperty("address", Utils.getRoadNameByCoordinates(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude())));
+        rideJson.addProperty("companyName", ride.getLine().getCompany().getName());
+        rideJson.addProperty("lineIdentifier", ride.getLine().getIdentifier());
+        rideJson.addProperty("crowding", ride.getCrowding());
+        rideJson.addProperty("destination", ride.getDestination());
+        rideJson.addProperty("hasAC", ride.isHasAirConditioning());
+        rideJson.addProperty("hasVM", ride.isHasValidatingMachine());
+        JsonArray notes = new JsonArray();
+        List<String> notesList = ride.getNotes();
+        notesList.forEach(notes::add);
+        rideJson.add("notes", notes);
+
+        return rideJson.toString();
+    }
+
+    @DeleteMapping("/api/terminateRide/{rideId}")
     public String terminateRide(@PathVariable String rideId) {
         Ride ride = rideManager.findById(Integer.parseInt(rideId));
         rideManager.removeRide(ride);
 
         return "OKAY";
+    }
+
+    @GetMapping("/api/getEventsAndStops")
+    public String getAll() {
+        List<Stop> stops = stopRepository.findAll();
+        List<TemporaryEventReport> events = temporaryEventReportRepository.findAll();
+
+        JsonObject response = new JsonObject();
+
+        JsonArray stopsArray = new JsonArray();
+        JsonArray eventsArray = new JsonArray();
+
+        for (Stop stop: stops) {
+            JsonObject current = new JsonObject();
+            current.addProperty("id", stop.getId());
+            current.addProperty("name", stop.getName());
+            current.addProperty("latitude", stop.getLatitude());
+            current.addProperty("longitude", stop.getLongitude());
+            JsonArray lines = new JsonArray();
+            stop.getLines().forEach((line) -> {
+                lines.add(line.getIdentifier());
+            });
+
+            current.add("lines", lines);
+            stopsArray.add(current);
+        }
+        response.add("stops", stopsArray);
+
+        for (TemporaryEventReport event: events) {
+            JsonObject current = new JsonObject();
+            current.addProperty("id", event.getId());
+            current.addProperty("latitude", event.getLatitude());
+            current.addProperty("longitude", event.getLongitude());
+            current.addProperty("eventType", event.getEventType());
+
+            eventsArray.add(current);
+        }
+        response.add("events", eventsArray);
+
+        return response.toString();
+    }
+
+    @GetMapping("/api/refreshRides")
+    public String refreshRides() {
+        List<Ride> rides = rideManager.findAll();
+        JsonArray response = new JsonArray();
+
+        for (Ride ride: rides) {
+            JsonObject current = new JsonObject();
+            current.addProperty("id", ride.getId());
+            current.addProperty("lineIdentifier", ride.getLine().getIdentifier());
+            current.addProperty("destination", ride.getDestination());
+            current.addProperty("latitude", ride.getLastLocation().getLatitude());
+            current.addProperty("longitude", ride.getLastLocation().getLongitude());
+
+            response.add(current);
+        }
+
+        return response.toString();
     }
 }

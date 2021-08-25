@@ -95,7 +95,7 @@ public class LiveTracking extends Service {
             case "STOP_SERVICE": {
                 fusedLocationClient.removeLocationUpdates(callbackMethod);
                 RequestQueue queue = Volley.newRequestQueue(LiveTracking.this);
-                StringRequest request = new StringRequest(Request.Method.PUT, IpAddress.SERVER_IP_ADDRESS + "/api/terminateRide/" + rideId, (response) -> {
+                StringRequest request = new StringRequest(Request.Method.DELETE, IpAddress.SERVER_IP_ADDRESS + "/api/terminateRide/" + rideId, (response) -> {
                     Intent stopMessenger = new Intent(this, MainActivity.class); // again, can't come up with a better name ;);
                     stopMessenger.setAction("shallWeGoIsNoMore");
                     sendBroadcast(stopMessenger);

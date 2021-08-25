@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        tools:context=".RideDetails">
+    <androidx.core.widget.NestedScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+       <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                     android:orientation="vertical">
+
+           <org.osmdroid.views.MapView android:layout_width="match_parent" android:layout_height="150dp"
+                                       android:layout_marginHorizontal="25dp"
+                                       android:layout_marginVertical="50dp"
+                                       android:id="@+id/map"/>
+
+           <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                                                              app:cardCornerRadius="5pt"
+                                                              android:layout_margin="5pt"
+                                                              android:clickable="true"
+                                                              android:padding="12pt"
+                                                              android:layout_height="wrap_content"
+                                                              android:id="@+id/mainLayoutAffollamento"
+                                                              android:focusable="true">
+
+               <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                             android:orientation="horizontal">
+
+                   <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:layout_margin="12pt"
+                              android:id="@+id/affollamentoImageView"
+                              android:src="@drawable/ic_groups_white_24dp"/>
+
+
+                   <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                   android:layout_gravity="center"
+                                   android:id="@+id/layoutAffollamento">
+
+                       <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                              android:layout_height="wrap_content"
+                                                                              android:text="Affollamento"
+                                                                              android:id="@+id/affollamentoText"
+                                                                              android:textStyle="bold"
+                                                                              android:textSize="10pt"/>
+
+                       <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                       android:layout_below="@id/affollamentoText">
+                           <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                                  android:layout_height="wrap_content"
+                                                                                  android:id="@+id/affollamentoValue"
+                                                                                  android:text=""/>
+                       </RelativeLayout>
+                   </RelativeLayout>
+               </LinearLayout>
+           </com.google.android.material.card.MaterialCardView>
+
+           <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                                                              android:layout_height="wrap_content"
+                                                              app:cardCornerRadius="5pt"
+                                                              android:layout_margin="5pt"
+                                                              android:clickable="true"
+                                                              android:padding="12pt"
+                                                              android:id="@+id/mainLayoutLocation"
+                                                              android:focusable="true">
+
+               <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                             android:orientation="horizontal">
+
+                   <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:layout_margin="12pt"
+                              android:id="@+id/locationImageView"
+                              android:src="@drawable/ic_share_location_white_24dp"/>
+
+
+                   <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                   android:layout_gravity="center"
+                                   android:id="@+id/layoutLocation">
+
+                       <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                              android:layout_height="wrap_content"
+                                                                              android:text="Ultima Posizione Segnalata"
+                                                                              android:singleLine="true"
+                                                                              android:ellipsize="marquee"
+                                                                              android:marqueeRepeatLimit ="marquee_forever"
+                                                                              android:focusable="true"
+                                                                              android:focusableInTouchMode="true"
+                                                                              android:scrollHorizontally="true"
+                                                                              android:id="@+id/locationText"
+                                                                              android:textStyle="bold"
+                                                                              android:textSize="10pt"/>
+
+                       <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                       android:layout_below="@id/locationText">
+                           <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                                  android:layout_height="wrap_content"
+                                                                                  android:id="@+id/locationValue"
+                                                                                  android:text=""/>
+                       </RelativeLayout>
+                   </RelativeLayout>
+               </LinearLayout>
+           </com.google.android.material.card.MaterialCardView>
+           <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                                                              android:layout_height="wrap_content"
+                                                              app:cardCornerRadius="5pt"
+                                                              android:layout_margin="5pt"
+                                                              android:clickable="true"
+                                                              android:padding="12pt"
+                                                              android:id="@+id/mainLayoutNotes"
+                                                              android:focusable="true">
+
+               <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                             android:orientation="horizontal">
+
+                   <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:layout_margin="12pt"
+                              android:id="@+id/notesView"
+                              android:src="@drawable/ic_info_white_48dp"/>
+
+
+                   <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                   android:layout_gravity="center"
+                                   android:id="@+id/layoutNotes">
+
+                       <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                              android:layout_height="wrap_content"
+                                                                              android:text="Note"
+                                                                              android:id="@+id/notesText"
+                                                                              android:textStyle="bold"
+                                                                              android:textSize="10pt"/>
+
+                       <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                       android:layout_below="@id/notesText">
+                           <ListView android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:id="@+id/notesValues"/>
+                       </RelativeLayout>
+                   </RelativeLayout>
+               </LinearLayout>
+           </com.google.android.material.card.MaterialCardView>
+           <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                                                              android:layout_height="wrap_content"
+                                                              app:cardCornerRadius="5pt"
+                                                              android:layout_margin="5pt"
+                                                              android:clickable="true"
+                                                              android:padding="12pt"
+                                                              android:id="@+id/mainLayoutAC"
+                                                              android:focusable="true">
+
+               <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                             android:orientation="horizontal">
+
+                   <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:layout_margin="12pt"
+                              android:id="@+id/acView"
+                              android:src="@drawable/ic_ac_unit_white_24dp"/>
+
+
+                   <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                   android:layout_gravity="center"
+                                   android:id="@+id/layoutAC">
+
+                       <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                              android:layout_height="wrap_content"
+                                                                              android:text="Aria Condizionata"
+                                                                              android:id="@+id/ACText"
+                                                                              android:textStyle="bold"
+                                                                              android:textSize="10pt"/>
+
+                       <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                       android:layout_below="@id/ACText">
+                           <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:id="@+id/ACValue"/>
+                       </RelativeLayout>
+                   </RelativeLayout>
+               </LinearLayout>
+           </com.google.android.material.card.MaterialCardView>
+
+           <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+                                                              android:layout_height="wrap_content"
+                                                              app:cardCornerRadius="5pt"
+                                                              android:layout_margin="5pt"
+                                                              android:clickable="true"
+                                                              android:padding="12pt"
+                                                              android:id="@+id/mainLayoutVM"
+                                                              android:focusable="true">
+
+               <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                             android:orientation="horizontal">
+
+                   <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:layout_margin="12pt"
+                              android:id="@+id/vmView"
+                              android:src="@drawable/ic_approval_white_24dp"/>
+
+
+                   <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                   android:layout_gravity="center"
+                                   android:id="@+id/layoutVM">
+
+                       <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                              android:layout_height="wrap_content"
+                                                                              android:text="Obliteratrice funzionante"
+                                                                              android:id="@+id/VMText"
+                                                                              android:textStyle="bold"
+                                                                              android:textSize="10pt"/>
+
+                       <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                       android:layout_below="@id/VMText">
+                           <com.google.android.material.textview.MaterialTextView android:layout_width="wrap_content"
+                                                                                  android:layout_height="wrap_content"
+                                                                                  android:id="@+id/VMValue"/>
+                       </RelativeLayout>
+                   </RelativeLayout>
+               </LinearLayout>
+           </com.google.android.material.card.MaterialCardView>
+       </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fab"
+            android:layout_margin="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:text="Aggiorna"
+            app:sdMainFabClosedSrc="@drawable/ic_refresh_white_48dp"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

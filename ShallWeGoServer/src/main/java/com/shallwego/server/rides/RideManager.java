@@ -70,6 +70,10 @@ public class RideManager {
         rides.add(ride);
     }
 
+    public List<Ride> findAll() {
+        return new ArrayList<>(rides);
+    }
+
     public void removeRide(Ride ride) {
         rides.remove(ride);
     }
