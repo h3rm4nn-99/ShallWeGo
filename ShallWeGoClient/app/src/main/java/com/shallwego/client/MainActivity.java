@@ -530,24 +530,7 @@ public class MainActivity extends AppCompatActivity {
                 Marker marker = new Marker(map);
                 marker.setPosition(new GeoPoint(stop.get("latitude").getAsDouble(), stop.get("longitude").getAsDouble()));
                 marker.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_bus_stop));
-                MarkerInfoWindow window = new MarkerInfoWindow(R.layout.stop_preview_layout_main_activity, map);
-
-                View view = window.getView();
-                view.setOnClickListener((view1) -> {
-                    Intent intent = new Intent(this, StopDetails.class);
-                    intent.putExtra("stopId", stop.get("id").getAsInt());
-                    startActivity(intent);
-                });
-
-                TextView stopName = view.findViewById(R.id.name);
-                stopName.setText(stop.get("name").getAsString());
-                ChipGroup lines = view.findViewById(R.id.chipGroup);
-                JsonArray linesArray = stop.get("lines").getAsJsonArray();
-                linesArray.forEach((line) -> {
-                    Chip currentLine = new Chip(this);
-                    currentLine.setText(line.getAsString());
-                    lines.addView(currentLine);
-                });
+                MarkerInfoWindow window = new StopInfoWindow(this, map, stop);
 
                 marker.setInfoWindow(window);
                 allStops.add(marker);
@@ -558,16 +541,8 @@ public class MainActivity extends AppCompatActivity {
                 Marker marker = new Marker(map);
                 marker.setPosition(new GeoPoint(event.get("latitude").getAsDouble(), event.get("longitude").getAsDouble()));
                 marker.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_info_white_24dp));
-                MarkerInfoWindow windows = new MarkerInfoWindow(R.layout.event_details_preview_main_activity, map);
-                View view = windows.getView();
-                view.setOnClickListener((view1) -> {
-                    Intent intent = new Intent(this, EventDetails.class);
-                    intent.putExtra("eventId", event.get("id").getAsString());
-                    startActivity(intent);
-                });
-
-                TextView eventType = view.findViewById(R.id.text);
-                eventType.setText(event.get("eventType").getAsString());
+                MarkerInfoWindow window = new EventInfoWindow(this, map, event);
+                marker.setInfoWindow(window);
 
                 allEvents.add(marker);
             }
@@ -607,14 +582,8 @@ public class MainActivity extends AppCompatActivity {
                 marker.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_directions_bus_white_24dp));
                 marker.setPosition(new GeoPoint(rideObject.get("latitude").getAsDouble(), rideObject.get("longitude").getAsDouble()));
 
-                MarkerInfoWindow window = new MarkerInfoWindow(R.layout.destination_layout_main_activity, map);
-                TextView destination = window.getView().findViewById(R.id.text);
-                destination.setText(rideObject.get("lineIdentifier").getAsString() + " - " + rideObject.get("destination").getAsString());
-                destination.setOnClickListener((view) -> {
-                    Intent intent = new Intent(this, RideDetails.class);
-                    intent.putExtra("rideId", rideObject.get("id").getAsInt());
-                    startActivity(intent);
-                });
+                RideInfoWindow window = new RideInfoWindow(this, map, rideObject);
+                marker.setInfoWindow(window);
                 allRides.add(marker);
             }
             map.getOverlays().addAll(allRides);

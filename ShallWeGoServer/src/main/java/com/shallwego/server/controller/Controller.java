@@ -256,7 +256,7 @@ public class Controller {
             JsonObject lineJsonObject = new JsonObject();
             lineJsonObject.addProperty("lineIdentifier", l.getIdentifier());
             lineJsonObject.addProperty("companyName", l.getCompany().getName());
-            List<DestinationsByStopAndLine> destinationsList = destinationsByStopAndLineRepository.findByTargetLineAndTargetStop(stop, l);
+            List<DestinationsByStopAndLine> destinationsList = destinationsByStopAndLineRepository.findByTargetLineAndTargetStop(l, stop);
             DestinationsByStopAndLine destinationsObject = destinationsList.get(0);
             List<String> destinations = destinationsObject.getTargetDestinations();
             JsonArray destinationsJsonArray = new JsonArray();

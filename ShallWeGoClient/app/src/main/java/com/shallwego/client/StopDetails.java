@@ -105,7 +105,7 @@ public class StopDetails extends AppCompatActivity {
                 nameAndDestinations[0] = object.get("lineIdentifier").toString().replace("\"", "");
                 String destinations =  "";
                 for (JsonElement destination: (JsonArray) object.get("destinations")) {
-                    destinations += ((JsonObject) destination).toString().replace("\"", "");
+                    destinations += destination.getAsString();
                 }
                 nameAndDestinations[1] = destinations;
                 lines.get(company).add(nameAndDestinations);

@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface DestinationsByStopAndLineRepository extends JpaRepository<DestinationsByStopAndLine, Integer> {
-    public List<DestinationsByStopAndLine> findByTargetLineAndTargetStop(Stop stop, Line line);
+    public List<DestinationsByStopAndLine> findByTargetLineAndTargetStop(Line line, Stop stop);
 }

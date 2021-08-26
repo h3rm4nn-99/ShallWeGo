@@ -87,24 +87,13 @@ public class VerifyLineReport extends AppCompatActivity {
 
     private void updateColor(int newVote, boolean firstRun) {
         currentVote = newVote;
+
         if (currentVote == 1) {
-            Drawable unwrappedDrawable = AppCompatResources.getDrawable(getApplicationContext(), R.drawable.ic_arrow_drop_up_white_36dp);
-            Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
-            DrawableCompat.setTint(wrappedDrawable, Color.GREEN);
-            yes.setImageDrawable(wrappedDrawable);
-            Drawable unwrappedDrawableNo = AppCompatResources.getDrawable(getApplicationContext(), R.drawable.ic_arrow_drop_down_white_36dp);
-            Drawable wrappedDrawableNo = DrawableCompat.wrap(unwrappedDrawableNo);
-            DrawableCompat.setTint(wrappedDrawableNo, Color.WHITE);
-            no.setImageDrawable(wrappedDrawableNo);
-        } else {
-            Drawable unwrappedDrawable = AppCompatResources.getDrawable(getApplicationContext(), R.drawable.ic_arrow_drop_down_white_36dp);
-            Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
-            DrawableCompat.setTint(wrappedDrawable, Color.RED);
-            no.setImageDrawable(wrappedDrawable);
-            Drawable unwrappedDrawableYes = AppCompatResources.getDrawable(getApplicationContext(), R.drawable.ic_arrow_drop_up_white_36dp);
-            Drawable wrappedDrawableYes = DrawableCompat.wrap(unwrappedDrawableYes);
-            DrawableCompat.setTint(wrappedDrawableYes, Color.GREEN);
-            yes.setImageDrawable(wrappedDrawableYes);
+            yes.getDrawable().setTint(Color.GREEN);
+            no.getDrawable().setTint(Color.WHITE);
+        } else if (currentVote == -1) {
+            no.getDrawable().setTint(Color.RED);
+            yes.getDrawable().setTint(Color.WHITE);
         }
         if (!firstRun) {
             int sum = Integer.parseInt(counter.getText().toString());

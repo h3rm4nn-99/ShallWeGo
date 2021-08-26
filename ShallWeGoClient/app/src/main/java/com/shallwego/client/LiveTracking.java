@@ -37,7 +37,6 @@ public class LiveTracking extends Service {
     public void onCreate() {
         super.onCreate();
 
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationRequest = LocationRequest.create();
 

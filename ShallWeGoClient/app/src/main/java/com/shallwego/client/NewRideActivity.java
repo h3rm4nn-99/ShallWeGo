@@ -48,8 +48,6 @@ public class NewRideActivity extends AppCompatActivity {
     private MaterialTextView destinationError, crowdingError;
     private ImageView notCrowded, slightlyCrowded, veryCrowded;
     private int crowding = 0;
-    private Drawable unwrapped1, unwrapped2, unwrapped3;
-    private Drawable wrapped1, wrapped2, wrapped3;
     private double latitude, longitude;
 
     private final View.OnClickListener selectCrowding = (view) -> {
@@ -57,23 +55,23 @@ public class NewRideActivity extends AppCompatActivity {
 
         crowding = tag;
 
-        notCrowded.setImageDrawable(unwrapped1);
-        slightlyCrowded.setImageDrawable(unwrapped2);
-        veryCrowded.setImageDrawable(unwrapped3);
+        notCrowded.getDrawable().setTint(Color.WHITE);
+        slightlyCrowded.getDrawable().setTint(Color.WHITE);
+        veryCrowded.getDrawable().setTint(Color.WHITE);
 
         switch (tag) {
             case 1: {
-                notCrowded.setImageDrawable(wrapped1);
+                notCrowded.getDrawable().setTint(Color.GREEN);
                 break;
             }
 
             case 2: {
-                slightlyCrowded.setImageDrawable(wrapped2);
+                slightlyCrowded.getDrawable().setTint(Color.YELLOW);
                 break;
             }
 
             case 3: {
-                veryCrowded.setImageDrawable(wrapped3);
+                veryCrowded.getDrawable().setTint(Color.RED);
                 break;
             }
         }
@@ -141,18 +139,6 @@ public class NewRideActivity extends AppCompatActivity {
         slightlyCrowded.setOnClickListener(selectCrowding);
         veryCrowded.setOnClickListener(selectCrowding);
 
-        unwrapped1 = AppCompatResources.getDrawable(getApplicationContext(), R.drawable.ic_sentiment_satisfied_white_48dp);
-        unwrapped2 = AppCompatResources.getDrawable(getApplicationContext(), R.drawable.ic_sentiment_neutral_white_48dp);
-        unwrapped3 = AppCompatResources.getDrawable(getApplicationContext(), R.drawable.ic_sentiment_dissatisfied_white_48dp);
-
-        wrapped1 = DrawableCompat.wrap(unwrapped1);
-        DrawableCompat.setTint(unwrapped1, Color.GREEN);
-
-        wrapped2 = DrawableCompat.wrap(unwrapped2);
-        DrawableCompat.setTint(unwrapped1, Color.YELLOW);
-
-        wrapped3 = DrawableCompat.wrap(unwrapped3);
-        DrawableCompat.setTint(unwrapped3, Color.RED);
 
         ac = findViewById(R.id.radioGroupAirConditioning);
         validatingMachine = findViewById(R.id.radioGroupTicketValidator);
