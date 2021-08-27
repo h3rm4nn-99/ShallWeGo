@@ -27,24 +27,41 @@
     
     
 \section{Metodologie e risultati}
-    Il risultato di questa esperienza di Tesi è stato quindi quello di aver sviluppato una prima versione di un applicativo mobile e della relativa componente server che implementasse l'idea di cui si è discusso. L'applicativo consiste quindi in un semplice file .apk per Android installabile e che, attualmente, previa registrazione ed ottenimento di uno username, permetta a chi vuole di cominciare ad effettuare segnalazioni riguardanti fermate, linee ed aziende di trasporti che conosce e che sa operare in una determinata zona.
-    È, inoltre, in sviluppo una funzionalità che preveda la possibilità da parte di un utente di comunicare in tempo reale la propria posizione e, contemporaneamente, specificare su che linea si trova, così da permettere ad altri utenti interessati di farsi un'idea di quanto debbano aspettare per salire a bordo.
-    \subsection{Crowdsourcing}
-        La piattaforma in sviluppo basa il suo funzionamento sulla tecnica del crowdsourcing, ovvero sul recuperare i dati di interesse direttamente da persone sul campo e che ritengano di possedere un'informazione che potrebbe tornare utile alla comunità. Tra queste:
+    \subsection{Approccio allo sviluppo della piattaforma}
+        Lo sviluppo della piattaforma è cominciato, così come accade in tutti i progetti che prevedano la presenza di un software, con la raccolta e l'analisi dei requisiti, ovvero su \textit{cosa} dovesse fare la piattaforma. Una volta raccolti questi requisiti si è provveduto a categorizzarli in "prioritari" e "non prioritari". (Quelli individuati come prioritari sono stati elencati nella prima sezione del quarto capitolo, dedicata nello specifico ai \textbf{requisiti funzionali}.) Ciò ha permesso di rendere chiaro sin da subito cosa risultasse più urgente realizzare per ottenere una prima versione funzionante della piattaforma. 
+        Successivamente, si sono analizzate le varie strategie per lo sviluppo effettivo del software. Vista anche la distinzione tra requisiti "prioritari" e "non prioritari" appare palese come la strategia di sviluppo che più si adatta a questo contesto risulta quella \textbf{incrementale}. Lo sviluppo incrementale, nello specifico, consiste innanzitutto di implementare le funzionalità \textit{core} della piattaforma e, successivamente in modo \textit{incrementale} (e da qui la denominazione) tutte le varie funzionalità che vanno ad implementare i requisiti individuati in fase di analisi. 
+        
+        Le funzionalità \textit{core} includono due componenti particolari che non sono direttamente collegate con il software ma che sono necessarie per il corretto funzionamento dello stesso. Queste due componenti sono:
         \begin{itemize}
-            \item Posizione di una fermata in un determinato punto
-            \item "Equipaggiamento" di una fermata (in termini di pensilina, segni identificativi e quadri orari disponibili al pubblico)
-            \item Utilizzo di una fermata da parte di una determinata linea
-            \item Destinazioni di una linea
-            \item Eventi transitori (come presenza di traffico, avvisi su deviazioni o strade chiuse)
+            \item Un server esterno per il geocoding, basato sull'applicativo Nominatim (per permettere un accesso semplice e veloce a dati geografici)
+            \item Un modulo di intelligenza artificiale che permette la verifica di dati ottenuti dagli utenti.
         \end{itemize}
 
-        Questo approccio permette quindi al sistema di essere indipendente da qualsivoglia fonte di informazione o API messa a disposizione pubblicamente da attori terzi (come ad esempio Google stessa o anche Moovit), i cui costi non sempre sono sostenibili sul lungo periodo.
+        Per quanto riguarda la componente descritta al primo punti, trattandosi di un software già realizzato e reso disponibile al pubblico tramite licenza \textbf{\textit{GNU Public License} 2.0}, non si può parlare di sviluppo ma di \textit{configurazione} o di \textit{tuning} per migliorare le prestazioni sulla macchina che lo ospita.
+
+        \subsection{Perché l'Intelligenza Artificiale?}
+            La componente di Intelligenza Artificiale descritta al secondo punto, invece, è stata quella verso la quale è stata posta la maggior parte dell'attenzione delle prime fasi di sviluppo. Ciò è giustificato dalla natura particolare della piattaforma, che permette agli utenti di essere la fonte di informazioni principale. Sorge quindi la necessità di prevedere un sistema molto veloce per la verifica (da parte di altri utenti, essendo la piattaforma \textit{Community-driven}) della correttezza delle segnalazioni che pervengono alla piattaforma.  Un primo approccio a questo problema potrebbe essere rappresentato dalla semplice ricerca esaustiva all'interno dell'insieme degli utenti. Quest'approccio risulta accettabile nel caso si consideri un dominio di utenti discretamente piccolo ma cessa di esserlo al crescere del numero di questi ultimi. È proprio in questo contesto che una tecnica di Intelligenza Artificiale si rivela essere adeguata: quella degli \textbf{Algoritmi Genetici}. L'idea che sta alla base degli Algoritmi Genetici ricalca a grandi linee (come d'altronde suggerisce il nome) quello dell'evoluzione di una popolazione di individui (un insieme di soluzioni ad un problema) descritta per la prima volta da Mendel nel 1859 nella sua opera "L'Origine della Specie", che si compone di tre "tappe" principali, ripetute moltissime volte:
+
+            \begin{itemize}
+                \item \textbf{Selezione}
+                \item \textbf{Crossover} o \textbf{Accoppiamento} degli individui 
+                \item \textbf{Mutazione} degli individui 
+            \end{itemize}
+
+            Questo processo permette di ottenere, con il susseguirsi delle \textit{generazioni}, una popolazione composta da individui molto forti che si adattano ai vari cambiamenti nell'ambiente in cui si trovano.
+
+            Allo stesso modo, a partire da un insieme iniziale di soluzioni ad un problema, tramite un Algoritmo Genetico è possibile ottenere in maniera molto veloce (come risulta necessario nel caso della piattaforma in sviluppo) delle soluzioni ammissibili che risultino almeno "buone" per il problema che si sta affrontando. Non trattandosi di una ricerca esaustiva, tuttavia, non è garantito il raggiungimento della soluzione ottima.
+
+            Il funzionamento dell'Algoritmo Genetico sviluppato per ShallWeGo verrà descritto in dettaglio nel \textbf{Terzo Capitolo} che è dedicato interamente a questo \textit{topic}.
 
         \subsection{Il problema delle API}
-        Al di là dei dati sul trasporto pubblico locale, l'applicazione oggetto di questo lavoro di Tesi fa largo uso di mappe e dati geografici in generale. Google Maps mette a disposizione le sue API in maniera gratuita fino ad esaurimento di un credito (che viene scalato man mano che si utilizzano i propri servizi) che si rinnova ogni mese. Superata questa soglia, è necessario sostenere un certo prezzo.
-        Le tariffe, consultabili all'indirizzo \url{https://cloud.google.com/maps-platform/pricing}, prevedono infatti la possibilità di usufruire un credito gratuito dell'entità di 200\$ mensili. In particolare, il servizio di Geocoding \footnote[1]{Ovvero il processo che consente di ottenere il nome logico di un luogo associato ad una coppia di coordinate (Latitudine, Longitudine) e viceversa} costa 5\$ ogni 1000 richieste. Il prezzo, quindi, aumenta all'aumentare delle richieste che vengono effettuate da chi utilizza l'applicazione.
-        Sono tuttavia disponibili delle alternative di terze parti che permettono l'accesso gratuito a degli endpoint per effettuare le operazioni di Geocoding. Uno dei migliori servizi di questo genere è rappresentato da \textbf{Nominatim} che è utilizzato, tra l'altro, anche dal progetto \textbf{OpenStreetMap} per implementare la feature di ricerca nella loro piattaforma. Il funzionamento di Nominatim verrà descritto in dettaglio nel quarto capitolo della tesi che tratta l'architettura ed il funzionamento di ShallWeGo.
+            L'applicazione oggetto di questo lavoro di Tesi fa largo uso di mappe e dati geografici in generale. Google Maps mette a disposizione le sue API in maniera gratuita fino ad esaurimento di un credito (che viene scalato man mano che si utilizzano i propri servizi) che si rinnova ogni mese. Superata questa soglia, è necessario sostenere un certo prezzo.
+            Le tariffe, consultabili all'indirizzo \url{https://cloud.google.com/maps-platform/pricing}, prevedono infatti la possibilità di usufruire un credito gratuito dell'entità di 200\$ mensili. In particolare, il servizio di Geocoding \footnote[1]{Ovvero il processo che consente di ottenere il nome logico di un luogo associato ad una coppia di coordinate (Latitudine, Longitudine) e viceversa} costa 5\$ ogni 1000 richieste. Il prezzo, quindi, aumenta all'aumentare delle richieste che vengono effettuate da chi utilizza l'applicazione.
+            Sono tuttavia disponibili delle alternative di terze parti che permettono l'accesso gratuito a degli endpoint per effettuare le operazioni di Geocoding. Uno dei migliori servizi di questo genere è rappresentato da \textbf{Nominatim} che è utilizzato, tra l'altro, anche dal progetto \textbf{OpenStreetMap} per implementare la feature di ricerca nella loro piattaforma. Il funzionamento di Nominatim verrà descritto in dettaglio nel \textbf{Quarto Capitolo} della Tesi che tratta l'architettura ed il funzionamento di ShallWeGo.
+    
+    \subsection{Risultati ottenuti}
+        Il risultato di questa esperienza di Tesi è stato quindi quello di aver sviluppato una prima versione di un applicativo mobile e della relativa componente server che implementasse l'idea di cui si è discusso. L'applicativo consiste quindi in un semplice file .apk per Android installabile e che, attualmente, previa registrazione ed ottenimento di uno username, permetta a chi vuole di cominciare ad effettuare segnalazioni riguardanti fermate, linee ed aziende di trasporti che conosce e che sa operare in una determinata zona.
+        È, inoltre, in sviluppo una funzionalità che preveda la possibilità da parte di un utente di comunicare in tempo reale la propria posizione e, contemporaneamente, specificare su che linea si trova, così da permettere ad altri utenti interessati di farsi un'idea di quanto debbano aspettare per salire a bordo.
         
         \newpage
 

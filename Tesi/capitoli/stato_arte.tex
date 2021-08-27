@@ -23,18 +23,31 @@ I principali attori sul panorama della diffusione di informazioni sul TPL sono s
 
     Tuttavia, come accennato in precedenza, questi dati sono comunicati su richiesta delle aziende e solo un numero limitato di queste ultime (almeno in Italia) aderisce al programma, limitando così i dati a disposizione dell'utente.
 
-\section{Moovit ed il crowdsourcing.}
-    Moovit è una piattaforma che al contrario di Google Maps si occupa esclusivamente di mobilità.
-    Nasce nel 2012 e nel 2015 viene acquistata da Intel. Attualmente Moovit si sta impegnando per sviluppare soluzioni di Mobility as a Service.
-    Il Mobility as a Service (MaaS) è un concetto relativamente nuovo, che permette all'utente di scegliere il modo che ritiene più adatto di spostarsi (tramite mezzi pubblici, car sharing e simili) usando una sola piattaforma che mette a disposizione tutti questi servizi, favorendo quindi l'interoperabilità tra i vari mezzi di trasporto. \\
+\section{Mobilità e crowdsourcing}
+    La tecnica del crowdsourcing, applicabile nella maggior parte dei casi in cui ci sia bisogno di ottenere dati di interesse per un determinato dominio consiste nel ricavare direttamente questi ultimi da persone sul campo e che ritengano di possedere un'informazione che potrebbe tornare utile alla comunità.
+    Anche nel dominio di interesse della piattaforma che si vuole sviluppare, è possibile andare ad isolare i dati di interesse (quelli utili cioè a fornire un sufficiente livello di informazione agli utenti del TPL). Possono essere riassunti in cinque punti:
+            \begin{itemize}
+                \item Posizione di una fermata in un determinato punto
+                \item "Equipaggiamento" di una fermata (in termini di pensilina, segni identificativi e quadri orari disponibili al pubblico)
+                \item Utilizzo di una fermata da parte di una determinata linea
+                \item Destinazioni di una linea
+                \item Eventi transitori (come presenza di traffico, avvisi su deviazioni o strade chiuse)
+            \end{itemize}
 
-    Dal 2015, inoltre, Moovit mette a disposizione un servizio chiamato \textbf{Mooviter Community}, che permette al singolo utente della piattaforma di partecipare alla mappatura delle fermate e delle linee della sua zona tramite un Editor accessibile via web. I cambiamenti dovranno quindi essere approvati dagli amministratori della piattaforma o da utenti esperti. \\
+        L'approccio del crowdsourcing è già utilizzato sia in Google Maps (di cui si è appena parlato) sia in un'altra piattaforma che risulta di particolare interesse, ovvero \textbf{Moovit}. Moovit sfrutta l'idea del crowdsourcing per ottenere dati altrimenti molto difficili da reperire.
 
-    In particolare, la piattaforma di Moovit organizza gli utenti in "livelli", che potranno essere "scalati" man mano che si matura esperienza in termini di segnalazioni. Nello specifico, se un utente $x$ di livello $n$ effettua una segnalazione, chi potrà verificare questa segnalazione sarà solamente un certo utente $z$ il cui livello risulta almeno $n + 1$ o che sia membro del Team. \\
-    Il problema di questo approccio è che se un utente con molta esperienza si unisce alla piattaforma in un certo momento, egli non potrà immediatamente cominciare a verificare segnalazioni poiché inizialmente il suo livello sarà troppo basso.\\
-    Attualmente, l'Editor della Community di Moovit è disponibile in tutte le sue funzionalità esclusivamente via web tramite un browser che riporta uno \textit{user-agent} desktop. \\
+    \subsection{La Community di Moovit: un caso di studio}
+        Moovit è una piattaforma che al contrario di Google Maps si occupa esclusivamente di mobilità.
+        Nasce nel 2012 e nel 2015 viene acquistata da Intel. Attualmente Moovit si sta impegnando per sviluppare soluzioni di Mobility as a Service.
+        Il Mobility as a Service (MaaS) è un concetto relativamente nuovo, che permette all'utente di scegliere il modo che ritiene più adatto di spostarsi (tramite mezzi pubblici, car sharing e simili) usando una sola piattaforma che mette a disposizione tutti questi servizi, favorendo quindi l'interoperabilità tra i vari mezzi di trasporto. \\
 
-    Oltre all'editor delle fermate e delle linee, nell'ultimo periodo Moovit ha messo a disposizione direttamente dall'app mobile uno strumento che permette di segnalare anche l'affollamento di una determinata corsa, come riportato sul sito web della piattaforma.\footnote[4]{\url{https://moovit.com/press-releases/moovit-crowding-report/}}
+        Dal 2015, inoltre, Moovit mette a disposizione un servizio chiamato \textbf{Mooviter Community}, che permette al singolo utente della piattaforma di partecipare alla mappatura delle fermate e delle linee della sua zona tramite un Editor accessibile via web. I cambiamenti dovranno quindi essere approvati dagli amministratori della piattaforma o da utenti esperti. \\
+
+        In particolare, la piattaforma di Moovit organizza gli utenti in "livelli", che potranno essere "scalati" man mano che si matura esperienza in termini di segnalazioni. Nello specifico, se un utente $x$ di livello $n$ effettua una segnalazione, chi potrà verificare questa segnalazione sarà solamente un certo utente $z$ il cui livello risulta almeno $n + 1$ o che sia membro del Team. \\
+        Il problema di questo approccio è che se un utente con molta esperienza si unisce alla piattaforma in un certo momento, egli non potrà immediatamente cominciare a verificare segnalazioni poiché inizialmente il suo livello sarà troppo basso.\\
+        Attualmente, l'Editor della Community di Moovit è disponibile in tutte le sue funzionalità esclusivamente via web tramite un browser che riporta uno \textit{user-agent} desktop. \\
+
+        Oltre all'editor delle fermate e delle linee, nell'ultimo periodo Moovit ha messo a disposizione direttamente dall'app mobile uno strumento che permette di segnalare anche l'affollamento di una determinata corsa, come riportato sul sito web della piattaforma.\footnote[4]{\url{https://moovit.com/press-releases/moovit-crowding-report/}}
 
 \newpage
 \section{Il focus di ShallWeGo}
