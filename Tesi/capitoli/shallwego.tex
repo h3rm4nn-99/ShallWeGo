@@ -288,4 +288,118 @@
 
         \newpage
         \subsubsection{Fonte dei dati utilizzati}
-            Nominatim di per sé risulta essere solamente un servizio che permette di effettuare geocoding a partire da un dataset ma non ne fornisce nessuno out of the box. È stato quindi necessraio ottenere questi dati da entità terze. Un progetto che mette a disposizione pubblicamente questo tipo dei dati è chiamato Geofabrik, che ospita sui suoi server pacchetti organizzati per Stato o per Continente. Il formato di questi pacchetti risulta essere $.osm.pbf$, che è possibile importare all'interno di Nominatim attraverso un applicativo chiamato \textbf{osm2pgsql}. Quest'applicativo permette di importare dati organizzati secondo lo standard di OpenStreetMap all'interno di un database PostgreSQL/PostGIS. \\      
+            Nominatim di per sé risulta essere solamente un servizio che permette di effettuare geocoding a partire da un dataset ma non ne fornisce nessuno out of the box. È stato quindi necessraio ottenere questi dati da entità terze. Un progetto che mette a disposizione pubblicamente questo tipo dei dati è chiamato Geofabrik, che ospita sui suoi server pacchetti organizzati per Stato o per Continente. Il formato di questi pacchetti risulta essere $.osm.pbf$, che è possibile importare all'interno di Nominatim attraverso un applicativo chiamato \textbf{osm2pgsql}. Quest'applicativo permette di importare dati organizzati secondo lo standard di OpenStreetMap all'interno di un database PostgreSQL/PostGIS. \\
+            
+        \newpage
+        \section{ShallWeGo: Il client}
+            Dopo aver analizzato in dettaglio la Java Application che contiene la logica applicativa di ShallWeGo ed aver descritto il funzionamento del Server di Geocoding si passa ora all'analisi del client della piattaforma.
+            Il client messo a disposizione dalla piattaforma consiste in un'applicazione Android sviluppata usando il linguaggio Java.
+
+        \subsection{Breve introduzione allo sviluppo Android}
+            La piattaforma Android è storicamente molto aperta allo sviluppo di applicativi di terze parti. Già a partire dalla versione 1.0 (rilasciata nel 2009), Google si è impegnata a fornire un'API completa e semplice da usare per facilitare sia lo sviluppo di app sia il funzionamento di nuove versioni del sistema operativo stesso su un determinato hardware (tramite il progetto \textbf{AOSP}, ovvero \textit{Android Open Source Project})
+
+            Un'applicazione Android, astraendosi dal funzionamento a basso livello del sistema operativo (il cui \textit{kernel}) si basa su Linux, consiste soprattutto in \textbf{Activity}.
+
+            Un'Activity, secondo la documentazione ufficiale, è un "task singolo e specifico che l'utente può effettuare" \cite{AndroidDoc}. Quasi tutte le Activity interagiscono con l'utente e, tramite operazioni normalmente trasparenti allo sviluppatore, si occupano della composizione delle finestre, che saranno poi utilizzate per mostrare la User Interface creata da chi sviluppa l'applicazione (che si specifica usando un file XML che è strettamente legato ad un'Activity).
+
+            Fino al 2019, Java ha rappresentato il linguaggio di programmazione principale per lo sviluppo di app Android. Alla conferenza Google I/O di quello stesso anno è stato annunciato l'impiego di \textbf{Kotlin} come linguaggio primario. Uno dei vantaggi di Kotlin è rappresentato dalla sua sintassi più concisa rispetto a quella di Java mantenendo comunque l'\textbf{interoperabilità} con quest'ultimo.
+        
+        \subsection{Activity presenti nell'applicazione}
+            Come accennato in precedenza, le app Android sono costituite perlopiù da Activity, che permettono l'interazione con l'utente.
+
+            In ShallWeGo ne sono presenti 18. Ognuna di queste rappresenta una feature specifica della piattaforma.
+
+            Nello specifico:
+
+            \begin{itemize}
+                \item \textbf{IntroSlideShow}: fornisce una presentazione ed una panoramica sullo scopo e sul funzionamento dell'applicazione. È utilizzata inoltre per concedere i permessi per l'utilizzo dei servizi di geolocalizzazione;
+                \item \textbf{RegisterActivity}: permette la registrazione di un'utente alla piattaforma;
+                \item \textbf{LoginActivity}: permette il login di un utente registrato alla piattaforma;
+                \item \textbf{MainActivity}: l'Activity principale di qualsiasi app Android e la prima ad essere avviata quando l'utente apre l'app. Contiene una mappa dove sono presenti, sotto forma di marker, gli oggetti di interesse della piattaforma (fermate, corse ed eventi temporanei);
+                \item \textbf{AlertsNearby}: permette all'utente di visualizzare gli eventi temporanei più vicini alla propria zona;
+                \item \textbf{FavoriteStops}: permette all'utente di accedere velocemente alle fermate che ha aggiunto all'elenco delle sue preferite;
+                \item \textbf{StopDetails}: permette all'utente di accedere alla pagina dei dettagli di una fermata specifica;
+                \item \textbf{EventDetails}: permette all'utente di consultare i dettagli di un evento temporaneo;
+                \item \textbf{CompanyReportActivity}: permette all'utente di effettuare la segnalazione di un'azienda di trasporto;
+                \item \textbf{LineReportActivity}: permette all'utente di effettuare la segnalazione di una linea;
+                \item \textbf{StopReportActivity}: permette all'utente di effettuare la segnalazione di una fermata e di specificare le linee che la utilizzano;
+                \item \textbf{TemporaryEventReportActivity}: permette all'utente di effettuare la segnalazione di un evento temporaneo ed eventualmente di specificare le linee coinvolte;
+                \item \textbf{MyReportsActivity}: permette all'utente di visualizzare tutte le segnalazioni che ha effettuato nel tempo;
+                \item \textbf{NewRideActivity}: permette all'utente di comunicare la propria posizione nell'ambito di una corsa espletata da una determinata linea. Permette di comunicarne anche l'affollamento e lo stato del mezzo in termini di presenza di aria condizionata e di macchina validatrice dei titoli di viaggio.
+                \item \textbf{VerifyReports}: permette all'utente di visualizzare tutte le segnalazioni non ancora approvate a cui è stato assegnato in qualità di \textit{verificatore};
+                \item \textbf{VerifyCompanyReport}: permette al \textit{verificatore} di fornire il proprio voto sulla segnalazione di un'azienda di trasporto;
+                \item \textbf{VerifyLineReport}: permette al \textit{verificatore} di fornire il proprio voto sulla segnalazione di una linea espletata da un'azienda di trasporto;
+                \item \textbf{VerifyStopReport}: permette al \textit{verificatore} di fornire il proprio voto sulla segnalazione di una fermata;
+            \end{itemize}
+        
+            \subsection{Librerie di terze parti utilizzate nell'applicazione}
+                Dal 2013, i progetti Android utilizzano il toolkit \textbf{Gradle}. Gradle consiste in una serie di utility eseguite sulla JVM che permettono la semplificazione e l'automazione del processo di \textit{build} delle applicazioni. Uno dei compiti principali di un build manager come Gradle consiste nella gestione delle dipendenze e dei moduli di terze parti che possono essere inclusi in un'applicazione. In un progetto Android, solitamente, le dipendenze vanno specificate nel file \textit{build.gradle} dell'applicazione.
+
+                Durante lo sviluppo di ShallWeGo, per fornire tutte le funzionalità indicate in precedenza, si è fatto uso di diverse librerie di terze parti, il cui funzionamento ed impiego nella piattaforma verrà descritto di seguito.
+
+                \subsubsection{AppIntro}
+                    \textbf{AppIntro} è una libreria creata dallo sviluppatore \textbf{Paolo Rotolo} la cui documentazione è disponibile su GitHub all'indirizzo \url{https://github.com/AppIntro/AppIntro}. Fornisce il supporto alla creazione, sotto forma di \textit{slides} di un'introduzione all'applicazione. Questo modulo semplifica notevolmente il processo di richiesta dei permessi, diventato più complesso dall'introduzione di Android 5.0.
+                    La libreria è stata impiegata per realizzare l'activity \textbf{IntroSlideShow}.
+
+                \subsubsection{Volley}
+                    \textbf{Volley} è una libreria sviluppata da \textbf{Google} per fornire delle API da usare per svolgere task che richiedono l'interazione con la rete. L'impiego di questa libreria è stato preferito poiché la mole delle richieste da effettuare non è tale da giustificare l'utilizzo di altre librerie che Google stessa consiglia per trasferimenti di grandi moli di informazioni attraverso la rete, come il \textbf{Download Manager} integrato accessibile dalle API di Android. Il funzionamento di Volley si basa sulla presenza di una \textit{coda} di richieste (realizzata tramite la classe \mintinline{java}{RequestQueue}) alla quale possono essere aggiunte delle richieste e all'evenienza regolarne la priorità in caso di richieste multiple.
+                    Dopo aver aggiunto una richiesta alla coda, Volley provvederà a spedirla in maniera \textbf{asincrona} e ad eseguire il metodo di callback \mintinline{java}{onResponse()} dal quale è possibile provvedere all'aggiornamento della UI. In ShallWeGo, la libreia è stata utilizzata in quasi tutte le Activity per realizzare l'interazione con la Java Application tramite file JSON dai quali sono estratte le informazioni necessarie per aggiornare l'interfaccia in modo corretto.
+                
+                \subsubsection{Gson}
+                    \textbf{Gson} è una libreria anch'essa sviluppata da \textbf{Google} che permette la serializzazione e la deserializzazione di informazioni da ed in stringhe JSON. La libreria mette a disposizione le classi \mintinline{java}{JsonObject} e \mintinline{java}{JsonArray} che modellano rispettivamente un oggetto ed un array di oggetti JSON e che permettono di accedere (tramite il metodo \mintinline{java}{get()}) in maniera strutturata ai vari campi della stringa di cui viene effettuato il parsing. Allo stesso modo, le classi \mintinline{java}{JsonObject} e \mintinline{java}{JsonArray} permettono di organizzare dei dati che possano essere convertiti correttamente in una stringa JSON. Insieme a Volley, questa è una delle librerie fondamentali che permettono il corretto funzionamento della comunicazione con le API esposte dalla Java Application. Dunque, questa libreria è stata usata ogni qual volta è risultato necessario comunicare col server.
+
+                \subsubsection{Material Components}
+                    \textbf{Material Components} è una libreria sviluppata da Google che fornisce l'implementazione (sia dal punto di vista di classi Java sia dal punto di vista di elementi XML pronti da inserire nei file di layout) di una serie di componenti grafiche tipiche del \textbf{Material Design}. Il Material Design è un sistema di design introdotto da Google stessa nel 2014 con la versione 5.0 di Android ed in continua evoluzione anche oggi. Il layout delle Activity di ShallWeGo è realizzato usando quasi esclusivamente queste componenti.
+                
+                \subsubsection{SpeedDial}
+                    \textbf{SpeedDial} è una libreria creata dallo sviluppatore \textbf{Roberto Leinardi} la cui documentazione è disponibile all'indirizzo \url{https://github.com/leinardi/FloatingActionButtonSpeedDial}. Fornisce un'implementazione concreta di un \textbf{Floating Action Button} (o \textbf{FAB}) seguendo le specifiche descritte alla pagina \url{https://material.io/components/buttons-floating-action-button#types-of-transitions}. Un Floating Action Button è solitamente un pulsante posizionato in vari punti del layout di un'Activity che permette di "richiamare" l'attenzione dell'utente, indicandogli il punto in cui è possibile compiere le azioni principali che quella determinata Activity mette a disposizione, che verranno mostrate alla pressione del FAB (\textit{Speed Dial}). La libreria sopracitata permette proprio questo comportamento. In ShallWeGo, questa libreria è utilizzata in accoppiata col FAB presente nella MainActivity che, una volta premuto, offre l'opportunità di eseguire i seguenti task:
+
+                    \begin{itemize}
+                        \item Riposizionare la mappa in corrispondenza della posizione attuale dell'utente;
+                        \item Effettuare una segnalazione nella posizione attuale dell'utente;
+                        \item Cominciare il tracciamento in diretta di una corsa. (Il funzionamento di questo aspetto viene trattato in dettaglio nella sezione successiva).
+                    \end{itemize}
+
+                    Le figure 4.4 e 4.5 mostrano rispettivamente il FAB presente nella MainActivity e lo Speed Dial ad esso associato.
+                    \\
+                    \\
+                    \begin{figure}[ht]
+                        \begin{minipage}[b]{0.45\linewidth}
+                          \includegraphics[width=1.0\textwidth]{capitolo4/figure/fab.jpg}
+                            \centering
+                          \caption{FAB nella Main Activity}
+                          \label{fig:FAB nella Main Activity}
+                        \end{minipage}
+                        \quad
+                        \begin{minipage}[b]{0.45\linewidth}
+                           \includegraphics[width=1.0\textwidth]{capitolo4/figure/speeddial.jpg}
+                           \centering
+                         \caption{Speed Dial associato al FAB}
+                         \label{fig:Speed Dial associato al FAB}
+                       \end{minipage}
+                       \end{figure}
+                    \newpage
+
+        \subsection{Il tracciamento in diretta delle corse: overview sui servizi di Android}
+            Una delle funzionalità di ShallWeGo permette all'utente collegato alla piattaforma di mettere a disposizione degli altri utenti la propria posizione all'interno di una corsa espletata da una linea di trasporto pubblico.
+            Realizzare una funzionalità del genere implica dover recuperare ad intervalli regolari la posizione esatta del dispositivo che l'utente sta utilizzando ed inviare una richiesta alla Java Application che si occuperà di aggiornare i dati in suo possesso.
+            
+            \subsubsection{Services}
+                Per task di questo genere, Android mette a disposizione dello sviluppatore una serie di API che ne permettono un'implementazione facile e veloce: i \textbf{Servizi}.
+
+                Secondo la documentazione ufficiale, un Servizio è "una componente applicativa utile ad eseguire un task dalla durata prolungata, che può continuare anche se l'utente passa ad un'altra applicazione" (\cite{AndroidDocService}).
+
+                In Android esistono due tipi di Servizi: 
+
+                \begin{itemize}
+                    \item \textbf{Foreground};
+                    \item \textbf{Background} 
+                \end{itemize}
+
+                Un \textbf{Background Service} è un servizio che permette di svolgere task, come suggerisce la denominazione, in background (ovvero anche quando l'Activity che l'ha fatto partire non è visibile a schermo). L'utente solitamente non è tenuto a sapere se e quando questo tipo di servizi sia in esecuzione. Quest'ultimo aspetto potrebbe portare a problemi di privacy o sicurezza in caso di impiego da parte di applicazioni malevole o anche di prestazioni nel caso in cui il task da svolgere sia pesante in termini di utilizzo di risorse. Per questa ragione, dalla versione 26 delle API (ovvero a partire dalla versione 8.0 di Android), sono state introdotte delle limitazioni ai servizi in background. \\
+                Se un'applicazione non è più visibile a schermo (nella maggior parte die casi, quando l'utente torna alla \textit{home} sul proprio device), essa è considerata essere in background. Quando un'applicazione è in background, a partire da Android 8.0 il sistema le concede un intervallo di tempo prestabilito, scaduto il quale il sistema \textbf{termina tutti servizi in background dell'applicazione}. Data la natura della feature che deve essere realizzata, questo comportamento risulta non accettabile (e dunque non è stato possibile implementarla tramite un background service).
+                
+                Un \textbf{Foreground Service}, invece è "un servizio che permette di svolgere task di cui l'utente dovrebbe essere informato" (\cite{AndroidDocForeground}). Per funzionare, un Foreground Service deve obbligatoriamente mostrare una notifica all'utente nella barra di stato, appunto per permettere all'utente di rendersi conto della presenza di quel task in esecuzione. Applicazioni che fanno uso di Foreground Service sono per esempio i player musicali, che ostrano come notifica la canzone attualmente in riproduzione. Contrariamente a quanto ci si aspetterebbe dalla denominazione, i Foreground Service \textbf{possono essere in esecuzione anche in background}, a patto che siano stati avviati dall'utente o da un'Activity in esecuzione in quel momento. Il vantaggio principale di utilizzare un Foreground Service sta nel fatto che, mentre quest'ultimo risulta in esecuzione, l'applicazione che lo ospita non viene considerata in background ed il Sistema non la termina per recuperare risorse. Inoltre, da Android 10 (API 29) in su è stata rimossa la possibilità di concedere il permesso alla geolocalizzazione anche in background, demandando all'utente il compito di concederlo direttamente dalle impostazioni di sistema. Alla luce di quanto si è detto, l'utilizzo di un foreground service è un buon modo per evitare la gestione di questa limitazione. In ShallWeGo, infatti, si è deciso di utilizzare quest'approccio per la gestione degli aggiornamenti sulla posizione.
+
+                \subsubsection{LiveTracking}
+                    \textbf{LiveTracking} è il Foreground Service che si occupa degli aggiornamenti sulla posizione di una corsa tracciata da un utente. 
