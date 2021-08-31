@@ -399,7 +399,39 @@
                 Un \textbf{Background Service} è un servizio che permette di svolgere task, come suggerisce la denominazione, in background (ovvero anche quando l'Activity che l'ha fatto partire non è visibile a schermo). L'utente solitamente non è tenuto a sapere se e quando questo tipo di servizi sia in esecuzione. Quest'ultimo aspetto potrebbe portare a problemi di privacy o sicurezza in caso di impiego da parte di applicazioni malevole o anche di prestazioni nel caso in cui il task da svolgere sia pesante in termini di utilizzo di risorse. Per questa ragione, dalla versione 26 delle API (ovvero a partire dalla versione 8.0 di Android), sono state introdotte delle limitazioni ai servizi in background. \\
                 Se un'applicazione non è più visibile a schermo (nella maggior parte die casi, quando l'utente torna alla \textit{home} sul proprio device), essa è considerata essere in background. Quando un'applicazione è in background, a partire da Android 8.0 il sistema le concede un intervallo di tempo prestabilito, scaduto il quale il sistema \textbf{termina tutti servizi in background dell'applicazione}. Data la natura della feature che deve essere realizzata, questo comportamento risulta non accettabile (e dunque non è stato possibile implementarla tramite un background service).
                 
-                Un \textbf{Foreground Service}, invece è "un servizio che permette di svolgere task di cui l'utente dovrebbe essere informato" (\cite{AndroidDocForeground}). Per funzionare, un Foreground Service deve obbligatoriamente mostrare una notifica all'utente nella barra di stato, appunto per permettere all'utente di rendersi conto della presenza di quel task in esecuzione. Applicazioni che fanno uso di Foreground Service sono per esempio i player musicali, che ostrano come notifica la canzone attualmente in riproduzione. Contrariamente a quanto ci si aspetterebbe dalla denominazione, i Foreground Service \textbf{possono essere in esecuzione anche in background}, a patto che siano stati avviati dall'utente o da un'Activity in esecuzione in quel momento. Il vantaggio principale di utilizzare un Foreground Service sta nel fatto che, mentre quest'ultimo risulta in esecuzione, l'applicazione che lo ospita non viene considerata in background ed il Sistema non la termina per recuperare risorse. Inoltre, da Android 10 (API 29) in su è stata rimossa la possibilità di concedere il permesso alla geolocalizzazione anche in background, demandando all'utente il compito di concederlo direttamente dalle impostazioni di sistema. Alla luce di quanto si è detto, l'utilizzo di un foreground service è un buon modo per evitare la gestione di questa limitazione. In ShallWeGo, infatti, si è deciso di utilizzare quest'approccio per la gestione degli aggiornamenti sulla posizione.
+                Un \textbf{Foreground Service}, invece è "un servizio che permette di svolgere task di cui l'utente dovrebbe essere informato" (\cite{AndroidDocForeground}). Per funzionare, un Foreground Service deve obbligatoriamente mostrare una notifica all'utente nella barra di stato, appunto per permettere all'utente di rendersi conto della presenza di quel task in esecuzione. Applicazioni che fanno uso di Foreground Service sono per esempio i player musicali, che mostrano come notifica la canzone attualmente in riproduzione. Contrariamente a quanto ci si aspetterebbe dalla denominazione, i Foreground Service \textbf{possono essere in esecuzione anche in background}, a patto che siano stati avviati dall'utente o da un'Activity in esecuzione in quel momento. Il vantaggio principale di utilizzare un Foreground Service sta nel fatto che, mentre quest'ultimo risulta in esecuzione, l'applicazione che lo ospita non viene considerata in background ed il Sistema non la termina per recuperare risorse. Inoltre, da Android 10 (API 29) in su è stata rimossa la possibilità di concedere il permesso alla geolocalizzazione anche in background, demandando all'utente il compito di concederlo direttamente dalle impostazioni di sistema. Alla luce di quanto si è detto, l'utilizzo di un foreground service è un buon modo per evitare la gestione di questa limitazione. In ShallWeGo, infatti, si è deciso di utilizzare quest'approccio per la gestione degli aggiornamenti sulla posizione.
+
+                Al di là della tipologia di servizio, ognuno di questi deve essere dichiarato all'interno del \textit{Manifest} dell'Applicazione, che può essere visto come un descrittore di ciò che l'app contiene. Nel Manifest vanno specificate tutte le activity e tutti i servizi presenti.
 
                 \subsubsection{LiveTracking}
-                    \textbf{LiveTracking} è il Foreground Service che si occupa degli aggiornamenti sulla posizione di una corsa tracciata da un utente. 
+                    \textbf{LiveTracking} è il Foreground Service che si occupa degli aggiornamenti sulla posizione di una corsa tracciata da un utente.
+
+                    \begin{center}
+                        \begin{code}
+                            \begin{minted}{xml}
+                <service
+                    android:name=".LiveTracking"
+                    android:foregroundServiceType="location"
+                    android:enabled="true"
+                    android:exported="true"
+                    android:stopWithTask="true">
+                </service>
+                            \end{minted}
+                            \caption{Snipped di AndroidManifest.xml che contiene la dichiarazione del Servizio}
+                        \end{code}
+                    \end{center}
+    
+                    Si noti l'attributo \mintinline{xml}{android:foregroundServiceType}. È un attributo specifico dei Foreground Services che ne determina il tipo. Se non lo si specifica, quando il Servizio sta per essere avviato, il Sistema Operativo solleva un'eccezione.
+
+                    L'attributo \mintinline{xml}{android:stopWithTask} permette di specificare se il servizio debba essere arrestato quando l'utente chiude dal multitasking o termina l'applicazione (se posto a \mintinline{java}{true}) o meno (se posto a \mintinline{java}{false}). Si è scelto di utilizzare quest'opzione per dare all'utente un modo veloce per terminare la propria corsa in modo veloce senza passare per l'applicazione (o in caso di possibili malfunzionamenti).
+
+                    Per ottenere informazioni sulla geolocalizzazione, il servizio fa uso dell'API di Google denominata \textbf{FusedLocation}, presente nella libreria dei \textbf{Google Play Services} dedicata proprio alla gestione della posizione.
+
+                    \subsubsection{FusedLocation e LocationUpdates}
+                        FusedLocation è "un'API di localizzazione che combina intelligentemente diverse fonti (GPS o Rete Mobile) per mettere a disposizione le informazioni di geolocalizzazione alle app". (\cite{PlayServicesFusedLocation}).
+
+                        La particolarità dell'API FusedLocation consiste nel supporto ai \textbf{Location Updates}, tramite i quali è possibile ottenere aggiornamenti continui sulla posizione del dispositivo specificandone la precisione e l'intervallo col quale ottenere un nuova posizione.
+                        Nello specifico, per poter iniziare a ricevere aggiornamenti continui sulla posizione, è stato necessario ottenere un'istanza del \mintinline{java}{FusedLocationProviderClient} tramite il metodo 
+                        \mintinline{java}{getFusedLocationProviderClient}.
+                        Una volta ottenuto quest'oggetto è necessario andare a creare una nuova \textbf{LocationRequest}, tramite il metodo statico \mintinline{java}{LocationRequest.create()}. Questo oggetto serve a determinare i vari parametri della richiesta, come la priorità che le verrà riservata e l'intervallo (in millisecondi) tra una richiesta e l'altra.
+                        Come ultimo step, è necessario definire un \textbf{metodo di callback}, ovvero un metodo che verrà eseguito in corrispondenza del risultato di una singola richiesta. Il metodo di callback è definito tramite l'implementazione di una \textbf{classe anonima} chiamata appunto \mintinline{java}{LocationCallback}.
