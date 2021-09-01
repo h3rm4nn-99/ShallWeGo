@@ -425,13 +425,39 @@
 
                     L'attributo \mintinline{xml}{android:stopWithTask} permette di specificare se il servizio debba essere arrestato quando l'utente chiude dal multitasking o termina l'applicazione (se posto a \mintinline{java}{true}) o meno (se posto a \mintinline{java}{false}). Si è scelto di utilizzare quest'opzione per dare all'utente un modo veloce per terminare la propria corsa in modo veloce senza passare per l'applicazione (o in caso di possibili malfunzionamenti).
 
-                    Per ottenere informazioni sulla geolocalizzazione, il servizio fa uso dell'API di Google denominata \textbf{FusedLocation}, presente nella libreria dei \textbf{Google Play Services} dedicata proprio alla gestione della posizione.
 
-                    \subsubsection{FusedLocation e LocationUpdates}
+                    \subsubsection{Avvio del Servizio}
+                        Quando un utente decide di condividere la propria posizione allo scopo di eseguire il tracciamento in diretta di una corsa, è invitato, nell'Activity \textbf{NewRide} a compilare una serie di campi che indicano lo stato della corsa e la linea che la espleta. A questo punto, la \textbf{MainActivity} provvede ad inviare i dati alla Java Application tramite una chiamata all'API \mintinline{java}{initRide}, che conterrà tutti i dettagli sulla corsa. Il server risponderà con l'\textbf{ID} della corsa appena comunicata. Alla ricezione di questa risposta, la MainActivity provvede ad avviare il servizio tramite il metodo \mintinline{java}{startForegroundService(Intent intent)}. Il parametro \mintinline{java}{intent} del metodo rappresenta "una descrizione astratta di un'operazione da svolgere" (\cite{AndroidIntent}). In generale, gli Intent vengono utilizzati per scambiare dati di piccola entità tra le varie Activity all'atto del loro avvio, ma anche per comunicare ad un Sevizio che si intende avviarlo o comunque comunicargli qualcosa, come nel caso di LiveTracking, mediante il metodo \mintinline{java}{setAction()}, che va a specificare l'azione che si intende far intraprendere al servizio, che sarà interpretata da quest'ultimo tramite la sovrascrittura del metodo \mintinline{java}{onStartCommand()}. Per l'avvio del Servizio, l'Action dell'intent inviato tramite \mintinline{java}{startForegroundService(Intent intent)} risulta essere  
+                        \texttt{$START\_SERVICE$}.
+                    \subsubsection{Aggiornamenti periodici: FusedLocation e LocationUpdates}
+                        Per ottenere informazioni sulla geolocalizzazione, il servizio fa uso dell'API di Google denominata \textbf{FusedLocation}, presente nella libreria dei \textbf{Google Play Services} dedicata proprio alla gestione della posizione.
                         FusedLocation è "un'API di localizzazione che combina intelligentemente diverse fonti (GPS o Rete Mobile) per mettere a disposizione le informazioni di geolocalizzazione alle app". (\cite{PlayServicesFusedLocation}).
 
                         La particolarità dell'API FusedLocation consiste nel supporto ai \textbf{Location Updates}, tramite i quali è possibile ottenere aggiornamenti continui sulla posizione del dispositivo specificandone la precisione e l'intervallo col quale ottenere un nuova posizione.
                         Nello specifico, per poter iniziare a ricevere aggiornamenti continui sulla posizione, è stato necessario ottenere un'istanza del \mintinline{java}{FusedLocationProviderClient} tramite il metodo 
                         \mintinline{java}{getFusedLocationProviderClient}.
                         Una volta ottenuto quest'oggetto è necessario andare a creare una nuova \textbf{LocationRequest}, tramite il metodo statico \mintinline{java}{LocationRequest.create()}. Questo oggetto serve a determinare i vari parametri della richiesta, come la priorità che le verrà riservata e l'intervallo (in millisecondi) tra una richiesta e l'altra.
-                        Come ultimo step, è necessario definire un \textbf{metodo di callback}, ovvero un metodo che verrà eseguito in corrispondenza del risultato di una singola richiesta. Il metodo di callback è definito tramite l'implementazione di una \textbf{classe anonima} chiamata appunto \mintinline{java}{LocationCallback}.
+                        Come ultimo step, è necessario definire un \textbf{metodo di callback}, ovvero un metodo che verrà eseguito in corrispondenza del risultato di una singola richiesta. Il metodo di callback è definito tramite l'implementazione di una \textbf{classe anonima} chiamata appunto \mintinline{java}{LocationCallback}.\\
+                        Il metodo di callback implementato nel servizio LiveTracking si occupa, una volta disponibile una posizione, della comunicazione di quest'ultima col server. 
+                        La Java Application espone un'API chiamata \mintinline{java}{updateRideLocation}, che permette proprio di portare a termine questo task.
+                        Il processo avviene iterativamente grazie proprio al meccanismo dei Location Updates. 
+                        
+                        
+                        \subsubsection{Termine del Servizio}
+                            Il processo di comunicazione della posizione in diretta al server termina nello stesso esatto momento in cui termina il Servizio.
+                            Il Servizio può terminare in due modi:
+
+                            \begin{itemize}
+                                \item L'utente preme il \textbf{pulsante di terminazione} sulla notifica nella barra delle notifiche che comunica l'esecuzione del processo.
+                                \item L'utente chiude l'applicazione e la rimuove dalle app recenti.
+                            \end{itemize}
+
+                            Quando una delle due condizioni si verifica, al servizio è passato un \textbf{Intent} che contiene l'azione \texttt{$STOP\_SERVICE$}. In questo caso, il client provvede a contattare l'API \mintinline{java}{terminateRide}, che consente al server di cancellare la corsa dall'elenco di quelle in esecuzione.
+                        
+                            \subsubsection{Comunicazione tra Servizio ed Activity}
+                                LiveTracking si occupa nello specifico di aggiornare i dati sulla geolocalizzazione e del loro invio al server ma non si occupa (e non può occuparsi) di rendere coerente l'Interfaccia Utente dei cambiamenti che raccoglie. Sulla mappa presente nella MainActivity è presente, quando il tracciamento in diretta è attivo, un Marker che rappresenta la posizione in un determinato momento di quella specifica corsa. All'aggiornarsi della posizione, anche quella del Marker deve essere aggiornata: sorge quindi la necessità di mettere in comunicazione in qualche modo il Servizio e la MainActivity. Questo problema può essere risolto mediante il meccanismo dei \textbf{Broadcast}. Un Broadcast è un certo tipo di messaggio che viene inviato da un'app o dal Sistema Operativo quando avviene un certo evento di interesse. Questo meccanismo funziona anche tra più componenti della stessa applicazione (ed in questo caso non è presente nemmeno l'overhead introdotto dalla \textit{Inter-Process Communication}). Quest'ultimo apsetto, unito all'immediatezza con la quale avviene questa comunicazione, ha fatto sì che la scelta per l'implementazione tra LiveTracking e la MainActivity ricadesse proprio su questo meccanismo. Nello specifico: 
+                                \begin{itemize}
+                                    \item All'interno del servizio, viene sfruttato il metodo \mintinline{java}{sendBroadcast(Intent intent)}, che permette di inviare un broadcast che ha come \textit{action} quella specificata da \mintinline{java}{intent}.
+                                    \item All'interno della MainActivity è presente un \mintinline{java}{LocalBroadcastReceiver} che, tramite il metodo \mintinline{java}{onRecevive()} permette di intercettare messaggi Broadcast. All'interno di questo metodo è implementata la logica per aggiornare la UI sia quando è presente un nuovo aggiornamento della posizione da parte del provider FusedLocation sia quando il Servizio termina e il Marker che simboleggia la corsa che l'utente stava tracciando deve essere rimosso dalla mappa.   
+                                \end{itemize}
+                        
