@@ -1,0 +1,38 @@
+\chapter{Conclusioni e Sviluppi Futuri} %\label{1cap:spinta_laterale}
+% [titolo ridotto se non ci dovesse stare] {titolo completo}
+%
+
+
+\begin{citazione}
+	In questo capitolo verranno tirate dei risultati ottenuti in questo lavoro di Tesi e verranno presentate alcune idee per un possibile sviluppo della piattaforma.
+\end{citazione}
+
+\newpage
+
+\section{Conclusioni}
+	Con questo lavoro di Tesi si è voluto proporre una possibile soluzione ai (molti) problemi che affliggono gli utenti del trasporto pubblico locale nella loro esperienza quotidiana con questo tipo di mezzo di trasporto. Si è parlato di come l'affollamento e l'irregolarità che, purtroppo, molto spesso caratterizzano le corse in momenti difficili come quello che si sta affrontando in questo periodo portino un discreto disagio agli utenti. In particolare, con questa prima \textit{milestone} dell'applicazione si è voluto dare la priorità al creare un'infrastruttura funzionante con le features più importanti già presenti. Tra queste, riassumendo a grandi linee, si trovano: 
+	\begin{itemize}
+		\item Segnalazione di fermate, linee ed aziende di trasporto
+		\item Visualizzazione delle segnalazioni sopracitate
+		\item Verifica delle segnalazioni sopracitate
+		\item Tracciamento in diretta delle corse espletate dalle diverse linee
+	\end{itemize}
+
+	\section{Sviluppi Futuri}
+		Allo stato attuale, ShallWeGo non è pronta per essere inserita in un ambiente di \textit{produzione}, lo scopo di questo lavoro di Tesi era principalmente quello di fornire una soluzione ad un problema concreto e fornire una prima milestone funzionante. Al momento, sono stati individuati diversi possibili sviluppi che potrebbero portare la piattaforma ad uscire dallo stato di demo ed essere rilasciata al pubblico. Nello specifico: 
+
+		\begin{itemize}
+			\item Dare la possibilità ad un utente di apportare modifiche ad una segnalazione perché non aggiornata o con informazioni incomplete (come ad esempio la presenza di quadri orari affissi presso una fermata successivamente alla data di segnalazione della stessa)
+			\item Specificare, nell'ambito della segnalazione di una linea, l'ordine in cui si succedono le fermate che quest'ultima serve con le sue corse nell'arco di una giornata.
+			\item Specificare gli eventuali percorsi secondari di una linea. 
+		\end{itemize}
+
+		Anche dal punto di vista delle tecnologie utilizzate è possibile apportare delle migliorie 
+
+		\subsection{\textit{Hosting} della piattaforma}
+			Per tutto lo sviluppo della piattaforma, il Server è stato ospitato sulla stessa macchina con la quale è stato implementato. Questo implica che, al netto di un'esposizione della macchina stessa sulla rete globale, le API sono accessibili solamente in rete locale ma non dall'esterno. In futuro, sarebbe auspicabile utilizzare un servizio di \textbf{PaaS} (\textit{Platform as a Service}) come \textbf{Amazon AWS} per ottenere un'\textit{availability} tale da permettere il normale funzionamento della piattaforma in ogni momento. Un servizio di hosting come AWS, inoltre, permetterebbe anche di unificare l'infrastruttura della piattaforma: al momento, infatti, il server Nominatim e la Java Application che implementa la logica lato server dell'applicazione risiedono su due macchine separate per ragioni logistiche. Avere le due componenti su una singola macchina consentirebbe una migliore organizzazione dell'infrastruttura.
+
+		\subsection{Notificare gli utenti: Firebase}
+			\textbf{Firebase} è una piattaforma di supporto allo sviluppo di applicazioni acquisita da Google nel 2014. Permette di semplificare diversi task quali la gestione di database, dell'autenticazione degli utenti e delle notifiche.
+
+		
