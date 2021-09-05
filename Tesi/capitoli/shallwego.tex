@@ -1,4 +1,4 @@
-\chapter{ShallWeGo}
+\chapter{\textsc{ShallWeGo}}
 \newenvironment{code}{\captionsetup{type=listing}}{}
 
 \begin{citazione}
@@ -29,7 +29,7 @@
     \newpage
 
 \section{Architettura del sistema}
-    Il sistema ShallWeGo si configura come una classica architettura \textbf{client-server}.
+    Il sistema \textsc{ShallWeGo} si configura come una classica architettura \textbf{client-server}.
     \begin{itemize}
         \item Il server consiste \textit{Java Enterprise application}, che accetta connessioni dal client sotto forma di richieste ad API REST.
         \item Il client è stato realizzato tramite un'applicazione utilizzabile sulla piattaforma Android dalla versione 10 in poi, a causa di scelte implementative riguardo alcune librerie incluse nel progetto. Queste scelte saranno documentate più avanti nel capitolo.
@@ -39,11 +39,19 @@
 
     \begin{itemize}
         \item La Java Application già accennata
-        \item La componente che ospita la logica ed il database utilizzato da Nominatim, che è dislocato su un'altra macchina che viene utilizzata solo per questo scopo.
+        \item La componente che ospita la logica ed il database utilizzato da Nominatim, che è dislocata su un'altra macchina, utilizzata solo per questo scopo.
     \end{itemize}
 
-\section{ShallWeGo: Il Server}
-    Il server, come precedentemente menzionato, è realizzato usando le specifiche Java Enterprise Edition (da qui in poi \textit{Java EE}), usando a questo scopo il framework \textbf{\textit{Spring Boot}}, che permette una più semplice realizzazione dei task necessari a sviluppare un'applicazione che sfrutta il paradigma Client-Server, come ad esempio la gestione delle API accessibili dall'esterno i cosiddetti \textit{endpoint} oppure la gestione dei dati persistenti.
+    Di seguito viene presentato un diagramma che riassume l'architettura della piattaforma.
+
+    \begin{figure}[H]
+        \includegraphics[width=\columnwidth]{capitolo4/figure/Deployment Diagram.png}
+        \caption{L'architettura di \textsc{ShallWeGo}}
+        \label{L'architettura di ShallWeGo}
+    \end{figure}
+
+\section{\textsc{ShallWeGo}: Il Server}
+    Il server, come precedentemente menzionato, è realizzato usando le specifiche Java Enterprise Edition (da qui in poi \textit{Java EE}), usando a questo scopo il framework \textbf{\textit{Spring Boot}}, che permette una più semplice realizzazione dei task necessari a sviluppare un'applicazione che sfrutta il paradigma Client-Server, come ad esempio la gestione delle API accessibili dall'esterno (i cosiddetti \textit{endpoint}) oppure la gestione dei dati persistenti.
 
     \subsection{Class-Diagram}
         Di seguito è mostrato il diagramma delle classi del progetto Server. Sono state omesse le classi di servizio usate da Spring e da JPA per il corretto funzionamento del Server stesso. Sono inoltre state omesse le classi che compongono l'Algoritmo Genetico.
@@ -55,7 +63,7 @@
         \end{figure}
 
     \subsection{Accessibilità delle API dall'esterno}
-        Spring mette a disposizione il meccanismo dei \textbf{Controller}, che normalmente è inquadrato nel contesto di un'architettura MVC, anche se nel caso di ShallWeGo non vi è necessità di andare a creare un'applicazione di web che renda necessaria l'implementazione di tale pattern architetturale. Di conseguenza, essendo la parte che riguarda l'interfaccia utente gestita tramite un'applicazione Android, non è stata implementata nessuna parte che faccia le veci della "View" lato server. La comunicazione tra server e client avviene tramite JSON sfruttando il meccanismo delle API REST. La classe responsabile per la comunicazione con l'esterno è chiamata \textbf{Controller}, collocata nel pacchetto omonimo e decorati con l'annotazione \textbf{@RestController}. Questa annotazione permette al framework di interpretare quella classe come un Controller che accetta richieste sulla porta 8080 e all'indirizzo \url{/}. I vari metodi di quella classe che corrispondono alle diverse API esposte all'esterno sono decorati con una delle seguenti annotazioni:
+        Spring mette a disposizione il meccanismo dei \textbf{Controller}, che normalmente è inquadrato nel contesto di un'architettura MVC, anche se nel caso di \textsc{ShallWeGo} non vi è necessità di andare a creare un'applicazione di web che renda necessaria l'implementazione di tale pattern architetturale. Di conseguenza, essendo la parte che riguarda l'interfaccia utente gestita tramite un'applicazione Android, non è stata implementata nessuna parte che faccia le veci della "View" lato server. La comunicazione tra server e client avviene tramite JSON sfruttando il meccanismo delle API REST. La classe responsabile per la comunicazione con l'esterno è chiamata \textbf{Controller}, collocata nel pacchetto omonimo e decorati con l'annotazione \textbf{@RestController}. Questa annotazione permette al framework di interpretare quella classe come un Controller che accetta richieste sulla porta 8080 e all'indirizzo \url{/}. I vari metodi di quella classe che corrispondono alle diverse API esposte all'esterno sono decorati con una delle seguenti annotazioni:
 
         \begin{itemize}
             \item \textbf{@GetMapping("/url")} esegue il metodo annotato ogni qual volta all'indirizzo \url{/url} viene generata una richiesta di tipo \textbf{GET};
@@ -206,7 +214,7 @@
             \item \detokenize{JOINED}, che colloca gli attributi che compaiono esclusivamente nelle sottoclassi della gerarchia in altre tabelle, una per membro della gerarchia.
         \end{itemize}
 
-        In ShallWeGo, la strategia utilizzata è quella \detokenize{SINGLE_TABLE} poiché si è preferito non aumentare la complessità dello schema.
+        In \textsc{ShallWeGo}, la strategia utilizzata è quella \detokenize{SINGLE_TABLE} poiché si è preferito non aumentare la complessità dello schema della base di dati.
 
         Per permettere l'esecuzione delle query di inserimento, retrival ed eliminazione delle informazioni, Spring mette a disposizione il meccanismo delle \textbf{Repository}. L'obiettivo delle Repository Spring è "quello di ridurre la quantità di codice \textit{boilerplate} necessario per implementare il layer di accesso ai dati per diversi tipi di entità persistenti.".
 
@@ -229,7 +237,7 @@
             \caption{Esempio di Repository con custom query}
         \end{code}
 
-        In ShallWeGo, le seguenti Repository sono state utilizzate:
+        In \textsc{ShallWeGo}, le seguenti Repository sono state utilizzate:
 
         \begin{itemize}
             \item \textbf{CompanyRepository} che permette di effettuare query riguardanti l'Entity \textbf{Company}
@@ -261,8 +269,8 @@
             \item Per fornire, oltre alla posizione in termini di coordinate, anche un indirizzo approssimativo (e quindi un nome mnemonico) per una segnalazione indicata come \textit{evento temporaneo}. In questo caso, si parla di \textit{reverse geocoding}
         \end{itemize}
         Uno dei principali vantaggi di questa piattaforma consiste nella possibilità da parte di un utente di installare la propria istanza del server, importando all'interno di un database una serie di dati provenienti da diverse fonti. 
-        La strada del self-hosting è quella che preferita nel caso di ShallWeGo, poiché nonostante sia disponibile un endpoint pubblico a cui possono essere indirizzate delle richieste, disponibile alla pagina \url{https://nominatim.openstreetmap.org/} esso impone una restrizione di esattamente una interrogazione al secondo, pena il \textit{ban} dell'indirizzo IP sorgente dall'utilizzo del servizio. 
-        Nel caso particolare di ShallWeGo è stata utilizzata la versione 3.7.2 del software, installata su una macchina che esegue il Sistema Operativo Arch Linux e che utilizza \textit{Apache httpd} come server web per esporre il servizio in rete.
+        La strada del self-hosting è quella che preferita nel caso di \textsc{ShallWeGo}, poiché nonostante sia disponibile un endpoint pubblico a cui possono essere indirizzate delle richieste, disponibile alla pagina \url{https://nominatim.openstreetmap.org/} esso impone una restrizione di esattamente una interrogazione al secondo, pena il \textit{ban} dell'indirizzo IP sorgente dall'utilizzo del servizio. 
+        Nel caso particolare di \textsc{ShallWeGo} è stata utilizzata la versione 3.7.2 del software, installata su una macchina che esegue il Sistema Operativo Arch Linux e che utilizza \textit{Apache httpd} come server web per esporre il servizio in rete.
 
         I servizi di Nominatim sono accessibili sostanzialmente in due modi: 
         
@@ -271,13 +279,13 @@
             \item Tramite API REST, che permettono l'output testuale dei risultati in diversi formati (tipicamente JSON e XML).
         \end{itemize}
 
-        Avendo necessità di utilizzare il risultato all'interno di un'altra componente, è stata reputata non essenziale la configurazione della GUI di Nominatim: in ShallWeGo viene usata solamente la sua interfaccia che prevede output testuale.
+        Avendo necessità di utilizzare il risultato all'interno di un'altra componente, è stata reputata non essenziale la configurazione della GUI di Nominatim: in \textsc{ShallWeGo} viene usata solamente la sua interfaccia che produce unicamente output testuale.
 
         In particolare, di seguito sono descritti i servizi di Nominatim utilizzati dalla piattaforma per i suoi scopi:
 
         \begin{itemize}
-            \item \textbf{/search}: il servizio principale e quello più usato. Permette di ottenere risultati in termini di dati OSM (e quindi anche le coordinate geografiche corrispondenti) di un luogo a partire da un insieme di parole chiave. Queste ultime possono essere specificate tramite il parametro \textbf{q}. Ad esempio, la query associata a  \url{http://nominatim.openstreetmap.org/search/?q=Universita Degli Studi di Salerno Fisciano&format=json} permette di ottenere informazioni sul campus di Fisciano dell'Università degli Studi di Salerno in formato JSON (Si veda la figura 4.1);
-            \item \textbf{/reverse}: permette di ottenere approssimativamente l'indirizzo associato a delle coordinate geografiche specificate tramite i parametri \textbf{lat} e \textbf{lon}, che rappresentano rispettivamente la latitudine e la longitudine del luogo. Ad esempio, la query associata a \url{http://nominatim.openstreetmap.org/reverse/?lat=40.774283&lon=14.790868&format=json} permette di ottenere le informazioni associate alle coordinate (40.774283, 14.790868) in formato JSON. (Si veda la figura 4.2)
+            \item \textbf{/search}: il servizio principale e quello più usato. Permette di ottenere risultati in termini di dati OSM (e quindi anche le coordinate geografiche corrispondenti) di un luogo a partire da un insieme di parole chiave. Queste ultime possono essere specificate tramite il parametro \textbf{q}. Ad esempio, la query associata a  \url{http://nominatim.openstreetmap.org/search/?q=Universita Degli Studi di Salerno Fisciano&format=json} permette di ottenere informazioni sul campus di Fisciano dell'Università degli Studi di Salerno in formato JSON (Si veda la figura 4.3);
+            \item \textbf{/reverse}: permette di ottenere approssimativamente l'indirizzo associato a delle coordinate geografiche specificate tramite i parametri \textbf{lat} e \textbf{lon}, che rappresentano rispettivamente la latitudine e la longitudine del luogo. Ad esempio, la query associata a \url{http://nominatim.openstreetmap.org/reverse/?lat=40.774283&lon=14.790868&format=json} permette di ottenere le informazioni associate alle coordinate (40.774283, 14.790868) in formato JSON. (Si veda la figura 4.4)
         \end{itemize}
 
         \begin{figure}[htp]
@@ -293,8 +301,8 @@
             Nominatim di per sé risulta essere solamente un servizio che permette di effettuare geocoding a partire da un dataset ma non ne fornisce nessuno out of the box. È stato quindi necessraio ottenere questi dati da entità terze. Un progetto che mette a disposizione pubblicamente questo tipo dei dati è chiamato Geofabrik, che ospita sui suoi server pacchetti organizzati per Stato o per Continente. Il formato di questi pacchetti risulta essere $.osm.pbf$, che è possibile importare all'interno di Nominatim attraverso un applicativo chiamato \textbf{osm2pgsql}. Quest'applicativo permette di importare dati organizzati secondo lo standard di OpenStreetMap all'interno di un database PostgreSQL/PostGIS. \\
             
         \newpage
-        \section{ShallWeGo: Il client}
-            Dopo aver analizzato in dettaglio la Java Application che contiene la logica applicativa di ShallWeGo ed aver descritto il funzionamento del Server di Geocoding si passa ora all'analisi del client della piattaforma.
+        \section{\textsc{ShallWeGo}: Il client}
+            Dopo aver analizzato in dettaglio la Java Application che contiene la logica applicativa di \textsc{ShallWeGo} ed aver descritto il funzionamento del Server di Geocoding si passa ora all'analisi del client della piattaforma.
             Il client messo a disposizione dalla piattaforma consiste in un'applicazione Android sviluppata usando il linguaggio Java.
 
         \subsection{Breve introduzione allo sviluppo Android}
@@ -309,7 +317,7 @@
         \subsection{Activity presenti nell'applicazione}
             Come accennato in precedenza, le app Android sono costituite perlopiù da Activity, che permettono l'interazione con l'utente.
 
-            In ShallWeGo ne sono presenti 18. Ognuna di queste rappresenta una feature specifica della piattaforma.
+            In \textsc{ShallWeGo} ne sono presenti 18. Ognuna di queste rappresenta una feature specifica della piattaforma.
 
             Nello specifico:
 
@@ -337,10 +345,10 @@
             \subsection{Librerie di terze parti utilizzate nell'applicazione}
                 Dal 2013, i progetti Android utilizzano il toolkit \textbf{Gradle}. Gradle consiste in una serie di utility eseguite sulla JVM che permettono la semplificazione e l'automazione del processo di \textit{build} delle applicazioni. Uno dei compiti principali di un build manager come Gradle consiste nella gestione delle dipendenze e dei moduli di terze parti che possono essere inclusi in un'applicazione. In un progetto Android, solitamente, le dipendenze vanno specificate nel file \textit{build.gradle} dell'applicazione.
 
-                Durante lo sviluppo di ShallWeGo, per fornire tutte le funzionalità indicate in precedenza, si è fatto uso di diverse librerie di terze parti, il cui funzionamento ed impiego nella piattaforma verrà descritto di seguito.
+                Durante lo sviluppo di \textsc{ShallWeGo}, per fornire tutte le funzionalità indicate in precedenza, si è fatto uso di diverse librerie di terze parti, il cui funzionamento ed impiego nella piattaforma verrà descritto di seguito.
 
                 \subsubsection{OsmDroid: un'alternativa \textit{free} a Google Maps}
-                    Come accennato nell'introduzione, l'applicazione fa largo uso di mappe e dati geografici in generale. Si è parlato di come applicativi e librerie libere ed open-source potessero andare a risolvere il problema della dipendenza da servizi come le API di Google Maps, che prevedono un costo superata una certa soglia di utilizzo periodica. Anche l'integrazione di una mappa all'interno di un'Activity (che accade molto spesso nel contesto di ShallWeGo), se si opta per il servizio messo a disposizione da Google Maps, richiede il possesso di un'\textbf{API key} che permette di identificare univocamente la fonte delle richieste e tenere sotto controllo le soglie di utilizzo, eventualmente procedendo ad addebiti nel caso di sforamento. Per far fronte a questa problematica (che si fa più urgente man mano che l'utilizzo della piattaforma aumenta) è stata impiegata la libreria \textbf{OsmDroid}, che si propone come un'alternativa completa e gratuita alle API di Google Maps per l'integrazione di mappe all'interno di applicazioni Android. I dati della mappa fornita da questa libreria provengono dal progetto OpenStreetMap, di cui si è discusso precedentemente. Il codice sorgente e la documentazione della libreria sono disponibili interamente su GitHub all'indirizzo \url{https://github.com/osmdroid/osmdroid}.
+                    Come accennato nell'introduzione, l'applicazione fa largo uso di mappe e dati geografici in generale. Si è parlato di come applicativi e librerie libere ed open-source potessero andare a risolvere il problema della dipendenza da servizi come le API di Google Maps, che prevedono un costo superata una certa soglia di utilizzo periodica. Anche l'integrazione di una mappa all'interno di un'Activity (che accade molto spesso nel contesto di \textsc{ShallWeGo}), se si opta per il servizio messo a disposizione da Google Maps, richiede il possesso di un'\textbf{API key} che permette di identificare univocamente la fonte delle richieste e tenere sotto controllo le soglie di utilizzo, eventualmente procedendo ad addebiti nel caso di sforamento. Per far fronte a questa problematica (che si fa più urgente man mano che l'utilizzo della piattaforma aumenta) è stata impiegata la libreria \textbf{OsmDroid}, che si propone come un'alternativa completa e gratuita alle API di Google Maps per l'integrazione di mappe all'interno di applicazioni Android. I dati della mappa fornita da questa libreria provengono dal progetto OpenStreetMap, di cui si è discusso precedentemente. Il codice sorgente e la documentazione della libreria sono disponibili interamente su GitHub all'indirizzo \url{https://github.com/osmdroid/osmdroid}.
 
                 \subsubsection{AppIntro}
                     \textbf{AppIntro} è una libreria creata dallo sviluppatore \textbf{Paolo Rotolo} la cui documentazione è disponibile su GitHub all'indirizzo \url{https://github.com/AppIntro/AppIntro}. Fornisce il supporto alla creazione, sotto forma di \textit{slides} di un'introduzione all'applicazione. Questo modulo semplifica notevolmente il processo di richiesta dei permessi, diventato più complesso dall'introduzione di Android 5.0.
@@ -348,16 +356,16 @@
 
                 \subsubsection{Volley}
                     \textbf{Volley} è una libreria sviluppata da \textbf{Google} per fornire delle API da usare per svolgere task che richiedono l'interazione con la rete. L'impiego di questa libreria è stato preferito poiché la mole delle richieste da effettuare non è tale da giustificare l'utilizzo di altre librerie che Google stessa consiglia per trasferimenti di grandi moli di informazioni attraverso la rete come il \textbf{Download Manager} accessibile dalle API di Android. Il funzionamento di Volley si basa sulla presenza di una \textit{coda} di richieste (realizzata tramite la classe \mintinline{java}{RequestQueue}) alla quale possono essere aggiunte delle richieste e all'evenienza regolarne la priorità in caso di richieste multiple.
-                    Dopo aver aggiunto una richiesta alla coda, Volley provvederà a spedirla in maniera \textbf{asincrona} e ad eseguire il metodo di callback \mintinline{java}{onResponse()} dal quale è possibile provvedere all'aggiornamento della UI. In ShallWeGo, la libreia è stata utilizzata in quasi tutte le Activity per realizzare l'interazione con la Java Application tramite file JSON dai quali sono estratte le informazioni necessarie per aggiornare l'interfaccia in modo corretto.
+                    Dopo aver aggiunto una richiesta alla coda, Volley provvederà a spedirla in maniera \textbf{asincrona} e ad eseguire il metodo di callback \mintinline{java}{onResponse()} dal quale è possibile provvedere all'aggiornamento della UI. In \textsc{ShallWeGo}, la libreia è stata utilizzata in sostanzialmente tutte le Activity per realizzare l'interazione con la Java Application tramite file JSON dai quali sono estratte le informazioni necessarie per aggiornare l'interfaccia in modo corretto.
                 
                 \subsubsection{Gson}
                     \textbf{Gson} è una libreria anch'essa sviluppata da \textbf{Google} che permette la serializzazione e la deserializzazione di informazioni da ed in stringhe JSON. La libreria mette a disposizione le classi \mintinline{java}{JsonObject} e \mintinline{java}{JsonArray} che modellano rispettivamente un oggetto ed un array di oggetti JSON e che permettono di accedere (tramite il metodo \mintinline{java}{get()}) in maniera strutturata ai vari campi della stringa di cui viene effettuato il parsing. Allo stesso modo, le classi \mintinline{java}{JsonObject} e \mintinline{java}{JsonArray} permettono di organizzare dei dati che possano essere convertiti correttamente in una stringa JSON. Insieme a Volley, questa è una delle librerie fondamentali che permettono il corretto funzionamento della comunicazione con le API esposte dalla Java Application. Dunque, questa libreria è stata usata ogni qual volta è risultato necessario comunicare col server.
 
                 \subsubsection{Material Components}
-                    \textbf{Material Components} è una libreria sviluppata da Google che fornisce l'implementazione (sia dal punto di vista di classi Java sia dal punto di vista di elementi XML pronti da inserire nei file di layout) di una serie di componenti grafiche tipiche del \textbf{Material Design}. Il Material Design è un sistema di design introdotto da Google stessa nel 2014 con la versione 5.0 di Android ed in continua evoluzione anche oggi. Il layout delle Activity di ShallWeGo è realizzato usando quasi esclusivamente queste componenti.
+                    \textbf{Material Components} è una libreria sviluppata da Google che fornisce l'implementazione (sia dal punto di vista di classi Java sia dal punto di vista di elementi XML pronti da inserire nei file di layout) di una serie di componenti grafiche tipiche del \textbf{Material Design}. Il Material Design è un sistema di design introdotto da Google stessa nel 2014 con la versione 5.0 di Android ed in continua evoluzione anche oggi. Il layout delle Activity di \textsc{ShallWeGo} è realizzato usando quasi esclusivamente queste componenti.
                 
                 \subsubsection{SpeedDial}
-                    \textbf{SpeedDial} è una libreria creata dallo sviluppatore \textbf{Roberto Leinardi} la cui documentazione è disponibile all'indirizzo \url{https://github.com/leinardi/FloatingActionButtonSpeedDial}. Fornisce un'implementazione concreta di un \textbf{Floating Action Button} (o \textbf{FAB}) seguendo le specifiche descritte alla pagina \url{https://material.io/components/buttons-floating-action-button#types-of-transitions}. Un Floating Action Button è solitamente un pulsante posizionato in vari punti del layout di un'Activity che permette di "richiamare" l'attenzione dell'utente, indicandogli il punto in cui è possibile compiere le azioni principali che quella determinata Activity mette a disposizione, che verranno mostrate alla pressione del FAB (\textit{Speed Dial}). La libreria sopracitata permette proprio questo comportamento. In ShallWeGo, questa libreria è utilizzata in accoppiata col FAB presente nella MainActivity che, una volta premuto, offre l'opportunità di eseguire i seguenti task:
+                    \textbf{SpeedDial} è una libreria creata dallo sviluppatore \textbf{Roberto Leinardi} la cui documentazione è disponibile all'indirizzo \url{https://github.com/leinardi/FloatingActionButtonSpeedDial}. Fornisce un'implementazione concreta di un \textbf{Floating Action Button} (o \textbf{FAB}) seguendo le specifiche descritte alla pagina \url{https://material.io/components/buttons-floating-action-button#types-of-transitions}. Un Floating Action Button è solitamente un pulsante posizionato in vari punti del layout di un'Activity che permette di "richiamare" l'attenzione dell'utente, indicandogli il punto in cui è possibile compiere le azioni principali che quella determinata Activity mette a disposizione, che verranno mostrate alla pressione del FAB (\textit{Speed Dial}). La libreria sopracitata permette proprio questo comportamento. In \textsc{ShallWeGo}, questa libreria è utilizzata in accoppiata con il FAB presente nella MainActivity che, una volta premuto, offre all'utente l'opportunità di eseguire i seguenti task:
 
                     \begin{itemize}
                         \item Riposizionare la mappa in corrispondenza della posizione attuale dell'utente;
@@ -386,7 +394,7 @@
                     \newpage
 
         \subsection{Il tracciamento in diretta delle corse: overview sui servizi di Android}
-            Una delle funzionalità di ShallWeGo permette all'utente collegato alla piattaforma di mettere a disposizione degli altri utenti la propria posizione all'interno di una corsa espletata da una linea di trasporto pubblico.
+            Una delle funzionalità principale di \textsc{ShallWeGo} permette all'utente che fa uso della piattaforma di mettere a disposizione degli altri utenti la propria posizione all'interno di una corsa espletata da una linea di trasporto pubblico.
             Realizzare una funzionalità del genere implica dover recuperare ad intervalli regolari la posizione esatta del dispositivo che l'utente sta utilizzando ed inviare una richiesta alla Java Application che si occuperà di aggiornare i dati in suo possesso.
             
             \subsubsection{Services}
@@ -404,7 +412,7 @@
                 Un \textbf{Background Service} è un servizio che permette di svolgere task, come suggerisce la denominazione, in background (ovvero anche quando l'Activity che l'ha fatto partire non è visibile a schermo). L'utente solitamente non è tenuto a sapere se e quando questo tipo di servizi sia in esecuzione. Quest'ultimo aspetto potrebbe portare a problemi di privacy o sicurezza in caso di impiego da parte di applicazioni malevole o anche di prestazioni nel caso in cui il task da svolgere sia pesante in termini di utilizzo di risorse. Per questa ragione, dalla versione 26 delle API (ovvero a partire dalla versione 8.0 di Android), sono state introdotte delle limitazioni ai servizi in background. \\
                 Se un'applicazione non è più visibile a schermo (nella maggior parte die casi, quando l'utente torna alla \textit{home} sul proprio device), essa è considerata essere in background. Quando un'applicazione è in background, a partire da Android 8.0 il sistema le concede un intervallo di tempo prestabilito, scaduto il quale il sistema \textbf{termina tutti servizi in background dell'applicazione}. Data la natura della feature che deve essere realizzata, questo comportamento risulta non accettabile (e dunque non è stato possibile implementarla tramite un background service).
                 
-                Un \textbf{Foreground Service}, invece è "un servizio che permette di svolgere task di cui l'utente dovrebbe essere informato" (\cite{AndroidDocForeground}). Per funzionare, un Foreground Service deve obbligatoriamente mostrare una notifica all'utente nella barra di stato, appunto per permettere all'utente di rendersi conto della presenza di quel task in esecuzione. Applicazioni che fanno uso di Foreground Service sono per esempio i player musicali, che mostrano come notifica la canzone attualmente in riproduzione. Contrariamente a quanto ci si aspetterebbe dalla denominazione, i Foreground Service \textbf{possono essere in esecuzione anche in background}, a patto che siano stati avviati dall'utente o da un'Activity in esecuzione in quel momento. Il vantaggio principale di utilizzare un Foreground Service sta nel fatto che, mentre quest'ultimo risulta in esecuzione, l'applicazione che lo ospita non viene considerata in background ed il Sistema non la termina per recuperare risorse. Inoltre, da Android 10 (API 29) in su è stata rimossa la possibilità di concedere il permesso alla geolocalizzazione anche in background, demandando all'utente il compito di concederlo direttamente dalle impostazioni di sistema. Alla luce di quanto si è detto, l'utilizzo di un foreground service è un buon modo per evitare la gestione di questa limitazione. In ShallWeGo, infatti, si è deciso di utilizzare quest'approccio per la gestione degli aggiornamenti sulla posizione.
+                Un \textbf{Foreground Service}, invece è "un servizio che permette di svolgere task di cui l'utente dovrebbe essere informato" (\cite{AndroidDocForeground}). Per funzionare, un Foreground Service deve obbligatoriamente mostrare una notifica all'utente nella barra di stato, appunto per permettere all'utente di rendersi conto della presenza di quel task in esecuzione. Applicazioni che fanno uso di Foreground Service sono per esempio i player musicali, che mostrano come notifica la canzone attualmente in riproduzione. Contrariamente a quanto ci si aspetterebbe dalla denominazione, i Foreground Service \textbf{possono essere in esecuzione anche in background}, a patto che siano stati avviati dall'utente o da un'Activity in esecuzione in quel momento. Il vantaggio principale di utilizzare un Foreground Service sta nel fatto che, mentre quest'ultimo risulta in esecuzione, l'applicazione che lo ospita non viene considerata in background ed il Sistema non la termina per recuperare risorse. Inoltre, da Android 10 (API 29) in su è stata rimossa la possibilità di concedere il permesso alla geolocalizzazione anche in background, demandando all'utente il compito di concederlo direttamente dalle impostazioni di sistema. Alla luce di quanto si è detto, l'utilizzo di un foreground service è un buon modo per evitare la gestione di questa limitazione. In \textsc{ShallWeGo}, infatti, si è deciso di utilizzare quest'approccio per la gestione degli aggiornamenti sulla posizione.
 
                 Al di là della tipologia di servizio, ognuno di questi deve essere dichiarato all'interno del \textit{Manifest} dell'Applicazione, che può essere visto come un descrittore di ciò che l'app contiene. Nel Manifest vanno specificate tutte le activity e tutti i servizi presenti.
 
@@ -458,7 +466,7 @@
                             \end{itemize}
 
                             Quando una delle due condizioni si verifica, al servizio è passato un \textbf{Intent} che contiene l'azione \texttt{$STOP\_SERVICE$}. In questo caso, il client provvede a contattare l'API \mintinline{java}{terminateRide}, che consente al server di cancellare la corsa dall'elenco di quelle in esecuzione.\\
-                    Di seguito è presente un diagramma che sintetizza il processo di comunicazione tra client e sewrver nell'ambito degli aggiornamenti sulla posizione delle corse.
+                    Di seguito è presente un diagramma che sintetizza il processo di comunicazione tra client e server nell'ambito degli aggiornamenti sulla posizione delle corse.
 
                     \begin{figure}[H]
                         \includegraphics[width=\columnwidth]{capitolo4/figure/clientServerInteraction.png}

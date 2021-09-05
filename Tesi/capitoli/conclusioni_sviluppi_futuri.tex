@@ -19,7 +19,7 @@
 	\end{itemize}
 
 	\section{Sviluppi Futuri}
-		Allo stato attuale, ShallWeGo non è pronta per essere inserita in un ambiente di \textit{produzione}, lo scopo di questo lavoro di Tesi era principalmente quello di fornire una soluzione ad un problema concreto e fornire una prima milestone funzionante. Al momento, sono stati individuati diversi possibili sviluppi che potrebbero portare la piattaforma ad uscire dallo stato di demo ed essere rilasciata al pubblico. Nello specifico: 
+		Allo stato attuale, \textsc{ShallWeGo} non è pronta per essere inserita in un ambiente di \textit{produzione}, lo scopo di questo lavoro di Tesi era principalmente quello di fornire una soluzione ad un problema concreto e fornire una prima milestone funzionante. Al momento, sono stati individuati diversi possibili sviluppi che potrebbero portare la piattaforma ad uscire dallo stato di demo ed essere rilasciata al pubblico. Nello specifico: 
 
 		\begin{itemize}
 			\item Dare la possibilità ad un utente di apportare modifiche ad una segnalazione perché non aggiornata o con informazioni incomplete (come ad esempio la presenza di quadri orari affissi presso una fermata successivamente alla data di segnalazione della stessa)
@@ -27,12 +27,12 @@
 			\item Specificare gli eventuali percorsi secondari di una linea. 
 		\end{itemize}
 
-		Anche dal punto di vista delle tecnologie utilizzate è possibile apportare delle migliorie 
+		Anche dal punto di vista delle tecnologie utilizzate è possibile apportare delle migliorie, come illustrato di seguito. 
 
 		\subsection{\textit{Hosting} della piattaforma}
 			Per tutto lo sviluppo della piattaforma, il Server è stato ospitato sulla stessa macchina con la quale è stato implementato. Questo implica che, al netto di un'esposizione della macchina stessa sulla rete globale, le API sono accessibili solamente in rete locale ma non dall'esterno. In futuro, sarebbe auspicabile utilizzare un servizio di \textbf{PaaS} (\textit{Platform as a Service}) come \textbf{Amazon AWS} per ottenere un'\textit{availability} tale da permettere il normale funzionamento della piattaforma in ogni momento. Un servizio di hosting come AWS, inoltre, permetterebbe anche di unificare l'infrastruttura della piattaforma: al momento, infatti, il server Nominatim e la Java Application che implementa la logica lato server dell'applicazione risiedono su due macchine separate per ragioni logistiche. Avere le due componenti su una singola macchina consentirebbe una migliore organizzazione dell'infrastruttura.
 
 		\subsection{Notificare gli utenti: Firebase}
-			\textbf{Firebase} è una piattaforma di supporto allo sviluppo di applicazioni acquisita da Google nel 2014. Permette di semplificare diversi task quali la gestione di database, dell'autenticazione degli utenti e delle notifiche.
+			\textbf{Firebase} è una piattaforma di supporto allo sviluppo di applicazioni creata originariamente creata da un'azienda indipendente e successivamente acquisita da Google nel 2014. Permette di semplificare diversi task quali la gestione di database, dell'autenticazione degli utenti e delle notifiche. Quest'ultimo aspetto risulta di interesse per un successivo sviluppo della piattaforma: potrebbe risultare utile per l'utente ricevere delle notifiche \textit{push} ogniqualvolta siano segnalati degli eventi temporanei nella sua zona oppure se in un determinato momento quest'ultimo sia stato assegnato ad una segnalazione di una fermata, di una linea o di un'azienda di trasporto, così da velocizzare notevolmente il processo di integrazione della segnalazione stessa all'interno di \textsc{ShallWeGo}. 
 
 		
