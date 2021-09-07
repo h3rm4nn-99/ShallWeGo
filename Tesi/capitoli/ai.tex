@@ -12,8 +12,8 @@
     Come descritto in precedenza, la fonte dei dati disponibili in \textsc{ShallWeGo} risiede nella sua community di utenti, che mettono a disposizione la loro conoscenza del \textit{topic} con gli altri. Il concetto base su cui si basa la piattaforma è quindi la \textbf{segnalazione} da parte del singolo. Di questi dati, non essendo forniti direttamente dalle aziende di trasporto, non è però garantita la precisione o addirittura la correttezza. Sorge quindi il bisogno di effettuare una qualche tipo di \textbf{validazione}. \\
     Gli utenti più adatti a validare i dati di una certa segnalazione sono quelle che possiedono principalmente i seguenti requisiti:
     \begin{itemize}
-        \item Risiedano (oppure operino abitualmente) in una zona vicina al luogo oggetto della segnalazione.
-        \item Abbiano una certa "reputazione" all'interno della piattaforma. (\textsc{ShallWeGo} infatti tiene traccia del livello di attività in termini di segnalazioni e di verifica delle stesse. Questo livello, similmente a quanto avviene sul social network \textbf{Reddit}, viene chiamato "\textit{karma}" e cresce all'aumentare dell'attività del singolo)
+        \item Risiedano (oppure operino abitualmente) in una zona vicina al luogo oggetto della segnalazione;
+        \item Abbiano una certa "reputazione" all'interno della piattaforma. (\textsc{ShallWeGo} infatti tiene traccia del livello di attività in termini di segnalazioni e di verifica delle stesse. Questo livello, similmente a quanto avviene sul social network \textbf{Reddit}, viene chiamato "\textit{karma}" e cresce all'aumentare dell'attività del singolo).
     \end{itemize}
 
     I "verificatori" sono assegnati all'atto dell'invio di una segnalazione da parte dell'utente. 
@@ -27,9 +27,9 @@
     In generale, il funzionamento degli algoritmi genetici (e da qui la denominazione del paradigma) ricalca a grandi linee quella dell'evoluzione delle specie descritte da Charles Darwin nel 1854 nella sua opera \textit{"L'origine della specie"} per cui l'evoluzione delle specie presenti in natura segue un cammino ben preciso, che consiste in tre fasi ben precise, a partire da una popolazione iniziale di individui:
 
     \begin{itemize}
-        \item Selezione naturale
-        \item Accoppiamento tra individui (detto anche, nel contesto che si sta trattando, \textit{crossover})
-        \item Mutazione di un gene di un individuo
+        \item Selezione naturale;
+        \item Accoppiamento tra individui (detto anche, nel contesto che si sta trattando, \textit{crossover});
+        \item Mutazione di un gene di un individuo.
     \end{itemize}
 
     Un individuo, secondo quanto descritto da Darwin, può essere visto come un insieme di caratteristiche (o \textit{geni}) che ne definiscono l'identità. Mediante l'accoppiamento, i geni di due individui si mescolano e vanno a creare un altro individuo che possiederà quindi una combinazione di quelli dei suoi genitori. \\
@@ -45,13 +45,15 @@
     Si passa poi all'ultimo stadio dell'evoluzione, in cui avviene (con una certa probabilità) la \textbf{mutazione} di uno o più geni che compongono un individuo all'interno della popolazione. \\
     A questo punto l'algoritmo si trova davanti ad una scelta: 
     \begin{itemize}
-        \item Ricominciare dall'operazione di selezione usando come popolazione quella risultante dall'operazione di mutazione
-        \item Terminare il processo
+        \item Ricominciare dall'operazione di selezione usando come popolazione quella risultante dall'operazione di mutazione;
+        \item Terminare il processo.
     \end{itemize}
 
     Per prendere una decisione, l'algoritmo fa riferimento alla cosiddetta \textbf{condizione di terminazione}, che rappresenta le condizioni che si devono verificare per mettere fine al processo (come ad esempio il numero di iterazioni effettuate, il tempo di esecuzione o il peggioramento in termini di fitness media della popolazione dopo un numero $n$ fissato di iterazioni). Se la condizione di terminazione viene soddisfatta, allora il processo giunge al termine e solitamente viene restituito l'individuo migliore in termini di fitness dell'ultima popolazione, al netto di accorgimenti particolari e di operazioni di post-processing.
 
     Le operazioni di selezione, crossover e mutazione vengono implementate tramite procedure chiamate \textbf{operatori genetici}, la cui definizione rappresenta uno degli step più importanti dell'implementazione di un algoritmo di ricerca che sfrutta questa metaeuristica, assieme a stabilire come debba essere calcolata la fitness e come e quando debba terminare il processo. 
+
+    \newpage
 
 \section{L'algoritmo utilizzato da \textsc{ShallWeGo}}
     In questa sezione verrà descritto accuratamente l'algoritmo di ricerca utilizzato dalla piattaforma che segue il paradigma degli algoritmi genetici e che va a risolvere il problema di ottimizzazione consistente nel selezionare i migliori potenziali verificatori di una determinata segnalazione.
@@ -63,8 +65,8 @@
     All'inizio di questo capitolo, è stato delineato l'\textit{identikit} del verificatore ideale per una certa segnalazione. Le metriche utilizzate, riassumendo, sono:
 
     \begin{itemize}
-        \item La distanza in chilometri tra il luogo di una segnalazione e l'area in cui opera un utente.
-        \item La "reputazione" (o karma) che un utente si è costruito durante la sua permanenza sulla piattaforma
+        \item La distanza in chilometri tra il luogo di una segnalazione e l'area in cui opera un utente;
+        \item La "reputazione" (o karma) che un utente si è costruito durante la sua permanenza sulla piattaforma.
     \end{itemize}
 
     Dal punto di vista matematico, la funzione di fitness può essere formalizzata in questo modo, se $x$ rappresenta il valore (chiaramente $>=$ 0) in chilometri della distanza ed $y$ il valore di karma dell'utente:
@@ -76,6 +78,7 @@
   \end{cases}
 \]
 
+\newpage
 La struttura dell'equazione conferma quanto accennato poc'anzi sul dare la priorità alla distanza geografica piuttosto che (almeno in un primo momento della vita della piattaforma, con una distribuzione più uniforme degli utenti) al karma. Infatti, un utente che opera in un'area che dista meno di \textbf{15km} dal luogo della segnalazione ha intuitivamente più probabilità di essere a conoscenza della struttura della rete di trasporti in quella zona (e quindi risulta più adatto al ruolo di verificatore). \\
 Ed infatti, visto l'andamento della funzione $f(x) = \frac{100}{x}, x \neq 0$ (il cui andamento è mostrato nella figura successiva e che a valori piccoli di $x$ associa valori grandi di $f(x)$) e vista la presenza della costante additiva (250), un utente che opera in quel range di distanza dalla segnalazione risulta molto forte agli occhi dell'algoritmo.
 \begin{figure}[h!]
@@ -87,7 +90,7 @@ Ed infatti, visto l'andamento della funzione $f(x) = \frac{100}{x}, x \neq 0$ (i
 \end{figure}
 
 La fitness di un determinato individuo, al contrario di quanto accade in altri tipi di algoritmi genetici, viene calcolata effettuando la \textbf{media aritmetica} della fitness di ogni gene all'interno dell'individuo. 
-
+\newpage
 \section{Operatori genetici}
   Verranno ora illustrate le scelte che sono state prese riguardo l'implementazione dei vari operatori genetici che prendono parte al processo di evoluzione tipico degli algoritmi genetici. Tutte le metodologie introdotte in questa sezione sono state illustrate nella sesta lezione del corso di \textit{Fondamenti di Intelligenza Artificiale} tenuta dal Prof. \textbf{Fabio Palomba} e dal Dott. \textbf{Emanuele Iannone} nell'anno 2020.
 
@@ -96,8 +99,8 @@ La fitness di un determinato individuo, al contrario di quanto accade in altri t
         Tra questi vanno menzionati in particolare:
 
         \begin{itemize}
-            \item L'approccio basato su \textbf{roulette wheel}, in cui gli individui con la fitness più alta hanno più possibilità di sopravvivere, proprio come succede ad un elemento posto su una roulette che ha una porzione di area maggiore rispetto agli altri. In questo caso, la "porzione" di roulette dedicata ad ogni individuo sarà direttamente proporzionale al valore della sua fitness (normalizzata in $[0, 1]$).
-            \item L'approccio basato su \textbf{rank}, nel quale ogni individuo della popolazione è ordinato in modo decrescente rispetto alla sua fitness e ad ogni posizione in questa lista viene associato un numero, il cosiddetto \textit{rango}: la probabilità di selezione del singolo risulta inversamente proporzionale al suo rango.
+            \item L'approccio basato su \textbf{roulette wheel}, in cui gli individui con la fitness più alta hanno più possibilità di sopravvivere, proprio come succede ad un elemento posto su una roulette che ha una porzione di area maggiore rispetto agli altri. In questo caso, la "porzione" di roulette dedicata ad ogni individuo sarà direttamente proporzionale al valore della sua fitness (normalizzata in $[0, 1]$);
+            \item L'approccio basato su \textbf{rank}, nel quale ogni individuo della popolazione è ordinato in modo decrescente rispetto alla sua fitness e ad ogni posizione in questa lista viene associato un numero, il cosiddetto \textit{rango}: la probabilità di selezione del singolo risulta inversamente proporzionale al suo rango;
             \item L'approccio basato su \textbf{truncation}, in qualche modo simile al precedente (ne mutua l'ordinamento degli individui) che consiste nel fissare un numero $n$ < $|P|$ (se P rappresenta la popolazione) e di selezionare i primi $n$ individui nella popolazione che hanno la fitness più alta.
         \end{itemize}
 
@@ -114,22 +117,23 @@ La fitness di un determinato individuo, al contrario di quanto accade in altri t
                     \item $j = x_{0}, x_{1}, ..., x_{z}, y_{z+1}, ..., y_{m}$ e
                     \item $k = y_{0}, y_{1}, ..., y_{z}, x_{z+1}, ..., x_{n}$
                 \end{itemize}
-            \item La tecnica \textbf{\textit{k}-points}, che rappresenta una generalizzazione della tecnica Single Point, in cui un individuo viene diviso in \textit{$k$} porzioni prima di essere incrociato con un altro individuo.
+            \item La tecnica \textbf{\textit{k}-points}, che rappresenta una generalizzazione della tecnica Single Point, in cui un individuo viene diviso in \textit{$k$} porzioni prima di essere incrociato con un altro individuo;
         \end{itemize}
         La tecnica usata da \textsc{ShallWeGo} è quella del \textbf{Single Point}. C'è da precisare che nel caso del problema che si sta affrontando la posizione di un gene all'interno di un individuo risulta irrilevante e di conseguenza un approccio k-points non avrebbe portato a nessun tipo di miglioramento.
     \subsection{L'operatore genetico di Mutazione}
         L'ultimo operatore genetico che viene applicato durante un'iterazione è quello di \textbf{Mutazione} che ricalca, come accennato precedentemente, il processo di mutazione spontanea che avviene in natura. Una mutazione consiste nel cambiamento casuale di un gene all'interno di un individuo. Anche in questo caso, esistono diversi approcci che in generale possono essere seguiti. \\
         Tra questi si menzionano:
         \begin{itemize}
-            \item La tecnica del \textbf{Bit Flip} che, come suggerisce il nome, è applicabile solo nel caso di individui codificati in modo \textit{binario} e consiste nel scegliere in maniera casuale un gene all'interno dell'individuo e "capovolgere" il suo valore (quindi da 0 si passa ad 1 e viceversa).
-            \item La tecnica del \textbf{Random Resetting} che prevede il cambiamento di un gene preso casualmente all'interno dell'individuo con un altro valore ammissibile per quel gene preso altrettanto casualmente.
-            \item La tecnica dello \textbf{Swap} che prevede lo scambio di due geni all'interno dell'individuo.
+            \item La tecnica del \textbf{Bit Flip} che, come suggerisce il nome, è applicabile solo nel caso di individui codificati in modo \textit{binario} e consiste nel scegliere in maniera casuale un gene all'interno dell'individuo e "capovolgere" il suo valore (quindi da 0 si passa ad 1 e viceversa);
+            \item La tecnica del \textbf{Random Resetting} che prevede il cambiamento di un gene preso casualmente all'interno dell'individuo con un altro valore ammissibile per quel gene preso altrettanto casualmente;
+            \item La tecnica dello \textbf{Swap} che prevede lo scambio di due geni all'interno dell'individuo;
             \item La tecnica dello \textbf{Scramble} che prevede una permutazione dei geni all'interno di un individuo.
         \end{itemize}
 
         La maggior parte di questi approcci risultano piuttosto rilevanti in un contesto in cui la posizione di un gene cambia la sua rilevanza del suo valore in un individuo, come nel caso di codifiche binarie (il bit più a sinistra, se posto ad 1, aumenta il valore decimale della stringa binaria che codifica l'individuo). \\
         Data la particolare natura del problema che si sta affrontando, non è possibile andare ad utilizzare la tecnica del Bit Flip e, nello stesso modo, le tecniche di Swap e Scramble non sono rilevanti in quanto la codifica dell'individuo non risente della posizione di un gene in particolare. \\
         Di conseguenza, la strategia che viene usata per questo algoritmo è quella del \textbf{Random Resetting}. In particolare, scelto un utente che è presente all'interno di un individuo, lo si sostituisce con un nuovo utente preso dal pool dei potenziali verificatori. Nel caso il nuovo utente che ha sostituito il precedente fosse già presente all'interno dell'individuo, il processo si ripete fino a non avere utenti duplicato.
+        \newpage
 \section{Termine del processo ed accorgimenti adottati}
 
     \subsection{Condizione di terminazione}
@@ -165,7 +169,7 @@ La fitness di un determinato individuo, al contrario di quanto accade in altri t
 
         \begin{itemize}
             \item Nella \textbf{prima colonna} è riportato il Comune della segnalazione;
-            \item Nella \textbf{seconda colonna} sono riportati Comune di residenza e livello di karma degli utenti selezionati dall'algoritmo per verificare quella determinata segnalazione, dopo l'applicazione del post-processing;
+            \item Nella \textbf{seconda colonna} sono riportati Comune di residenza e livello di karma degli utenti selezionati dall'algoritmo per verificare quella determinata segnalazione, dopo l'applicazione del post-processing.
         \end{itemize}
 
         \begin{center}
@@ -182,8 +186,6 @@ La fitness di un determinato individuo, al contrario di quanto accade in altri t
                 \end{table}
         \end{center}
 
-        \newpage
-    
         Si noti come nel caso dell'istanza dell'algoritmo per la città di Nocera Inferiore sia presente un utente che opera proprio in quel comune: egli rappresenta quindi parte della soluzione ottima. Nel caso della città di Salerno, invece, è stato incluso un utente la cui distanza dal luogo della segnalazione si aggira attorno ai 47km in linea d'aria (Laviano). Quest'utente è stato incluso nella soluzione in virtù del proprio valore di \textit{karma} che risulta discretamente alto. 
         
 
