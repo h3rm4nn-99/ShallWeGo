@@ -9,7 +9,7 @@
 \newpage
 
 \section{Descrizione del problema da affrontare}
-    Come descritto in precedenza, la fonte dei dati disponibili in \textsc{ShallWeGo} risiede nella sua community di utenti, che mettono a disposizione la loro conoscenza del \textit{topic} con gli altri. Il concetto base su cui si basa la piattaforma è quindi la \textbf{segnalazione} da parte del singolo. Di questi dati, non essendo forniti direttamente dalle aziende di trasporto, non è però garantita la precisione o addirittura la correttezza. Sorge quindi il bisogno di effettuare una qualche tipo di \textbf{validazione}. \\
+    Come descritto in precedenza, la fonte dei dati disponibili in \textsc{ShallWeGo} risiede nella sua community di utenti, che mettono a disposizione degli altri la loro conoscenza del \textit{topic}. Il concetto base su cui si basa la piattaforma è quindi la \textbf{segnalazione} da parte del singolo. Di questi dati, non essendo forniti direttamente dalle aziende di trasporto, non è però garantita la precisione o addirittura la correttezza. Sorge quindi il bisogno di effettuare una qualche tipo di \textbf{validazione}. \\
     Gli utenti più adatti a validare i dati di una certa segnalazione sono quelli che possiedono principalmente i seguenti requisiti:
     \begin{itemize}
         \item Risiedano (oppure operino abitualmente) in una zona vicina al luogo oggetto della segnalazione;
@@ -24,7 +24,7 @@
     In particolare, ad un algoritmo che sfrutta questa metaeuristica viene presentato un insieme iniziale di soluzioni ammissibili al problema che si sta affrontando e, secondo determinate metriche che forniscono una stima di quanto \textit{"buona"} sia una certa soluzione a quel determinato problema, stabilire la migliore (o le migliori), andando a crearne di nuove se necessario.
 
 \section{Struttura e funzionamento generale degli algoritmi genetici}
-    In generale, il funzionamento degli algoritmi genetici (e da qui la denominazione del paradigma) ricalca a grandi linee quella dell'evoluzione delle specie descritte da Charles Darwin nel 1854 nella sua opera \textit{"L'Origine della Specie"} per cui l'evoluzione delle specie presenti in natura segue un cammino che consiste in tre fasi ben precise, a partire da una popolazione iniziale di individui:
+    In generale, il funzionamento degli algoritmi genetici (e da qui la denominazione del paradigma) ricalca a grandi linee quella dell'evoluzione delle specie descritte da Charles Darwin nel 1859 nella sua opera \textit{"L'Origine della Specie"} per cui l'evoluzione delle specie presenti in natura segue un cammino che consiste in tre fasi ben precise, a partire da una popolazione iniziale di individui:
 
     \begin{itemize}
         \item Selezione naturale;
@@ -95,7 +95,7 @@ La fitness di un determinato individuo, al contrario di quanto accade in altri t
   Verranno ora illustrate le scelte che sono state prese riguardo l'implementazione dei vari operatori genetici che prendono parte al processo di evoluzione tipico degli algoritmi genetici. Tutte le metodologie introdotte in questa sezione sono state presentate nella sesta lezione del corso di \textit{Fondamenti di Intelligenza Artificiale} tenuta dal Prof. \textbf{Fabio Palomba} e dal Dott. \textbf{Emanuele Iannone} nell'anno 2020.
 
     \subsection{L'operatore genetico di Selezione}
-        Il primo operatore che viene applicato in una singola iterazione dell'algoritmo è quello di \textbf{Selezione}, che, riprendendo quanto descritto in precedenza, permette di stabilire a quali individui sia concesso riprodursi sulla base della loro fitness. In letteratura, esistono diversi approcci che possono essere seguiti per realizzare quest'operazione. \\
+        Il primo operatore che viene applicato in una singola iterazione dell'algoritmo è quello di \textbf{selezione}, che, riprendendo quanto descritto in precedenza, permette di stabilire a quali individui sia concesso riprodursi sulla base della loro fitness. In letteratura, esistono diversi approcci che possono essere seguiti per realizzare quest'operazione. \\
         Tra questi vanno menzionati in particolare:
 
         \begin{itemize}
@@ -107,7 +107,7 @@ La fitness di un determinato individuo, al contrario di quanto accade in altri t
         Per l'algoritmo utilizzato in \textsc{ShallWeGo} si è scelto di utilizzare l'approccio basato su \textbf{roulette wheel} in quanto risulta quello di più immediata comprensione ed implementazione (essendo molto più fedele a quanto avviene in natura). Inoltre, non essendoci alcun caso in cui la fitness possa scendere sotto il valore $0$ quest'approccio è stato applicabile senza problemi.
 
     \subsection{L'operatore genetico di Crossover}
-        Dopo l'applicazione dell'operatore di Selezione (e quindi con la definizione di quelli che sono i componenti del cosiddetto \textbf{mating pool}), si procede con la fase di \textbf{crossover}, che prevede l'accoppiamento di coppie di individui all'interno del mating pool. 
+        Dopo l'applicazione dell'operatore di selezione (e quindi con la definizione di quelli che sono i componenti del cosiddetto \textbf{mating pool}), si procede con la fase di \textbf{crossover}, che prevede l'accoppiamento di coppie di individui all'interno del mating pool. 
         Esistono diverse tecniche che permettono di implementare questa operazione. \\
         Tra queste si menzionano:
 
@@ -121,7 +121,7 @@ La fitness di un determinato individuo, al contrario di quanto accade in altri t
         \end{itemize}
         La tecnica usata da \textsc{ShallWeGo} è quella del \textbf{Single Point}. C'è da precisare che nel caso del problema che si sta affrontando la posizione di un gene all'interno di un individuo risulta irrilevante e di conseguenza un approccio k-points non avrebbe portato a nessun tipo di miglioramento.
     \subsection{L'operatore genetico di Mutazione}
-        L'ultimo operatore genetico che viene applicato durante un'iterazione è quello di \textbf{Mutazione} che ricalca, come accennato precedentemente, il processo di mutazione spontanea che avviene in natura. Una mutazione consiste nel cambiamento casuale di un gene all'interno di un individuo. Anche in questo caso, esistono diversi approcci che in generale possono essere seguiti. \\
+        L'ultimo operatore genetico che viene applicato durante un'iterazione è quello di \textbf{mutazione} che ricalca, come accennato precedentemente, il processo di mutazione spontanea che avviene in natura. Una mutazione consiste nel cambiamento casuale di un gene all'interno di un individuo. Anche in questo caso, esistono diversi approcci che in generale possono essere seguiti. \\
         Tra questi si menzionano:
         \begin{itemize}
             \item La tecnica del \textbf{Bit Flip} che, come suggerisce il nome, è applicabile solo nel caso di individui codificati in modo \textit{binario} e consiste nel scegliere in maniera casuale un gene all'interno dell'individuo e "capovolgere" il suo valore (quindi da 0 si passa ad 1 e viceversa);
@@ -158,7 +158,7 @@ La fitness di un determinato individuo, al contrario di quanto accade in altri t
             \begin{itemize}
                 \item Si ordinano gli individui in maniera decrescente in base alla loro fitness;
                 \item Si ottiene, a partire dal singolo individuo, la lista degli utenti che esso contiene, ordinati in maniera decrescente rispetto al loro valore di fitness;
-                \item Per ognuna di queste liste, viene preso il primo elemento. Il risultato di questa operazione sarà di fatto un nuovo insieme di utenti formato da quelli più "forti" tra quelli presenti negli individui della popolazione risultante dall'algoritmo.
+                \item Per ognuna di queste liste, viene preso il primo utente. Ci si ferma quando sono stati considerati tutti gli individui o quando sono stati presi 5 utenti. Il risultato di questa operazione sarà di fatto un nuovo insieme di utenti formato da quelli più "forti" tra quelli presenti negli individui della popolazione risultante dall'algoritmo.
             \end{itemize}
 
             Sebbene le operazioni di post processing (trattandosi prettamente di ordinamento) assumano una complessità di almeno $\mathcal{O}(n\log{}n)$, esse vengono effettuate su un dominio particolarmente più piccolo rispetto a quello dei candidati (che mettendosi nel contesto di una piattaforma ben avviata potrebbero essere in numero molto elevato o comunque tale da rendere la ricerca esaustiva poco efficiente) e che allo stesso tempo permettono di ottenere un risultato ancora migliore rispetto a quello ottenuto con la semplice evoluzione, riuscendo cioè a creare un gruppo di utenti che risultino "forti tra i forti" in termini di fitness assoluta. Ciò giustifica la presenza sia della procedura di evoluzione degli individui sia il postprocessing. \\ 

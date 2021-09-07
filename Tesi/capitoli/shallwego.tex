@@ -53,8 +53,8 @@
 \section{\textsc{ShallWeGo}: Il Server}
     Il server, come precedentemente menzionato, è realizzato usando le specifiche di Java Enterprise Edition (da qui in poi \textit{Java EE}), usando a questo scopo il framework \textbf{\textit{Spring Boot}}, che permette una più semplice realizzazione dei task necessari a sviluppare un'applicazione che sfrutta il paradigma Client-Server, come ad esempio la gestione delle API accessibili dall'esterno (i cosiddetti \textit{endpoint}) oppure la gestione dei dati persistenti.
 
-    \subsection{Class-Diagram}
-        Di seguito è mostrato il diagramma delle classi del progetto Server. Sono state omesse le classi di servizio usate da Spring e da JPA per il corretto funzionamento del Server stesso. Sono inoltre state omesse le classi che compongono l'algoritmo genetico.
+    \subsection{Class Diagram}
+        Di seguito è mostrato il diagramma delle classi del progetto server. Sono state omesse le classi di servizio usate da Spring e da JPA per il corretto funzionamento del server stesso. Sono inoltre state omesse le classi che compongono l'algoritmo genetico.
 
         \begin{figure}[H]
             \includegraphics[width=\columnwidth]{ClassDiagram-cut}
@@ -85,7 +85,7 @@
 
         Per effettuare il mapping tra oggetti istanze di una classe e righe presenti in una tabella in un database, JPA si serve del concetto di \textbf{Entity}, che rappresenta un'istanza di una classe (in gergo, \textbf{POJO}, ovvero \textit{Plain Old Java Object}) che "dichiara" di poter essere salvata all'interno di un database.
 
-        Le specifiche JPA introducono il concetto di \textbf{Configuration By Excpetion}. In questo modo, se non specificato altrimenti, le impostazioni riguardo persistenza e mapping di oggetti risulteranno essere quelle di default. Per fare un esempio concreto, in un progetto dove è previsto l'impiego di JPA tutte le classi Java vengono viste come tali fino a che non viene utilizzata l'annotazione Entity su una di queste. Ad esempio:
+        Le specifiche JPA introducono il concetto di \textbf{Configuration By Excpetion}. In questo modo, se non specificato altrimenti, le impostazioni riguardo persistenza e mapping di oggetti risulteranno essere quelle di default. Per fare un esempio concreto, in un progetto dove è previsto l'impiego di JPA tutte le classi Java vengono viste come tali fino a che non viene utilizzata l'annotazione @Entity su una di queste. Ad esempio:
 
         \begin{code}
             \begin{minted}{java}
@@ -100,7 +100,7 @@
             \caption{\textbf{File:} POJO.java}
         \end{code}
     
-        Tramite questo setup è possibile rendere la classe contenuta in \textit{POJO.java} un'entity di cui è possibile effettuare la persistenza su un database.\\
+        Tramite questo setup è possibile rendere la classe contenuta in \textit{POJO.java} un'Entity di cui è possibile effettuare la persistenza su un database.\\
 
         \newpage
 
@@ -110,7 +110,7 @@
             \item Essere annotata con \mintinline{java}{@javax.persistence.Entity};
             \item Avere un attributo annotato con \mintinline{java}{@javax.persistence.Id} che ne denota la chiave primaria (nel caso di chiave primaria semplice: è possibile anche avere chiavi composte);
             \item Deve possedere un costruttore vuoto che abbia come modificatore di accesso \mintinline{java}{public} o \mintinline{java}{protected}. Sono ammessi ulteriori costruttori;
-            \item Non deve essere una classe \textit{final};
+            \item Non deve essere una classe \mintinline{java}{final};
             \item Non deve essere una classe interna ad un'altra classe;
             \item Deve implementare l'interfaccia \mintinline{java}{Serializable}.
         \end{itemize}
@@ -219,7 +219,7 @@
 
         In \textsc{ShallWeGo}, la strategia utilizzata è quella \detokenize{SINGLE_TABLE} poiché si è preferito non aumentare la complessità dello schema della base di dati.
 
-        Per permettere l'esecuzione delle query di inserimento, retrieval ed eliminazione delle informazioni, Spring mette a disposizione il meccanismo delle \textbf{Repository}. L'obiettivo delle Repository Spring è "quello di ridurre la quantità di codice \textit{boilerplate} necessario per implementare il layer di accesso ai dati per diversi tipi di entità persistenti.".
+        Per permettere l'esecuzione delle query di inserimento, retrieval ed eliminazione delle informazioni, Spring mette a disposizione il meccanismo delle \textbf{Repository}. L'obiettivo delle Repository di Spring è "quello di ridurre la quantità di codice \textit{boilerplate} necessario per implementare il layer di accesso ai dati per diversi tipi di entità persistenti." (\cite{SpringRepository}).
 
         La creazione delle Repositories è demandata al programmatore che può crearne una creando un'\textbf{interfaccia} che estende la classe \mintinline{java}{CrudRepository<T, ID>} oppure \\ \mintinline{java}{JpaRepository<T, ID>}.
 
@@ -265,7 +265,7 @@
 
     \subsection{Mappe e Dati Geografici: OpenStreetMap e Nominatim}
         OpenStreetMap è un \textbf{WebGIS} lanciato nel 2004 che si propone come alternativa open source ai servizi commerciali che forniscono mappe o dati geografici in generale (si pensi ad esempio ai nomi delle strade oppure delle attività commerciali). Adotta un approccio \textbf{community-driven}: di conseguenza, i dati sono aggiornati periodicamente da parte di utenti che aderiscono al progetto. Questi dati sono consultabili tramite l'interfaccia principale del servizio, disponibile all'indirizzo \url{https://www.openstreetmap.org/}. All'interno di questa pagina è presente, come nella maggior parte dei servizi di questo tipo, una casella di ricerca che permette di cercare indirizzi o punti di interesse. La funzionalità di ricerca è implementata sfruttando il servizio \textbf{Nominatim}, già accennato in precedenza.
-        Nominatim consiste in un sistema \textbf{geocoding} open source scritto in PHP e sviluppato con il patrocinio dello stesso progetto OpenStreetMap. Esso permette di effettuare ricerche di dati geografici presenti all'interno di un database PostgreSQL a partire da un insieme di parole chiave e, allo stesso modo, di ottenere suddetti dati a partire da una coppia di coordinate (Latitudine, Longitudine).
+        Nominatim consiste in un sistema \textbf{geocoding} open source scritto in PHP e sviluppato con il patrocinio dello stesso progetto OpenStreetMap. Esso permette di effettuare ricerche di dati geografici presenti all'interno di un database PostgreSQL a partire da un insieme di parole chiave e, allo stesso modo, di ottenere suddetti dati a partire da una coppia di coordinate (latitudine, longitudine).
         Il server Nominatim, nel caso specifico della piattaforma, è stato utilizzato principalmente per ottenere due tipologie di informazioni:
         \begin{itemize}
             \item Una coppia di coordinate (latitudine, longitudine) a partire dal nome di un comune e dalla sua provincia che ne rappresenti la posizione approssimativa al fine di computare la fitness di un individuo nel contesto dell'algoritmo genetico;
@@ -286,7 +286,7 @@
         In particolare, di seguito sono descritti i servizi di Nominatim utilizzati dalla piattaforma per i suoi scopi:
 
         \begin{itemize}
-            \item \textbf{/search}: il servizio principale e quello più usato. Permette di ottenere risultati in termini di dati OpenStreetMap (e quindi anche le coordinate geografiche corrispondenti) di un luogo a partire da un insieme di parole chiave. Queste ultime possono essere specificate tramite il parametro \textbf{q}. Ad esempio, la query associata a  \url{http://nominatim.openstreetmap.org/search/?q=Universita Degli Studi di Salerno Fisciano&format=json} permette di ottenere informazioni sul campus di Fisciano dell'Università degli Studi di Salerno in formato JSON (Si veda la figura 4.3, presente nella pagina successiva);
+            \item \textbf{/search}: il servizio principale e quello più usato. Permette di ottenere risultati in termini di dati OpenStreetMap (e quindi anche le coordinate geografiche corrispondenti) di un luogo a partire da un insieme di parole chiave. Queste ultime possono essere specificate tramite il parametro \textbf{q}. Ad esempio, la query associata a  \url{http://nominatim.openstreetmap.org/search/?q=Universita Degli Studi di Salerno Fisciano&format=json} permette di ottenere informazioni sul campus di Fisciano dell'Università degli Studi di Salerno in formato JSON (Si veda la figura 4.3, presente successivamente);
             \newpage
             \item \textbf{/reverse}: permette di ottenere approssimativamente l'indirizzo associato a delle coordinate geografiche specificate tramite i parametri \textbf{lat} e \textbf{lon}, che rappresentano rispettivamente la latitudine e la longitudine del luogo. Ad esempio, la query associata a \url{http://nominatim.openstreetmap.org/reverse/?lat=40.774283&lon=14.790868&format=json} permette di ottenere le informazioni associate alle coordinate (40.774283, 14.790868) in formato JSON. (Si veda la figura 4.4, presente nella pagina successiva).
         \end{itemize}
@@ -345,7 +345,7 @@
                 Durante lo sviluppo di \textsc{ShallWeGo}, per fornire tutte le funzionalità indicate in precedenza, si è fatto uso di diverse librerie di terze parti, il cui funzionamento ed impiego nella piattaforma verrà descritto di seguito.
 
                 \subsubsection{OsmDroid: un'alternativa \textit{free} a Google Maps}
-                    Come accennato nell'introduzione, l'applicazione fa largo uso di mappe e dati geografici in generale. Si è parlato di come applicativi e librerie libere ed open-source potessero andare a risolvere il problema della dipendenza da servizi come le API di Google Maps, che, superata una certa soglia di utilizzo periodica, prevedono un costo. Anche la semplice integrazione di una mappa all'interno di un'Activity (che accade molto spesso nel contesto di \textsc{ShallWeGo}), se si fosse optato per il servizio messo a disposizione da Google Maps, avrebbe richiesto il possesso di un'\textbf{API key} che permette di identificare univocamente la fonte delle richieste e tenere sotto controllo le soglie di utilizzo, eventualmente procedendo ad addebiti nel caso di sforamento. Per far fronte a questa problematica (che si fa più rilevante man mano che l'utilizzo della piattaforma aumenta) è stata impiegata la libreria \textbf{OsmDroid}, che si propone come un'alternativa sostanzialmente completa e gratuita alle API di Google Maps per l'integrazione di mappe all'interno di applicazioni Android. I dati della mappa fornita da questa libreria provengono dal progetto OpenStreetMap, di cui si è già discusso. Il codice sorgente e la documentazione della libreria sono disponibili interamente su GitHub all'indirizzo \url{https://github.com/osmdroid/osmdroid}.
+                    Come accennato nell'introduzione, l'applicazione fa largo uso di mappe e dati geografici in generale. Si è parlato di come applicativi e librerie libere ed open-source potessero andare a risolvere il problema della dipendenza da servizi come le API di Google Maps, che, superata una certa soglia di utilizzo periodica, prevedono un costo. Anche la semplice integrazione di una mappa all'interno di un'Activity (che accade molto spesso nel contesto di \textsc{ShallWeGo}), se si fosse optato per il servizio messo a disposizione da Google Maps, avrebbe richiesto il possesso di un'\textbf{API key} che permette di identificare univocamente la fonte delle richieste e tenere sotto controllo le soglie di utilizzo, eventualmente procedendo ad addebiti in caso di sforamento. Per far fronte a questa problematica (che si fa più rilevante man mano che l'utilizzo della piattaforma aumenta) è stata impiegata la libreria \textbf{OsmDroid}, che si propone come un'alternativa sostanzialmente completa e gratuita alle API di Google Maps per l'integrazione di mappe all'interno di applicazioni Android. I dati della mappa fornita da questa libreria provengono dal progetto OpenStreetMap, di cui si è già discusso. Il codice sorgente e la documentazione della libreria sono disponibili interamente su GitHub all'indirizzo \url{https://github.com/osmdroid/osmdroid}.
 
                 \subsubsection{AppIntro}
                     \textbf{AppIntro} è una libreria creata dallo sviluppatore \textbf{Paolo Rotolo} il cui codice e documentazione sono disponibili su GitHub all'indirizzo \url{https://github.com/AppIntro/AppIntro}. Fornisce il supporto alla creazione, sotto forma di \textit{slides} di un'introduzione all'applicazione. Questo modulo semplifica notevolmente il processo di richiesta dei permessi, diventato più complesso dall'introduzione di Android 5.0.
